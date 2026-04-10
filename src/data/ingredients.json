@@ -1,0 +1,823 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "note": "Ingredient library with modifier support, plus add-extras system. SPP section labels: 'What\\'s On It' for default ingredients, 'Add Extras' for add-ons. Products reference ingredients by ID for customization (remove/edit with light/extra), and reference add-extra groups for items that can be added at extra cost."
+  },
+  "modifierTypes": {
+    "remove": {
+      "id": "mod_remove",
+      "label": "Remove",
+      "priceAdjustment": 0
+    },
+    "add": {
+      "id": "mod_add",
+      "label": "Add",
+      "priceAdjustment": 0.5
+    },
+    "light": {
+      "id": "mod_light",
+      "label": "Light",
+      "priceAdjustment": 0
+    },
+    "extra": {
+      "id": "mod_extra",
+      "label": "Extra",
+      "priceAdjustment": 0.3
+    }
+  },
+  "ingredients": {
+    "potato_bun": {
+      "id": "ing_001",
+      "name": "Potato Bun",
+      "category": "bread",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers"
+      ]
+    },
+    "american_cheese_slice": {
+      "id": "ing_002",
+      "name": "American Cheese Slice",
+      "category": "cheese",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "cheeseburgers"
+      ]
+    },
+    "ketchup": {
+      "id": "ing_003",
+      "name": "Ketchup",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers"
+      ]
+    },
+    "mayonnaise": {
+      "id": "ing_004",
+      "name": "Mayonnaise",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "chicken-sandwiches"
+      ]
+    },
+    "crinkle_cut_pickles": {
+      "id": "ing_005",
+      "name": "Crinkle Cut Pickles",
+      "category": "topping",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "chicken-sandwiches"
+      ]
+    },
+    "hamburger_patty": {
+      "id": "ing_006",
+      "name": "Hamburger Patty",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers"
+      ]
+    },
+    "lettuce": {
+      "id": "ing_007",
+      "name": "Lettuce",
+      "category": "topping",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "chicken-sandwiches",
+        "wraps"
+      ]
+    },
+    "sweet_onion": {
+      "id": "ing_008",
+      "name": "Sweet Onion",
+      "category": "topping",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "chicken-sandwiches"
+      ]
+    },
+    "tomato": {
+      "id": "ing_009",
+      "name": "Tomato",
+      "category": "topping",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "chicken-sandwiches",
+        "wraps"
+      ]
+    },
+    "mustard": {
+      "id": "ing_010",
+      "name": "Mustard",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers"
+      ]
+    },
+    "bacon": {
+      "id": "ing_011",
+      "name": "Applewood Smoked Bacon",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "bacon-burgers",
+        "bacon-sandwiches",
+        "breakfast"
+      ]
+    },
+    "swiss_cheese": {
+      "id": "ing_012",
+      "name": "Swiss Cheese",
+      "category": "cheese",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "croissants",
+        "asiago-items"
+      ]
+    },
+    "egg": {
+      "id": "ing_013",
+      "name": "Egg",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast"
+      ]
+    },
+    "sausage_patty": {
+      "id": "ing_014",
+      "name": "Sausage Patty",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast-sausage"
+      ]
+    },
+    "asiago_ranch_sauce": {
+      "id": "ing_015",
+      "name": "Asiago Ranch Sauce",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "asiago-ranch-items"
+      ]
+    },
+    "ranch_sauce": {
+      "id": "ing_016",
+      "name": "Ranch Sauce",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "wraps",
+        "tenders"
+      ]
+    },
+    "cheese_sauce": {
+      "id": "ing_017",
+      "name": "Cheese Sauce",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "cheesy-items",
+        "breakfast"
+      ]
+    },
+    "crispy_onions": {
+      "id": "ing_018",
+      "name": "Crispy Onions",
+      "category": "topping",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "big-bacon-items"
+      ]
+    },
+    "croissant_bun": {
+      "id": "ing_019",
+      "name": "Croissant Bun",
+      "category": "bread",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "croissants"
+      ]
+    },
+    "biscuit": {
+      "id": "ing_020",
+      "name": "Biscuit",
+      "category": "bread",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "biscuits"
+      ]
+    },
+    "chicken_breast": {
+      "id": "ing_021",
+      "name": "Chicken Breast",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "chicken-sandwiches"
+      ]
+    },
+    "spicy_chicken_breast": {
+      "id": "ing_022",
+      "name": "Spicy Chicken Breast",
+      "category": "protein",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "spicy-chicken-sandwiches"
+      ]
+    },
+    "maple_honey_butter_spread": {
+      "id": "ing_023",
+      "name": "Maple Honey Butter Spread",
+      "category": "condiment",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast-croissants"
+      ]
+    },
+    "breakfast_chicken": {
+      "id": "ing_024",
+      "name": "Breakfast Chicken",
+      "category": "protein",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "light",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast-chicken"
+      ]
+    }
+  },
+  "productIngredientMap": {
+    "2387": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_010"
+    ],
+    "2388": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_010"
+    ],
+    "2389": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_010"
+    ],
+    "2390": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_011"
+    ],
+    "2399": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011",
+      "ing_018"
+    ],
+    "2403": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011",
+      "ing_018"
+    ],
+    "2404": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011",
+      "ing_018"
+    ],
+    "2400": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011"
+    ],
+    "150": [
+      "ing_001",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009"
+    ],
+    "2259": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009"
+    ],
+    "2260": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_009",
+      "ing_011"
+    ],
+    "2432": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011",
+      "ing_017"
+    ],
+    "2391": [
+      "ing_001",
+      "ing_004",
+      "ing_005",
+      "ing_007",
+      "ing_009",
+      "ing_021"
+    ],
+    "2392": [
+      "ing_001",
+      "ing_004",
+      "ing_005",
+      "ing_007",
+      "ing_009",
+      "ing_022"
+    ],
+    "2253": [
+      "ing_001",
+      "ing_007",
+      "ing_009",
+      "ing_011",
+      "ing_012",
+      "ing_015",
+      "ing_021"
+    ],
+    "2440": [
+      "ing_007",
+      "ing_002",
+      "ing_009",
+      "ing_016",
+      "ing_021"
+    ],
+    "1798": [
+      "ing_007",
+      "ing_002",
+      "ing_009",
+      "ing_016",
+      "ing_021"
+    ],
+    "438": [
+      "ing_020",
+      "ing_011",
+      "ing_013",
+      "ing_002"
+    ],
+    "439": [
+      "ing_020",
+      "ing_014",
+      "ing_013",
+      "ing_002"
+    ],
+    "825": [
+      "ing_019",
+      "ing_011",
+      "ing_013",
+      "ing_012"
+    ],
+    "826": [
+      "ing_020",
+      "ing_011",
+      "ing_013",
+      "ing_002",
+      "ing_014",
+      "ing_017"
+    ],
+    "823": [
+      "ing_019",
+      "ing_023",
+      "ing_011",
+      "ing_024"
+    ]
+  },
+  "addOns": {
+    "_note": "Add-ons rendered in the 'Add Extras' section. List format with image, name, price, checkbox. Section is collapsible ('View Less').",
+    "addon_applewood_bacon": {
+      "id": "addon_applewood_bacon",
+      "name": "Applewood Smoked Bacon",
+      "price": 1.8,
+      "calories": 70,
+      "category": "protein",
+      "maxQuantity": 1,
+      "isFeaturedUpsell": true
+    },
+    "addon_american_cheese": {
+      "id": "addon_american_cheese",
+      "name": "American Cheese Slice",
+      "price": 0.8,
+      "calories": 50,
+      "category": "cheese",
+      "maxQuantity": 2
+    },
+    "addon_asiago_cheese": {
+      "id": "addon_asiago_cheese",
+      "name": "Asiago Cheese",
+      "price": 0.6,
+      "calories": 60,
+      "category": "cheese",
+      "maxQuantity": 1
+    },
+    "addon_wendys_signature_sauce": {
+      "id": "addon_wendys_signature_sauce",
+      "name": "Wendy's Signature Dipping Sauce",
+      "price": 0.5,
+      "calories": 90,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_scorchin_hot_sauce": {
+      "id": "addon_scorchin_hot_sauce",
+      "name": "Scorchin' Hot Dipping Sauce",
+      "price": 0.5,
+      "calories": 25,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_sweet_chili_sauce": {
+      "id": "addon_sweet_chili_sauce",
+      "name": "Sweet Chili Dipping Sauce",
+      "price": 0.5,
+      "calories": 45,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_honey_mustard_sauce": {
+      "id": "addon_honey_mustard_sauce",
+      "name": "Honey Mustard Dipping Sauce",
+      "price": 0.5,
+      "calories": 50,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_creamy_ranch_sauce": {
+      "id": "addon_creamy_ranch_sauce",
+      "name": "Creamy Ranch Dipping Sauce",
+      "price": 0.5,
+      "calories": 90,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_honey_bbq_sauce": {
+      "id": "addon_honey_bbq_sauce",
+      "name": "Honey BBQ Dipping Sauce",
+      "price": 0.5,
+      "calories": 45,
+      "category": "sauce",
+      "maxQuantity": 1
+    },
+    "addon_extra_patty": {
+      "id": "addon_extra_patty",
+      "name": "Extra Beef Patty",
+      "price": 2.0,
+      "calories": 250,
+      "category": "protein",
+      "maxQuantity": 1
+    },
+    "addon_avocado": {
+      "id": "addon_avocado",
+      "name": "Avocado",
+      "price": 0.8,
+      "calories": 60,
+      "category": "topping",
+      "maxQuantity": 1
+    },
+    "addon_jalapenos": {
+      "id": "addon_jalapenos",
+      "name": "Jalape\u00f1os",
+      "price": 0.3,
+      "calories": 5,
+      "category": "topping",
+      "maxQuantity": 1
+    },
+    "addon_egg": {
+      "id": "addon_egg",
+      "name": "Egg",
+      "price": 1.0,
+      "calories": 90,
+      "category": "protein",
+      "maxQuantity": 1
+    },
+    "addon_sausage_patty": {
+      "id": "addon_sausage_patty",
+      "name": "Sausage Patty",
+      "price": 1.5,
+      "calories": 190,
+      "category": "protein",
+      "maxQuantity": 1
+    },
+    "addon_swiss_cheese_sauce": {
+      "id": "addon_swiss_cheese_sauce",
+      "name": "Swiss Cheese Sauce",
+      "price": 0,
+      "calories": 40,
+      "category": "sauce",
+      "maxQuantity": 1,
+      "isFree": true
+    }
+  },
+  "addOnGroups": {
+    "_note": "Groups define which add-extras are available by product type. Section header is always 'Add Extras'. Section is collapsible with 'View Less' toggle. First item with isFeaturedUpsell=true also appears as an upsell card above What's On It.",
+    "burger": {
+      "label": "Add Extras",
+      "addOnIds": [
+        "addon_applewood_bacon",
+        "addon_american_cheese",
+        "addon_asiago_cheese",
+        "addon_wendys_signature_sauce",
+        "addon_scorchin_hot_sauce",
+        "addon_sweet_chili_sauce",
+        "addon_honey_mustard_sauce",
+        "addon_creamy_ranch_sauce",
+        "addon_honey_bbq_sauce"
+      ]
+    },
+    "chicken": {
+      "label": "Add Extras",
+      "addOnIds": [
+        "addon_applewood_bacon",
+        "addon_american_cheese",
+        "addon_asiago_cheese",
+        "addon_wendys_signature_sauce",
+        "addon_scorchin_hot_sauce",
+        "addon_sweet_chili_sauce",
+        "addon_honey_mustard_sauce",
+        "addon_creamy_ranch_sauce",
+        "addon_honey_bbq_sauce"
+      ]
+    },
+    "breakfast": {
+      "label": "Add Extras",
+      "addOnIds": [
+        "addon_applewood_bacon",
+        "addon_american_cheese",
+        "addon_egg",
+        "addon_sausage_patty",
+        "addon_swiss_cheese_sauce"
+      ]
+    },
+    "salad": {
+      "label": "Add Extras",
+      "addOnIds": [
+        "addon_applewood_bacon",
+        "addon_avocado",
+        "addon_asiago_cheese",
+        "addon_creamy_ranch_sauce"
+      ]
+    },
+    "breakfast_croissant": {
+      "label": "Add Extras",
+      "addOnIds": [
+        "addon_swiss_cheese_sauce",
+        "addon_american_cheese"
+      ]
+    }
+  },
+  "productAddOnGroupMap": {
+    "_note": "Maps product IDs to their add-on group. Products not listed here have no add-ons available.",
+    "2390": "burger",
+    "2387": "burger",
+    "2388": "burger",
+    "2389": "burger",
+    "2399": "burger",
+    "2400": "burger",
+    "2258": "burger",
+    "2403": "burger",
+    "2404": "burger",
+    "2432": "burger",
+    "2448": "burger",
+    "2452": "burger",
+    "2262": "burger",
+    "2260": "burger",
+    "2259": "burger",
+    "2261": "burger",
+    "150": "burger",
+    "2391": "chicken",
+    "2392": "chicken",
+    "2253": "chicken",
+    "2306": "chicken",
+    "1224": "chicken",
+    "2263": "chicken",
+    "2264": "chicken",
+    "2440": "chicken",
+    "1798": "chicken",
+    "2446": "chicken",
+    "438": "breakfast",
+    "439": "breakfast",
+    "825": "breakfast",
+    "826": "breakfast",
+    "824": "breakfast",
+    "823": "breakfast_croissant",
+    "440": "breakfast",
+    "1685": "breakfast",
+    "437": "breakfast",
+    "1321": "salad",
+    "1770": "salad",
+    "1323": "salad",
+    "2147": "salad"
+  },
+  "ingredientEditOverrides": {
+    "_note": "hasEdit on the ingredient is the DEFAULT. Some products override this. For example, Applewood Smoked Bacon defaults to hasEdit:false but has Edit on the Maple Bacon Chicken Croissant. This map provides per-product overrides. Format: { productId: { ingredientId: hasEdit } }",
+    "823": {
+      "ing_011": true
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "note": "Mock locations for prototype. Coordinates are real Wendy's-adjacent locations in the Columbus, OH area (Wendy's HQ city)."
+  },
+  "locations": [
+    {
+      "id": "loc_001",
+      "name": "Wendy's #1247",
+      "address": {
+        "street": "670 Bethel Rd",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43214"
+      },
+      "coordinates": { "lat": 40.0596, "lng": -83.0253 },
+      "distance": 0.8,
+      "isOpen": true,
+      "hours": {
+        "breakfast": { "open": "06:30", "close": "10:30" },
+        "regular": { "open": "10:30", "close": "01:00" }
+      },
+      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "phoneNumber": "(614) 555-0101"
+    },
+    {
+      "id": "loc_002",
+      "name": "Wendy's #3084",
+      "address": {
+        "street": "1455 Olentangy River Rd",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43212"
+      },
+      "coordinates": { "lat": 40.0058, "lng": -83.0186 },
+      "distance": 2.3,
+      "isOpen": true,
+      "hours": {
+        "breakfast": { "open": "06:30", "close": "10:30" },
+        "regular": { "open": "10:30", "close": "00:00" }
+      },
+      "fulfillmentMethods": ["drive-thru", "carry-out"],
+      "phoneNumber": "(614) 555-0202"
+    },
+    {
+      "id": "loc_003",
+      "name": "Wendy's #5521",
+      "address": {
+        "street": "2895 E Broad St",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43209"
+      },
+      "coordinates": { "lat": 39.9683, "lng": -82.9340 },
+      "distance": 4.1,
+      "isOpen": true,
+      "hours": {
+        "breakfast": { "open": "06:30", "close": "10:30" },
+        "regular": { "open": "10:30", "close": "01:00" }
+      },
+      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "phoneNumber": "(614) 555-0303"
+    },
+    {
+      "id": "loc_004",
+      "name": "Wendy's #2190",
+      "address": {
+        "street": "5100 N High St",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43214"
+      },
+      "coordinates": { "lat": 40.0782, "lng": -83.0143 },
+      "distance": 5.7,
+      "isOpen": false,
+      "hours": {
+        "breakfast": { "open": "06:30", "close": "10:30" },
+        "regular": { "open": "10:30", "close": "22:00" }
+      },
+      "fulfillmentMethods": ["drive-thru", "carry-out"],
+      "phoneNumber": "(614) 555-0404"
+    },
+    {
+      "id": "loc_005",
+      "name": "Wendy's #4412",
+      "address": {
+        "street": "1280 Morse Rd",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43229"
+      },
+      "coordinates": { "lat": 40.0729, "lng": -82.9601 },
+      "distance": 6.2,
+      "isOpen": true,
+      "hours": {
+        "breakfast": { "open": "06:30", "close": "10:30" },
+        "regular": { "open": "10:30", "close": "01:00" }
+      },
+      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "phoneNumber": "(614) 555-0505"
+    }
+  ]
+}

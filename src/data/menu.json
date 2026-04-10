@@ -1,0 +1,3186 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "generatedFrom": "Image filename parsing + realistic price/calorie generation",
+    "totalProducts": 174,
+    "totalCategories": 21,
+    "note": "Prices and calories are realistic estimates for prototyping. Cross-listed products appear in multiple categories with the same product ID."
+  },
+  "categories": [
+    {
+      "id": "cat_combos",
+      "name": "Combos & Meals",
+      "slug": "combos",
+      "daypart": "all-day",
+      "displayOrder": 0,
+      "itemCount": 18,
+      "items": [
+        {
+          "id": "2488",
+          "name": "Dave's Combo",
+          "slug": "dave-s-combo",
+          "image": "food_combos_dave-s-combo_2488.png",
+          "price": 8.99,
+          "calories": {
+            "min": 1200,
+            "max": 1800
+          },
+          "isCombo": true,
+          "productType": "combo",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Size",
+                "options": [
+                  {
+                    "id": "single",
+                    "label": "Single",
+                    "priceAdjustment": 0,
+                    "productRef": "2387"
+                  },
+                  {
+                    "id": "double",
+                    "label": "Double",
+                    "priceAdjustment": 1.5,
+                    "productRef": "2388"
+                  },
+                  {
+                    "id": "triple",
+                    "label": "Triple",
+                    "priceAdjustment": 3,
+                    "productRef": "2389"
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": {
+              "id": "165",
+              "name": "French Fries",
+              "size": "medium"
+            },
+            "defaultDrink": null,
+            "sizeOptions": [
+              {
+                "id": "small",
+                "label": "Small",
+                "priceAdjustment": -0.5
+              },
+              {
+                "id": "medium",
+                "label": "Medium",
+                "priceAdjustment": 0
+              },
+              {
+                "id": "large",
+                "label": "Large",
+                "priceAdjustment": 0.7
+              }
+            ]
+          }
+        },
+        {
+          "id": "2396",
+          "name": "Baconator Combo",
+          "slug": "baconator-combo",
+          "image": "food_combos_baconator-combo_2396.png",
+          "price": 12.29,
+          "calories": {
+            "min": 1500,
+            "max": 1800
+          },
+          "isCombo": true,
+          "productType": "combo",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": {
+              "id": "165",
+              "name": "French Fries",
+              "size": "medium"
+            },
+            "defaultDrink": null,
+            "sizeOptions": [
+              {
+                "id": "small",
+                "label": "Small",
+                "priceAdjustment": -0.5
+              },
+              {
+                "id": "medium",
+                "label": "Medium",
+                "priceAdjustment": 0
+              },
+              {
+                "id": "large",
+                "label": "Large",
+                "priceAdjustment": 0.7
+              }
+            ]
+          }
+        },
+        {
+          "id": "2402",
+          "name": "Son Of Baconator Combo",
+          "slug": "son-of-baconator-combo",
+          "image": "food_combos_son-of-baconator-combo_2402.png",
+          "price": 9.99,
+          "calories": {
+            "min": 1200,
+            "max": 1500
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "1497",
+          "name": "10 Pc. Chicken Nugget Combo",
+          "slug": "10-pc-chicken-nugget-combo",
+          "image": "food_combos_10-pc-chicken-nugget-combo_1497.png",
+          "price": 8.99,
+          "calories": {
+            "min": 1000,
+            "max": 1400
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2397",
+          "name": "Classic Chicken Sandwich Combo",
+          "slug": "classic-chicken-sandwich-combo",
+          "image": "food_combos_classic-chicken-sandwich-combo_2397.png",
+          "price": 9.29,
+          "calories": {
+            "min": 1100,
+            "max": 1500
+          },
+          "isCombo": true,
+          "productType": "combo",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Style",
+                "options": [
+                  {
+                    "id": "classic",
+                    "label": "Classic",
+                    "priceAdjustment": 0,
+                    "productRef": "2391"
+                  },
+                  {
+                    "id": "spicy",
+                    "label": "Spicy",
+                    "priceAdjustment": 0,
+                    "productRef": "2392"
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": {
+              "id": "165",
+              "name": "French Fries",
+              "size": "medium"
+            },
+            "defaultDrink": null,
+            "sizeOptions": [
+              {
+                "id": "small",
+                "label": "Small",
+                "priceAdjustment": -0.5
+              },
+              {
+                "id": "medium",
+                "label": "Medium",
+                "priceAdjustment": 0
+              },
+              {
+                "id": "large",
+                "label": "Large",
+                "priceAdjustment": 0.7
+              }
+            ]
+          }
+        },
+        {
+          "id": "2398",
+          "name": "Spicy Chicken Sandwich Combo",
+          "slug": "spicy-chicken-sandwich-combo",
+          "image": "food_combos_spicy-chicken-sandwich-combo_2398.png",
+          "price": 9.29,
+          "calories": {
+            "min": 1100,
+            "max": 1500
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "169",
+          "name": "Grilled Chicken Wrap Combo",
+          "slug": "grilled-chicken-wrap-combo",
+          "image": "food_combos_grilled-chicken-wrap-combo_169.png",
+          "price": 9.89,
+          "calories": {
+            "min": 900,
+            "max": 1300
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2490",
+          "name": "Big Bacon Classic Combo",
+          "slug": "big-bacon-classic-combo",
+          "image": "food_combos_big-bacon-classic-combo_2490.png",
+          "price": 10.49,
+          "calories": {
+            "min": 1200,
+            "max": 1600
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2276",
+          "name": "Asiago Ranch Club Sandwich Classic Combo",
+          "slug": "asiago-ranch-club-sandwich-classic-combo",
+          "image": "food_combos_asiago-ranch-club-sandwich-classic-combo_2276.png",
+          "price": 11.29,
+          "calories": {
+            "min": 1300,
+            "max": 1700
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2368",
+          "name": "3 Pc. Tenders Combo",
+          "slug": "3-pc-tenders-combo",
+          "image": "food_combos_3-pc-tenders-combo_2368.png",
+          "price": 8.99,
+          "calories": {
+            "min": 1000,
+            "max": 1400
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2369",
+          "name": "4 Pc. Tenders Combo",
+          "slug": "4-pc-tenders-combo",
+          "image": "food_combos_4-pc-tenders-combo_2369.png",
+          "price": 10.79,
+          "calories": {
+            "min": 1200,
+            "max": 1600
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "1229",
+          "name": "Asiago Ranch Chicken Club Combo",
+          "slug": "asiago-ranch-chicken-club-combo",
+          "image": "food_combos_asiago-ranch-chicken-club-combo_1229.png",
+          "price": 7.77,
+          "calories": {
+            "min": 1350,
+            "max": 1350
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "265",
+          "name": "Baconator",
+          "slug": "baconator",
+          "image": "food_combos_baconator_265.png",
+          "price": 8.67,
+          "calories": {
+            "min": 1210,
+            "max": 1210
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2450",
+          "name": "Cheesy Bacon Cheeseburger Double Combo",
+          "slug": "cheesy-bacon-cheeseburger-double-combo",
+          "image": "food_combos_cheesy-bacon-cheeseburger-double-combo_2450.png",
+          "price": 8.95,
+          "calories": {
+            "min": 1600,
+            "max": 1660
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2443",
+          "name": "Cheesy Bacon Cheeseburger Single Combo",
+          "slug": "cheesy-bacon-cheeseburger-single-combo",
+          "image": "food_combos_cheesy-bacon-cheeseburger-single-combo_2443.png",
+          "price": 9.06,
+          "calories": {
+            "min": 1510,
+            "max": 1590
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2454",
+          "name": "Cheesy Bacon Cheeseburger Triple Combo",
+          "slug": "cheesy-bacon-cheeseburger-triple-combo",
+          "image": "food_combos_cheesy-bacon-cheeseburger-triple-combo_2454.png",
+          "price": 11.13,
+          "calories": {
+            "min": 1300,
+            "max": 1320
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2441",
+          "name": "Chicken Tenders Ranch Wrap Combo",
+          "slug": "chicken-tenders-ranch-wrap-combo",
+          "image": "food_combos_chicken-tenders-ranch-wrap-combo_2441.png",
+          "price": 8.53,
+          "calories": {
+            "min": 1020,
+            "max": 1020
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2447",
+          "name": "Crispy Panko Fish Sandwich Combo",
+          "slug": "crispy-panko-fish-sandwich-combo",
+          "image": "food_combos_crispy-panko-fish-sandwich-combo_2447.png",
+          "price": 11.6,
+          "calories": {
+            "min": 860,
+            "max": 860
+          },
+          "isCombo": true,
+          "productType": "combo"
+        }
+      ]
+    },
+    {
+      "id": "cat_hamburgers",
+      "name": "Hamburgers",
+      "slug": "hamburgers",
+      "daypart": "all-day",
+      "displayOrder": 1,
+      "itemCount": 17,
+      "items": [
+        {
+          "id": "2387",
+          "name": "Dave's Single",
+          "slug": "dave-s-single",
+          "image": "food_hamburgers_dave-s-single_2387.png",
+          "price": 5.99,
+          "calories": {
+            "min": 560,
+            "max": 560
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_007",
+            "ing_008"
+          ],
+          "comboPrice": 9.99
+        },
+        {
+          "id": "2388",
+          "name": "Dave's Double",
+          "slug": "dave-s-double",
+          "image": "food_hamburgers_dave-s-double_2388.png",
+          "price": 7.59,
+          "calories": {
+            "min": 810,
+            "max": 810
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2389",
+          "name": "Dave's Triple",
+          "slug": "dave-s-triple",
+          "image": "food_hamburgers_dave-s-triple_2389.png",
+          "price": 8.89,
+          "calories": {
+            "min": 1100,
+            "max": 1100
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2390",
+          "name": "Baconator",
+          "slug": "baconator",
+          "image": "food_hamburgers_baconator_2390.png",
+          "price": 8.99,
+          "calories": {
+            "min": 890,
+            "max": 890
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_004",
+            "ing_005",
+            "ing_006",
+            "ing_007",
+            "ing_008",
+            "ing_003"
+          ]
+        },
+        {
+          "id": "2400",
+          "name": "Son Of Baconator",
+          "slug": "son-of-baconator",
+          "image": "food_hamburgers_son-of-baconator_2400.png",
+          "price": 6.89,
+          "calories": {
+            "min": 590,
+            "max": 590
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_006",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2399",
+          "name": "Big Bacon Classic",
+          "slug": "big-bacon-classic",
+          "image": "food_hamburgers_big-bacon-classic_2399.png",
+          "price": 7.29,
+          "calories": {
+            "min": 610,
+            "max": 610
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_006",
+            "ing_007",
+            "ing_008",
+            "ing_017"
+          ]
+        },
+        {
+          "id": "2403",
+          "name": "Big Bacon Classic Double",
+          "slug": "big-bacon-classic-double",
+          "image": "food_hamburgers_big-bacon-classic-double_2403.png",
+          "price": 8.59,
+          "calories": {
+            "min": 860,
+            "max": 860
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2404",
+          "name": "Big Bacon Classic Triple",
+          "slug": "big-bacon-classic-triple",
+          "image": "food_hamburgers_big-bacon-classic-triple_2404.png",
+          "price": 9.89,
+          "calories": {
+            "min": 1140,
+            "max": 1140
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2258",
+          "name": "Bacon Double Stack",
+          "slug": "bacon-double-stack",
+          "image": "food_hamburgers_bacon-double-stack_2258.png",
+          "price": 4.19,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2260",
+          "name": "Jr Bacon Cheeseburger",
+          "slug": "jr-bacon-cheeseburger",
+          "image": "food_hamburgers_jr-bacon-cheeseburger_2260.png",
+          "price": 3.19,
+          "calories": {
+            "min": 350,
+            "max": 350
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_005",
+            "ing_006",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2261",
+          "name": "Jr Cheeseburger Deluxe",
+          "slug": "jr-cheeseburger-deluxe",
+          "image": "food_hamburgers_jr-cheeseburger-deluxe_2261.png",
+          "price": 2.89,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2259",
+          "name": "Jr Cheeseburger",
+          "slug": "jr-cheeseburger",
+          "image": "food_hamburgers_jr-cheeseburger_2259.png",
+          "price": 2.59,
+          "calories": {
+            "min": 270,
+            "max": 270
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2262",
+          "name": "Double Stack",
+          "slug": "double-stack",
+          "image": "food_hamburgers_double-stack_2262.png",
+          "price": 3.49,
+          "calories": {
+            "min": 380,
+            "max": 380
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "150",
+          "name": "Jr Hamburger",
+          "slug": "jr-hamburger",
+          "image": "food_hamburgers_jr-hamburger_150.png",
+          "price": 2.19,
+          "calories": {
+            "min": 230,
+            "max": 230
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_007",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2448",
+          "name": "Cheesy Bacon Cheeseburger Double",
+          "slug": "cheesy-bacon-cheeseburger-double",
+          "image": "food_hamburgers_cheesy-bacon-cheeseburger-double_2448.png",
+          "price": 3.67,
+          "calories": {
+            "min": 300,
+            "max": 360
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2432",
+          "name": "Cheesy Bacon Cheeseburger Single",
+          "slug": "cheesy-bacon-cheeseburger-single",
+          "image": "food_hamburgers_cheesy-bacon-cheeseburger-single_2432.png",
+          "price": 2.2,
+          "calories": {
+            "min": 800,
+            "max": 820
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_005",
+            "ing_006",
+            "ing_014"
+          ]
+        },
+        {
+          "id": "2452",
+          "name": "Cheesy Bacon Cheeseburger Triple",
+          "slug": "cheesy-bacon-cheeseburger-triple",
+          "image": "food_hamburgers_cheesy-bacon-cheeseburger-triple_2452.png",
+          "price": 5.03,
+          "calories": {
+            "min": 320,
+            "max": 360
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_chicken-nuggets-more",
+      "name": "Chicken, Nuggets & More",
+      "slug": "chicken-nuggets-more",
+      "daypart": "all-day",
+      "displayOrder": 2,
+      "itemCount": 18,
+      "items": [
+        {
+          "id": "954",
+          "name": "Nuggs Party Pack",
+          "slug": "nuggs-party-pack",
+          "image": "food_chicken-nuggets-more_nuggs-party-pack_954.png",
+          "price": 4.32,
+          "calories": {
+            "min": 200,
+            "max": 240
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "944",
+          "name": "10 Pc. Spicy Chicken Nuggets",
+          "slug": "10-pc-spicy-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_10-pc-spicy-chicken-nuggets_944.png",
+          "price": 5.89,
+          "calories": {
+            "min": 470,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "943",
+          "name": "6 Pc. Spicy Chicken Nuggets",
+          "slug": "6-pc-spicy-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_6-pc-spicy-chicken-nuggets_943.png",
+          "price": 4.19,
+          "calories": {
+            "min": 280,
+            "max": 280
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "942",
+          "name": "4 Pc. Spicy Chicken Nuggets",
+          "slug": "4-pc-spicy-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_4-pc-spicy-chicken-nuggets_942.png",
+          "price": 2.99,
+          "calories": {
+            "min": 190,
+            "max": 190
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2391",
+          "name": "Classic Chicken Sandwich",
+          "slug": "classic-chicken-sandwich",
+          "image": "food_chicken-nuggets-more_classic-chicken-sandwich_2391.png",
+          "price": 5.99,
+          "calories": {
+            "min": 550,
+            "max": 550
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_004",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "2392",
+          "name": "Spicy Chicken Sandwich",
+          "slug": "spicy-chicken-sandwich",
+          "image": "food_chicken-nuggets-more_spicy-chicken-sandwich_2392.png",
+          "price": 5.99,
+          "calories": {
+            "min": 560,
+            "max": 560
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_004",
+            "ing_008"
+          ]
+        },
+        {
+          "id": "1798",
+          "name": "Grilled Chicken Wrap",
+          "slug": "grilled-chicken-wrap",
+          "image": "food_chicken-nuggets-more_grilled-chicken-wrap_1798.png",
+          "price": 6.59,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_005",
+            "ing_016"
+          ]
+        },
+        {
+          "id": "2253",
+          "name": "Asiago Ranch Club Sandwich Classic",
+          "slug": "asiago-ranch-club-sandwich-classic",
+          "image": "food_chicken-nuggets-more_asiago-ranch-club-sandwich-classic_2253.png",
+          "price": 7.99,
+          "calories": {
+            "min": 670,
+            "max": 670
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_006",
+            "ing_010"
+          ]
+        },
+        {
+          "id": "2306",
+          "name": "Asiago Ranch Club Sandwich Spicy",
+          "slug": "asiago-ranch-club-sandwich-spicy",
+          "image": "food_chicken-nuggets-more_asiago-ranch-club-sandwich-spicy_2306.png",
+          "price": 7.99,
+          "calories": {
+            "min": 680,
+            "max": 680
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2263",
+          "name": "Crispy Chicken BLT",
+          "slug": "crispy-chicken-blt",
+          "image": "food_chicken-nuggets-more_crispy-chicken-blt_2263.png",
+          "price": 3.29,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2264",
+          "name": "Crispy Chicken Sandwich",
+          "slug": "crispy-chicken-sandwich",
+          "image": "food_chicken-nuggets-more_crispy-chicken-sandwich_2264.png",
+          "price": 2.59,
+          "calories": {
+            "min": 340,
+            "max": 340
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "727",
+          "name": "10 Pc. Chicken Nuggets",
+          "slug": "10-pc-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_10-pc-chicken-nuggets_727.png",
+          "price": 5.89,
+          "calories": {
+            "min": 430,
+            "max": 430
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "726",
+          "name": "6 Pc. Chicken Nuggets",
+          "slug": "6-pc-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_6-pc-chicken-nuggets_726.png",
+          "price": 4.19,
+          "calories": {
+            "min": 260,
+            "max": 260
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "725",
+          "name": "4 Pc. Chicken Nuggets",
+          "slug": "4-pc-chicken-nuggets",
+          "image": "food_chicken-nuggets-more_4-pc-chicken-nuggets_725.png",
+          "price": 2.99,
+          "calories": {
+            "min": 170,
+            "max": 170
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1224",
+          "name": "Asiago Ranch Classic Chicken Club",
+          "slug": "asiago-ranch-classic-chicken-club",
+          "image": "food_chicken-nuggets-more_asiago-ranch-classic-chicken-club_1224.png",
+          "price": 8.62,
+          "calories": {
+            "min": 300,
+            "max": 360
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2440",
+          "name": "Chicken Tenders Ranch Wrap",
+          "slug": "chicken-tenders-ranch-wrap",
+          "image": "food_chicken-nuggets-more_chicken-tenders-ranch-wrap_2440.png",
+          "price": 9.92,
+          "calories": {
+            "min": 380,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_005",
+            "ing_016"
+          ]
+        },
+        {
+          "id": "2446",
+          "name": "Crispy Panko Fish Sandwich",
+          "slug": "crispy-panko-fish-sandwich",
+          "image": "food_chicken-nuggets-more_crispy-panko-fish-sandwich_2446.png",
+          "price": 5.19,
+          "calories": {
+            "min": 400,
+            "max": 480
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "166",
+          "name": "Spicy Asiago Ranch Chicken Club",
+          "slug": "spicy-asiago-ranch-chicken-club",
+          "image": "food_chicken-nuggets-more_spicy-asiago-ranch-chicken-club_166.png",
+          "price": 3.06,
+          "calories": {
+            "min": 410,
+            "max": 450
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_tenders",
+      "name": "Tenders",
+      "slug": "tenders",
+      "daypart": "all-day",
+      "displayOrder": 3,
+      "itemCount": 2,
+      "items": [
+        {
+          "id": "2365",
+          "name": "3 Pc. Tenders",
+          "slug": "3-pc-tenders",
+          "image": "food_tenders_3-pc-tenders_2365.png",
+          "price": 5.39,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2366",
+          "name": "4 Pc. Tenders",
+          "slug": "4-pc-tenders",
+          "image": "food_tenders_4-pc-tenders_2366.png",
+          "price": 7.19,
+          "calories": {
+            "min": 560,
+            "max": 560
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_fresh-made-salads",
+      "name": "Fresh-Made Salads",
+      "slug": "fresh-made-salads",
+      "daypart": "all-day",
+      "displayOrder": 7,
+      "itemCount": 4,
+      "items": [
+        {
+          "id": "1323",
+          "name": "Parmesan Caesar Salad",
+          "slug": "parmesan-caesar-salad",
+          "image": "food_fresh-made-salads_parmesan-caesar-salad_1323.png",
+          "price": 9.49,
+          "calories": {
+            "min": 520,
+            "max": 520
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1770",
+          "name": "Cobb Salad",
+          "slug": "cobb-salad",
+          "image": "food_fresh-made-salads_cobb-salad_1770.png",
+          "price": 9.49,
+          "calories": {
+            "min": 660,
+            "max": 660
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1321",
+          "name": "Apple Pecan Salad",
+          "slug": "apple-pecan-salad",
+          "image": "food_fresh-made-salads_apple-pecan-salad_1321.png",
+          "price": 9.49,
+          "calories": {
+            "min": 510,
+            "max": 510
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2147",
+          "name": "Taco Salad",
+          "slug": "taco-salad",
+          "image": "food_fresh-made-salads_taco-salad_2147.png",
+          "price": 9.49,
+          "calories": {
+            "min": 610,
+            "max": 610
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_fries-sides",
+      "name": "Fries & Sides",
+      "slug": "fries-sides",
+      "daypart": "all-day",
+      "displayOrder": 6,
+      "itemCount": 15,
+      "items": [
+        {
+          "id": "165",
+          "name": "French Fries",
+          "slug": "french-fries",
+          "image": "food_fries-sides_french-fries_165.png",
+          "price": 1.49,
+          "calories": {
+            "min": 210,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "217",
+          "name": "Baconator Fries",
+          "slug": "baconator-fries",
+          "image": "food_fries-sides_baconator-fries_217.png",
+          "price": 4.49,
+          "calories": {
+            "min": 450,
+            "max": 450
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "455",
+          "name": "Chili Cheese Fries",
+          "slug": "chili-cheese-fries",
+          "image": "food_fries-sides_chili-cheese-fries_455.png",
+          "price": 4.49,
+          "calories": {
+            "min": 510,
+            "max": 510
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "723",
+          "name": "Cheese Fries",
+          "slug": "cheese-fries",
+          "image": "food_fries-sides_cheese-fries_723.png",
+          "price": 3.69,
+          "calories": {
+            "min": 470,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "fs_family_chili",
+          "name": "Family Chili",
+          "slug": "family-chili",
+          "image": "food_fries-sides_chili_170.png",
+          "price": 12.99,
+          "calories": {
+            "min": 1370,
+            "max": 1370
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "170",
+          "name": "Chili",
+          "slug": "chili",
+          "image": "food_fries-sides_chili_170.png",
+          "price": 3.29,
+          "calories": {
+            "min": 280,
+            "max": 370
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "174",
+          "name": "Sour Cream And Chive Baked Potato",
+          "slug": "sour-cream-and-chive-baked-potato",
+          "image": "food_fries-sides_sour-cream-and-chive-baked-potato_174.png",
+          "price": 2.89,
+          "calories": {
+            "min": 300,
+            "max": 300
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "176",
+          "name": "Plain Baked Potato",
+          "slug": "plain-baked-potato",
+          "image": "food_fries-sides_plain-baked-potato_176.png",
+          "price": 2.59,
+          "calories": {
+            "min": 270,
+            "max": 270
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "171",
+          "name": "Bacon Cheese Baked Potato",
+          "slug": "bacon-cheese-baked-potato",
+          "image": "food_fries-sides_bacon-cheese-baked-potato_171.png",
+          "price": 4.29,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "175",
+          "name": "Chili Cheese Baked Potato",
+          "slug": "chili-cheese-baked-potato",
+          "image": "food_fries-sides_chili-cheese-baked-potato_175.png",
+          "price": 4.29,
+          "calories": {
+            "min": 490,
+            "max": 490
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "172",
+          "name": "Cheese Baked Potato",
+          "slug": "cheese-baked-potato",
+          "image": "food_fries-sides_cheese-baked-potato_172.png",
+          "price": 3.39,
+          "calories": {
+            "min": 440,
+            "max": 440
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "449",
+          "name": "Apple Bites",
+          "slug": "apple-bites",
+          "image": "food_fries-sides_apple-bites_449.png",
+          "price": 1.39,
+          "calories": {
+            "min": 35,
+            "max": 35
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "726",
+          "name": "6 Pc. Chicken Nuggets",
+          "slug": "6-pc-chicken-nuggets",
+          "image": "food_fries-sides_6-pc-chicken-nuggets_726.png",
+          "price": 3.99,
+          "calories": {
+            "min": 160,
+            "max": 200
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "725",
+          "name": "4 Pc. Chicken Nuggets",
+          "slug": "4-pc-chicken-nuggets",
+          "image": "food_fries-sides_4-pc-chicken-nuggets_725.png",
+          "price": 2.49,
+          "calories": {
+            "min": 220,
+            "max": 220
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "943",
+          "name": "6 Pc. Spicy Chicken Nuggets",
+          "slug": "6-pc-spicy-chicken-nuggets",
+          "image": "food_fries-sides_6-pc-spicy-chicken-nuggets_943.png",
+          "price": 2.98,
+          "calories": {
+            "min": 190,
+            "max": 230
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "942",
+          "name": "4 Pc. Spicy Chicken Nuggets",
+          "slug": "4-pc-spicy-chicken-nuggets",
+          "image": "food_fries-sides_4-pc-spicy-chicken-nuggets_942.png",
+          "price": 5.1,
+          "calories": {
+            "min": 460,
+            "max": 540
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_coffee",
+      "name": "Coffee",
+      "slug": "coffee",
+      "daypart": "breakfast",
+      "displayOrder": 18,
+      "itemCount": 6,
+      "items": [
+        {
+          "id": "205",
+          "name": "Regular Hot Coffee",
+          "slug": "regular-hot-coffee",
+          "image": "food_coffee_regular-hot-coffee_205.png",
+          "price": 1.49,
+          "calories": {
+            "min": 5,
+            "max": 5
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "535",
+          "name": "Cold Brew",
+          "slug": "cold-brew",
+          "image": "food_coffee_cold-brew_535.png",
+          "price": 2.09,
+          "calories": {
+            "min": 20,
+            "max": 40
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2233",
+          "name": "Vanilla Cold Brew With Cream",
+          "slug": "vanilla-cold-brew-with-cream",
+          "image": "food_coffee_vanilla-cold-brew-with-cream_2233.png",
+          "price": 2.09,
+          "calories": {
+            "min": 120,
+            "max": 270
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2232",
+          "name": "Caramel Cold Brew With Cream",
+          "slug": "caramel-cold-brew-with-cream",
+          "image": "food_coffee_caramel-cold-brew-with-cream_2232.png",
+          "price": 2.09,
+          "calories": {
+            "min": 120,
+            "max": 270
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2234",
+          "name": "Chocolate Cold Brew With Cream",
+          "slug": "chocolate-cold-brew-with-cream",
+          "image": "food_coffee_chocolate-cold-brew-with-cream_2234.png",
+          "price": 2.09,
+          "calories": {
+            "min": 120,
+            "max": 280
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2235",
+          "name": "Cold Brew With Cream And Sugar",
+          "slug": "cold-brew-with-cream-and-sugar",
+          "image": "food_coffee_cold-brew-with-cream-and-sugar_2235.png",
+          "price": 2.09,
+          "calories": {
+            "min": 110,
+            "max": 270
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_beverages",
+      "name": "Beverages",
+      "slug": "beverages",
+      "daypart": "all-day",
+      "displayOrder": 9,
+      "itemCount": 16,
+      "items": [
+        {
+          "id": "425",
+          "name": "Coca Cola Freestyle",
+          "slug": "coca-cola-freestyle",
+          "image": "food_beverages_coca-cola-freestyle_425.png",
+          "price": 2.69,
+          "calories": {
+            "min": 0,
+            "max": 434
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2207",
+          "name": "Tangerine Twist Lemonade",
+          "slug": "tangerine-twist-lemonade",
+          "image": "food_beverages_tangerine-twist-lemonade_2207.png",
+          "price": 2.99,
+          "calories": {
+            "min": 220,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1368",
+          "name": "Pineapple Mango Lemonade",
+          "slug": "pineapple-mango-lemonade",
+          "image": "food_beverages_pineapple-mango-lemonade_1368.png",
+          "price": 2.99,
+          "calories": {
+            "min": 230,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "196",
+          "name": "All Natural Lemonade",
+          "slug": "all-natural-lemonade",
+          "image": "food_beverages_all-natural-lemonade_196.png",
+          "price": 2.99,
+          "calories": {
+            "min": 190,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "200",
+          "name": "Strawberry Lemonade",
+          "slug": "strawberry-lemonade",
+          "image": "food_beverages_strawberry-lemonade_200.png",
+          "price": 2.99,
+          "calories": {
+            "min": 230,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2327",
+          "name": "Cherry Limeade Sparkling Energy",
+          "slug": "cherry-limeade-sparkling-energy",
+          "image": "food_beverages_cherry-limeade-sparkling-energy_2327.png",
+          "price": 3.29,
+          "calories": {
+            "min": 160,
+            "max": 220
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2328",
+          "name": "Pineapple Citrus Sparkling Energy",
+          "slug": "pineapple-citrus-sparkling-energy",
+          "image": "food_beverages_pineapple-citrus-sparkling-energy_2328.png",
+          "price": 3.29,
+          "calories": {
+            "min": 160,
+            "max": 230
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "205",
+          "name": "Regular Hot Coffee",
+          "slug": "regular-hot-coffee",
+          "image": "food_beverages_regular-hot-coffee_205.png",
+          "price": 1.59,
+          "calories": {
+            "min": 5,
+            "max": 5
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "198",
+          "name": "Unsweetened Iced Tea",
+          "slug": "unsweetened-iced-tea",
+          "image": "food_beverages_unsweetened-iced-tea_198.png",
+          "price": 1.97,
+          "calories": {
+            "min": 40,
+            "max": 40
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "199",
+          "name": "Sweet Iced Tea",
+          "slug": "sweet-iced-tea",
+          "image": "food_beverages_sweet-iced-tea_199.png",
+          "price": 1.99,
+          "calories": {
+            "min": 150,
+            "max": 230
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "201",
+          "name": "Fresh Brewed Strawberry Tea",
+          "slug": "fresh-brewed-strawberry-tea",
+          "image": "food_beverages_fresh-brewed-strawberry-tea_201.png",
+          "price": 2.04,
+          "calories": {
+            "min": 140,
+            "max": 140
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "216",
+          "name": "Pure Life Bottled Water",
+          "slug": "pure-life-bottled-water",
+          "image": "food_beverages_pure-life-bottled-water_216.png",
+          "price": 1.79,
+          "calories": {
+            "min": 0,
+            "max": 0
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "214",
+          "name": "Milk",
+          "slug": "milk",
+          "image": "food_beverages_milk_214.png",
+          "price": 1.69,
+          "calories": {
+            "min": 90,
+            "max": 90
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "215",
+          "name": "Chocolate Milk",
+          "slug": "chocolate-milk",
+          "image": "food_beverages_chocolate-milk_215.png",
+          "price": 1.69,
+          "calories": {
+            "min": 140,
+            "max": 140
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "563",
+          "name": "Honest Kids Fruit Punch",
+          "slug": "honest-kids-fruit-punch",
+          "image": "food_beverages_honest-kids-fruit-punch_563.png",
+          "price": 1.19,
+          "calories": {
+            "min": 35,
+            "max": 35
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "829",
+          "name": "Simply Orange Juice",
+          "slug": "simply-orange-juice",
+          "image": "food_beverages_simply-orange-juice_829.png",
+          "price": 2.79,
+          "calories": {
+            "min": 160,
+            "max": 160
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_frosty",
+      "name": "Frosty",
+      "slug": "frosty",
+      "daypart": "all-day",
+      "displayOrder": 8,
+      "itemCount": 16,
+      "items": [
+        {
+          "id": "179",
+          "name": "Classic Chocolate Frosty",
+          "slug": "classic-chocolate-frosty",
+          "image": "food_frosty-_classic-chocolate-frosty_179.png",
+          "price": 1.79,
+          "calories": {
+            "min": 190,
+            "max": 510
+          },
+          "isCombo": false,
+          "productType": "frosty-classic",
+          "sizeOptions": [
+            "junior",
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "180",
+          "name": "Vanilla Frosty",
+          "slug": "vanilla-frosty",
+          "image": "food_frosty-_vanilla-frosty_180.png",
+          "price": 1.79,
+          "calories": {
+            "min": 190,
+            "max": 510
+          },
+          "isCombo": false,
+          "productType": "frosty-classic",
+          "sizeOptions": [
+            "junior",
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2428",
+          "name": "Girl Scout Thin Mints Vanilla Frosty Fusion",
+          "slug": "girl-scout-thin-mints-vanilla-frosty-fusion",
+          "image": "food_frosty-_girl-scout-thin-mints-vanilla-frosty-fusion_2428.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2429",
+          "name": "Girl Scout Thin Mints Chocolate Frosty Fusion",
+          "slug": "girl-scout-thin-mints-chocolate-frosty-fusion",
+          "image": "food_frosty-_girl-scout-thin-mints-chocolate-frosty-fusion_2429.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2189",
+          "name": "OREO Brownie Vanilla Frosty Fusion",
+          "slug": "oreo-brownie-vanilla-frosty-fusion",
+          "image": "food_frosty-_oreo-brownie-vanilla-frosty-fusion_2189.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2187",
+          "name": "Caramel Crunch Vanilla Frosty Fusion",
+          "slug": "caramel-crunch-vanilla-frosty-fusion",
+          "image": "food_frosty-_caramel-crunch-vanilla-frosty-fusion_2187.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2430",
+          "name": "Girl Scout Thin Mints Vanilla Frosty Swirl",
+          "slug": "girl-scout-thin-mints-vanilla-frosty-swirl",
+          "image": "food_frosty-_girl-scout-thin-mints-vanilla-frosty-swirl_2430.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2431",
+          "name": "Girl Scout Thin Mints Chocolate Frosty Swirl",
+          "slug": "girl-scout-thin-mints-chocolate-frosty-swirl",
+          "image": "food_frosty-_girl-scout-thin-mints-chocolate-frosty-swirl_2431.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2183",
+          "name": "Brownie Batter Vanilla Frosty Swirl",
+          "slug": "brownie-batter-vanilla-frosty-swirl",
+          "image": "food_frosty-_brownie-batter-vanilla-frosty-swirl_2183.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2179",
+          "name": "Strawberry Vanilla Frosty Swirl",
+          "slug": "strawberry-vanilla-frosty-swirl",
+          "image": "food_frosty-_strawberry-vanilla-frosty-swirl_2179.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2181",
+          "name": "Caramel Vanilla Frosty Swirl",
+          "slug": "caramel-vanilla-frosty-swirl",
+          "image": "food_frosty-_caramel-vanilla-frosty-swirl_2181.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2190",
+          "name": "OREO Brownie Chocolate Frosty Fusion",
+          "slug": "oreo-brownie-chocolate-frosty-fusion",
+          "image": "food_frosty-_oreo-brownie-chocolate-frosty-fusion_2190.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2188",
+          "name": "Caramel Crunch Chocolate Frosty Fusion",
+          "slug": "caramel-crunch-chocolate-frosty-fusion",
+          "image": "food_frosty-_caramel-crunch-chocolate-frosty-fusion_2188.png",
+          "price": 3.79,
+          "calories": {
+            "min": 420,
+            "max": 920
+          },
+          "isCombo": false,
+          "productType": "frosty-fusion",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2184",
+          "name": "Brownie Batter Chocolate Frosty Swirl",
+          "slug": "brownie-batter-chocolate-frosty-swirl",
+          "image": "food_frosty-_brownie-batter-chocolate-frosty-swirl_2184.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2180",
+          "name": "Strawberry Chocolate Frosty Swirl",
+          "slug": "strawberry-chocolate-frosty-swirl",
+          "image": "food_frosty-_strawberry-chocolate-frosty-swirl_2180.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "2182",
+          "name": "Caramel Chocolate Frosty Swirl",
+          "slug": "caramel-chocolate-frosty-swirl",
+          "image": "food_frosty-_caramel-chocolate-frosty-swirl_2182.png",
+          "price": 2.99,
+          "calories": {
+            "min": 330,
+            "max": 710
+          },
+          "isCombo": false,
+          "productType": "frosty-swirl",
+          "sizeOptions": [
+            "small",
+            "medium",
+            "large"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cat_bakery",
+      "name": "Bakery",
+      "slug": "bakery",
+      "daypart": "all-day",
+      "displayOrder": 10,
+      "itemCount": 3,
+      "items": [
+        {
+          "id": "1982",
+          "name": "Cinnabon Pull Apart",
+          "slug": "cinnabon-pull-apart",
+          "image": "food_bakery_cinnabon-pull-apart_1982.png",
+          "price": 3.89,
+          "calories": {
+            "min": 550,
+            "max": 550
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "451",
+          "name": "Chocolate Chunk Cookie",
+          "slug": "chocolate-chunk-cookie",
+          "image": "food_bakery_chocolate-chunk-cookie_451.png",
+          "price": 1.89,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "453",
+          "name": "Sugar Cookie",
+          "slug": "sugar-cookie",
+          "image": "food_bakery_sugar-cookie_453.png",
+          "price": 1.89,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_wendy-s-kids-meal",
+      "name": "Wendy's Kids' Meal",
+      "slug": "wendy-s-kids-meal",
+      "daypart": "all-day",
+      "displayOrder": 11,
+      "itemCount": 5,
+      "items": [
+        {
+          "id": "185",
+          "name": "Kids' 4PC Nuggets",
+          "slug": "kids-4pc-nuggets",
+          "image": "food_wendy-s-kids-meal-_kids-4pc-nuggets_185.png",
+          "price": 4.99,
+          "calories": {
+            "min": 260,
+            "max": 630
+          },
+          "isCombo": true,
+          "productType": "kids-meal",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS"
+              },
+              {
+                "stepType": "side-selection",
+                "label": "Choose Your Kids' Sides",
+                "options": [
+                  {
+                    "id": "165",
+                    "label": "Jr. Natural-Cut Fries",
+                    "calories": 210
+                  },
+                  {
+                    "id": "449",
+                    "label": "Apple Bites",
+                    "calories": 35
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": null,
+            "defaultDrink": null
+          }
+        },
+        {
+          "id": "953",
+          "name": "Kids' 4 PC. Spicy Nuggets",
+          "slug": "kids-4-pc-spicy-nuggets",
+          "image": "food_wendy-s-kids-meal-_kids-4-pc-spicy-nuggets_953.png",
+          "price": 4.99,
+          "calories": {
+            "min": 260,
+            "max": 640
+          },
+          "isCombo": true,
+          "productType": "kids-meal",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS"
+              },
+              {
+                "stepType": "side-selection",
+                "label": "Choose Your Kids' Sides",
+                "options": [
+                  {
+                    "id": "165",
+                    "label": "Jr. Natural-Cut Fries",
+                    "calories": 210
+                  },
+                  {
+                    "id": "449",
+                    "label": "Apple Bites",
+                    "calories": 35
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": null,
+            "defaultDrink": null
+          }
+        },
+        {
+          "id": "187",
+          "name": "Kids' Hamburger",
+          "slug": "kids-hamburger",
+          "image": "food_wendy-s-kids-meal-_kids-hamburger_187.png",
+          "price": 4.99,
+          "calories": {
+            "min": 530,
+            "max": 530
+          },
+          "isCombo": true,
+          "productType": "kids-meal",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "side-selection",
+                "label": "Choose Your Kids' Sides",
+                "options": [
+                  {
+                    "id": "165",
+                    "label": "Jr. Natural-Cut Fries",
+                    "calories": 210
+                  },
+                  {
+                    "id": "449",
+                    "label": "Apple Bites",
+                    "calories": 35
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": null,
+            "defaultDrink": null
+          }
+        },
+        {
+          "id": "186",
+          "name": "Kids' Cheeseburger",
+          "slug": "kids-cheeseburger",
+          "image": "food_wendy-s-kids-meal-_kids-cheeseburger_186.png",
+          "price": 4.99,
+          "calories": {
+            "min": 530,
+            "max": 530
+          },
+          "isCombo": true,
+          "productType": "kids-meal",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "side-selection",
+                "label": "Choose Your Kids' Sides",
+                "options": [
+                  {
+                    "id": "165",
+                    "label": "Jr. Natural-Cut Fries",
+                    "calories": 210
+                  },
+                  {
+                    "id": "449",
+                    "label": "Apple Bites",
+                    "calories": 35
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": null,
+            "defaultDrink": null
+          }
+        },
+        {
+          "id": "2367",
+          "name": "Kids' 2 PC. Tenders",
+          "slug": "kids-2-pc-tenders",
+          "image": "food_wendy-s-kids-meal-_kids-2-pc-tenders_2367.png",
+          "price": 6.49,
+          "calories": {
+            "min": 260,
+            "max": 600
+          },
+          "isCombo": true,
+          "productType": "kids-meal",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS"
+              },
+              {
+                "stepType": "side-selection",
+                "label": "Choose Your Kids' Sides",
+                "options": [
+                  {
+                    "id": "165",
+                    "label": "Jr. Natural-Cut Fries",
+                    "calories": 210
+                  },
+                  {
+                    "id": "449",
+                    "label": "Apple Bites",
+                    "calories": 35
+                  }
+                ]
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ],
+            "defaultSide": null,
+            "defaultDrink": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "cat_everyday-value",
+      "name": "Everyday Value",
+      "slug": "everyday-value",
+      "daypart": "all-day",
+      "displayOrder": 5,
+      "itemCount": 8,
+      "items": [
+        {
+          "id": "149",
+          "name": "Jr Cheeseburger",
+          "slug": "jr-cheeseburger",
+          "image": "food_everyday-value_jr-cheeseburger_149.png",
+          "price": 2.59,
+          "calories": {
+            "min": 440,
+            "max": 480
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "928",
+          "name": "Jr Cheeseburger Deluxe",
+          "slug": "jr-cheeseburger-deluxe",
+          "image": "food_everyday-value_jr-cheeseburger-deluxe_928.png",
+          "price": 2.89,
+          "calories": {
+            "min": 430,
+            "max": 430
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "147",
+          "name": "Jr Bacon Cheeseburger",
+          "slug": "jr-bacon-cheeseburger",
+          "image": "food_everyday-value_jr-bacon-cheeseburger_147.png",
+          "price": 3.19,
+          "calories": {
+            "min": 360,
+            "max": 440
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "146",
+          "name": "Double Stack",
+          "slug": "double-stack",
+          "image": "food_everyday-value_double-stack_146.png",
+          "price": 3.49,
+          "calories": {
+            "min": 540,
+            "max": 540
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2002",
+          "name": "Bacon Double Stack",
+          "slug": "bacon-double-stack",
+          "image": "food_everyday-value_bacon-double-stack_2002.png",
+          "price": 4.19,
+          "calories": {
+            "min": 410,
+            "max": 430
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "155",
+          "name": "Crispy Chicken Sandwich",
+          "slug": "crispy-chicken-sandwich",
+          "image": "food_everyday-value_crispy-chicken-sandwich_155.png",
+          "price": 2.59,
+          "calories": {
+            "min": 290,
+            "max": 290
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "154",
+          "name": "Crispy Chicken BLT",
+          "slug": "crispy-chicken-blt",
+          "image": "food_everyday-value_crispy-chicken-blt_154.png",
+          "price": 3.29,
+          "calories": {
+            "min": 320,
+            "max": 360
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "150",
+          "name": "Jr Hamburger",
+          "slug": "jr-hamburger",
+          "image": "food_everyday-value_jr-hamburger_150.png",
+          "price": 2.19,
+          "calories": {
+            "min": 330,
+            "max": 390
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_001",
+            "ing_002",
+            "ing_003",
+            "ing_004",
+            "ing_007",
+            "ing_008"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cat_biggie-deals",
+      "name": "Biggie Deals",
+      "slug": "biggie-deals",
+      "daypart": "all-day",
+      "displayOrder": 4,
+      "itemCount": 6,
+      "items": [
+        {
+          "id": "2422",
+          "name": "Biggie Bites",
+          "slug": "biggie-bites",
+          "image": "food_biggie-deals-_biggie-bites_2422.png",
+          "price": 4,
+          "calories": {
+            "min": 430,
+            "max": 430
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        },
+        {
+          "id": "2290",
+          "name": "Jr. Cheeseburger Biggie Bag",
+          "slug": "jr-cheeseburger-biggie-bag",
+          "image": "food_biggie-deals-_jr-cheeseburger-biggie-bag_2290.png",
+          "price": 6,
+          "calories": {
+            "min": 900,
+            "max": 1100
+          },
+          "isCombo": true,
+          "productType": "biggie-bag",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Nugget",
+                "options": [
+                  {
+                    "id": "regular",
+                    "label": "4 PC. Chicken Nuggets",
+                    "productRef": "725"
+                  },
+                  {
+                    "id": "spicy",
+                    "label": "4 PC. Spicy Chicken Nuggets",
+                    "productRef": "942"
+                  }
+                ]
+              },
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS_X1"
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ]
+          }
+        },
+        {
+          "id": "1763",
+          "name": "Crispy Chicken Biggie Bag",
+          "slug": "crispy-chicken-biggie-bag",
+          "image": "food_biggie-deals-_crispy-chicken-biggie-bag_1763.png",
+          "price": 6,
+          "calories": {
+            "min": 900,
+            "max": 1100
+          },
+          "isCombo": true,
+          "productType": "biggie-bag",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Nugget",
+                "options": [
+                  {
+                    "id": "regular",
+                    "label": "4 PC. Chicken Nuggets",
+                    "productRef": "725"
+                  },
+                  {
+                    "id": "spicy",
+                    "label": "4 PC. Spicy Chicken Nuggets",
+                    "productRef": "942"
+                  }
+                ]
+              },
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS_X1"
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ]
+          }
+        },
+        {
+          "id": "1762",
+          "name": "Double Stack Biggie Bag",
+          "slug": "double-stack-biggie-bag",
+          "image": "food_biggie-deals-_double-stack-biggie-bag_1762.png",
+          "price": 6,
+          "calories": {
+            "min": 900,
+            "max": 1100
+          },
+          "isCombo": true,
+          "productType": "biggie-bag",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Nugget",
+                "options": [
+                  {
+                    "id": "regular",
+                    "label": "4 PC. Chicken Nuggets",
+                    "productRef": "725"
+                  },
+                  {
+                    "id": "spicy",
+                    "label": "4 PC. Spicy Chicken Nuggets",
+                    "productRef": "942"
+                  }
+                ]
+              },
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS_X1"
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ]
+          }
+        },
+        {
+          "id": "1761",
+          "name": "Jr. Bacon Cheeseburger Biggie Bag",
+          "slug": "jr-bacon-cheeseburger-biggie-bag",
+          "image": "food_biggie-deals-_jr-bacon-cheeseburger-biggie-bag_1761.png",
+          "price": 6,
+          "calories": {
+            "min": 900,
+            "max": 1100
+          },
+          "isCombo": true,
+          "productType": "biggie-bag",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "entree-modifier",
+                "label": "Choose Your Nugget",
+                "options": [
+                  {
+                    "id": "regular",
+                    "label": "4 PC. Chicken Nuggets",
+                    "productRef": "725"
+                  },
+                  {
+                    "id": "spicy",
+                    "label": "4 PC. Spicy Chicken Nuggets",
+                    "productRef": "942"
+                  }
+                ]
+              },
+              {
+                "stepType": "sauce-selection",
+                "label": "Choose Your Sauce",
+                "options": "SAUCE_OPTIONS_X1"
+              },
+              {
+                "stepType": "drink-selection",
+                "label": "Choose Your Drink",
+                "options": "DRINK_OPTIONS"
+              }
+            ]
+          }
+        },
+        {
+          "id": "2423",
+          "name": "Biggie Bundle",
+          "slug": "biggie-bundle",
+          "image": "food_biggie-deals-_biggie-bundle_2423.png",
+          "price": 8,
+          "calories": {
+            "min": 600,
+            "max": 1000
+          },
+          "isCombo": true,
+          "productType": "biggie-bundle",
+          "comboConfig": {
+            "comboSteps": [
+              {
+                "stepType": "pick-from-pool",
+                "label": "Choose Your 1st Item",
+                "options": "BIGGIE_BUNDLE_OPTIONS"
+              },
+              {
+                "stepType": "pick-from-pool",
+                "label": "Choose Your 2nd Item",
+                "options": "BIGGIE_BUNDLE_OPTIONS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cat_give-something-back",
+      "name": "Give Something Back",
+      "slug": "give-something-back",
+      "daypart": "all-day",
+      "displayOrder": 20,
+      "itemCount": 2,
+      "items": [
+        {
+          "id": "1139",
+          "name": "Digital Frosty Key Tag",
+          "slug": "digital-frosty-key-tag",
+          "image": "food_give-something-back_digital-frosty-key-tag_1139.png",
+          "price": 2.4,
+          "calories": {
+            "min": 0,
+            "max": 0
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1138",
+          "name": "Physical Frosty Key Tag",
+          "slug": "physical-frosty-key-tag",
+          "image": "food_give-something-back_physical-frosty-key-tag_1138.png",
+          "price": 2.12,
+          "calories": {
+            "min": 0,
+            "max": 20
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_breakfast-combos",
+      "name": "Breakfast Combos",
+      "slug": "breakfast-combos",
+      "daypart": "breakfast",
+      "displayOrder": 12,
+      "itemCount": 11,
+      "items": [
+        {
+          "id": "835",
+          "name": "Maple Bacon Chicken Croissant Combo",
+          "slug": "maple-bacon-chicken-croissant-combo",
+          "image": "food_breakfast-combos_maple-bacon-chicken-croissant-combo_835.png",
+          "price": 8.19,
+          "calories": {
+            "min": 900,
+            "max": 980
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "836",
+          "name": "Sausage Egg Swiss Croissant Combo",
+          "slug": "sausage-egg-swiss-croissant-combo",
+          "image": "food_breakfast-combos_sausage-egg-swiss-croissant-combo_836.png",
+          "price": 7.59,
+          "calories": {
+            "min": 1150,
+            "max": 1230
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "837",
+          "name": "Bacon Egg Swiss Croissant Combo",
+          "slug": "bacon-egg-swiss-croissant-combo",
+          "image": "food_breakfast-combos_bacon-egg-swiss-croissant-combo_837.png",
+          "price": 7.59,
+          "calories": {
+            "min": 1140,
+            "max": 1180
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "1980",
+          "name": "Breakfast Burrito Bacon",
+          "slug": "breakfast-burrito-bacon",
+          "image": "food_breakfast-combos_breakfast-burrito-bacon_1980.png",
+          "price": 7.39,
+          "calories": {
+            "min": 1150,
+            "max": 1190
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "2054",
+          "name": "Breakfast Burrito Sausage",
+          "slug": "breakfast-burrito-sausage",
+          "image": "food_breakfast-combos_breakfast-burrito-sausage_2054.png",
+          "price": 7.39,
+          "calories": {
+            "min": 950,
+            "max": 950
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "838",
+          "name": "Honey Buddy Chicken Biscuit Combo",
+          "slug": "honey-buddy-chicken-biscuit-combo",
+          "image": "food_breakfast-combos_honey-buddy-chicken-biscuit-combo_838.png",
+          "price": 7.19,
+          "calories": {
+            "min": 1120,
+            "max": 1120
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "839",
+          "name": "Sausage Egg Cheese Biscuit Combo",
+          "slug": "sausage-egg-cheese-biscuit-combo",
+          "image": "food_breakfast-combos_sausage-egg-cheese-biscuit-combo_839.png",
+          "price": 6.89,
+          "calories": {
+            "min": 760,
+            "max": 800
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "840",
+          "name": "Bacon Egg Cheese Biscuit Combo",
+          "slug": "bacon-egg-cheese-biscuit-combo",
+          "image": "food_breakfast-combos_bacon-egg-cheese-biscuit-combo_840.png",
+          "price": 6.89,
+          "calories": {
+            "min": 990,
+            "max": 1070
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "1827",
+          "name": "Egg Cheese Biscuit Combo",
+          "slug": "egg-cheese-biscuit-combo",
+          "image": "food_breakfast-combos_egg-cheese-biscuit-combo_1827.png",
+          "price": 5.49,
+          "calories": {
+            "min": 760,
+            "max": 820
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "841",
+          "name": "Breakfast Baconator Combo",
+          "slug": "breakfast-baconator-combo",
+          "image": "food_breakfast-combos_breakfast-baconator-combo_841.png",
+          "price": 8.19,
+          "calories": {
+            "min": 610,
+            "max": 610
+          },
+          "isCombo": true,
+          "productType": "combo"
+        },
+        {
+          "id": "1705",
+          "name": "Homestyle French Toast Sticks 6 Pc. Combo",
+          "slug": "homestyle-french-toast-sticks-6-pc-combo",
+          "image": "food_breakfast-combos_homestyle-french-toast-sticks-6-pc-combo_1705.png",
+          "price": 7.39,
+          "calories": {
+            "min": 870,
+            "max": 950
+          },
+          "isCombo": true,
+          "productType": "combo"
+        }
+      ]
+    },
+    {
+      "id": "cat_croissants",
+      "name": "Croissants",
+      "slug": "croissants",
+      "daypart": "breakfast",
+      "displayOrder": 14,
+      "itemCount": 3,
+      "items": [
+        {
+          "id": "823",
+          "name": "Maple Bacon Chicken Croissant",
+          "slug": "maple-bacon-chicken-croissant",
+          "image": "food_croissants_maple-bacon-chicken-croissant_823.png",
+          "price": 5.39,
+          "calories": {
+            "min": 540,
+            "max": 540
+          },
+          "isCombo": false,
+          "productType": "single",
+          "comboPrice": 7.79
+        },
+        {
+          "id": "824",
+          "name": "Sausage Egg Swiss Croissant",
+          "slug": "sausage-egg-swiss-croissant",
+          "image": "food_croissants_sausage-egg-swiss-croissant_824.png",
+          "price": 4.79,
+          "calories": {
+            "min": 590,
+            "max": 590
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "825",
+          "name": "Bacon Egg Swiss Croissant",
+          "slug": "bacon-egg-swiss-croissant",
+          "image": "food_croissants_bacon-egg-swiss-croissant_825.png",
+          "price": 4.79,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_006",
+            "ing_012",
+            "ing_011"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cat_biscuits",
+      "name": "Biscuits",
+      "slug": "biscuits",
+      "daypart": "breakfast",
+      "displayOrder": 13,
+      "itemCount": 7,
+      "items": [
+        {
+          "id": "439",
+          "name": "Sausage Egg Cheese Biscuit",
+          "slug": "sausage-egg-cheese-biscuit",
+          "image": "food_biscuits_sausage-egg-cheese-biscuit_439.png",
+          "price": 4.09,
+          "calories": {
+            "min": 590,
+            "max": 590
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_013",
+            "ing_012",
+            "ing_005"
+          ]
+        },
+        {
+          "id": "438",
+          "name": "Bacon Egg Cheese Biscuit",
+          "slug": "bacon-egg-cheese-biscuit",
+          "image": "food_biscuits_bacon-egg-cheese-biscuit_438.png",
+          "price": 4.09,
+          "calories": {
+            "min": 420,
+            "max": 420
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_006",
+            "ing_012",
+            "ing_005"
+          ]
+        },
+        {
+          "id": "1685",
+          "name": "Egg Cheese Biscuit",
+          "slug": "egg-cheese-biscuit",
+          "image": "food_biscuits_egg-cheese-biscuit_1685.png",
+          "price": 2.69,
+          "calories": {
+            "min": 370,
+            "max": 370
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "440",
+          "name": "Honey Buddy Chicken Biscuit",
+          "slug": "honey-buddy-chicken-biscuit",
+          "image": "food_biscuits_honey-buddy-chicken-biscuit_440.png",
+          "price": 4.39,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "437",
+          "name": "Sausage Gravy Biscuit",
+          "slug": "sausage-gravy-biscuit",
+          "image": "food_biscuits_sausage-gravy-biscuit_437.png",
+          "price": 3.39,
+          "calories": {
+            "min": 410,
+            "max": 410
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "448",
+          "name": "Sausage Biscuit",
+          "slug": "sausage-biscuit",
+          "image": "food_biscuits_sausage-biscuit_448.png",
+          "price": 2.39,
+          "calories": {
+            "min": 470,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "827",
+          "name": "Honey Butter Biscuit",
+          "slug": "honey-butter-biscuit",
+          "image": "food_biscuits_honey-butter-biscuit_827.png",
+          "price": 1.69,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_classics",
+      "name": "Breakfast Classics",
+      "slug": "classics",
+      "daypart": "breakfast",
+      "displayOrder": 15,
+      "itemCount": 3,
+      "items": [
+        {
+          "id": "826",
+          "name": "Breakfast Baconator",
+          "slug": "breakfast-baconator",
+          "image": "food_classics_breakfast-baconator_826.png",
+          "price": 5.39,
+          "calories": {
+            "min": 630,
+            "max": 630
+          },
+          "isCombo": false,
+          "productType": "single",
+          "ingredientIds": [
+            "ing_006",
+            "ing_012",
+            "ing_005",
+            "ing_013",
+            "ing_014"
+          ]
+        },
+        {
+          "id": "1712",
+          "name": "Homestyle French Toast Sticks 4 Pc",
+          "slug": "homestyle-french-toast-sticks-4-pc",
+          "image": "food_classics_homestyle-french-toast-sticks-4-pc_1712.png",
+          "price": 3.39,
+          "calories": {
+            "min": 460,
+            "max": 460
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1713",
+          "name": "Homestyle French Toast Sticks 6 Pc",
+          "slug": "homestyle-french-toast-sticks-6-pc",
+          "image": "food_classics_homestyle-french-toast-sticks-6-pc_1713.png",
+          "price": 4.59,
+          "calories": {
+            "min": 630,
+            "max": 630
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_breakfast-burrito",
+      "name": "Breakfast Burritos",
+      "slug": "breakfast-burrito",
+      "daypart": "breakfast",
+      "displayOrder": 16,
+      "itemCount": 2,
+      "items": [
+        {
+          "id": "1979",
+          "name": "Breakfast Burrito Bacon",
+          "slug": "breakfast-burrito-bacon",
+          "image": "food_breakfast-burrito_breakfast-burrito-bacon_1979.png",
+          "price": 5.29,
+          "calories": {
+            "min": 700,
+            "max": 700
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "2053",
+          "name": "Breakfast Burrito Sausage",
+          "slug": "breakfast-burrito-sausage",
+          "image": "food_breakfast-burrito_breakfast-burrito-sausage_2053.png",
+          "price": 5.29,
+          "calories": {
+            "min": 820,
+            "max": 820
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_sides-and-sweets",
+      "name": "Sides & Sweets",
+      "slug": "sides-and-sweets",
+      "daypart": "breakfast",
+      "displayOrder": 19,
+      "itemCount": 7,
+      "items": [
+        {
+          "id": "ss_cinnabon",
+          "name": "Cinnabon Pull Apart",
+          "slug": "cinnabon-pull-apart-ss",
+          "image": "food_bakery_cinnabon-pull-apart_1982.png",
+          "price": 4.19,
+          "calories": {
+            "min": 550,
+            "max": 550
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1712",
+          "name": "Homestyle French Toast Sticks 4 Pc",
+          "slug": "homestyle-french-toast-sticks-4-pc",
+          "image": "food_sides-and-sweets_homestyle-french-toast-sticks-4-pc_1712.png",
+          "price": 3.39,
+          "calories": {
+            "min": 460,
+            "max": 460
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "1713",
+          "name": "Homestyle French Toast Sticks 6 Pc",
+          "slug": "homestyle-french-toast-sticks-6-pc",
+          "image": "food_sides-and-sweets_homestyle-french-toast-sticks-6-pc_1713.png",
+          "price": 4.59,
+          "calories": {
+            "min": 630,
+            "max": 630
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "446",
+          "name": "Seasoned Potatoes",
+          "slug": "seasoned-potatoes",
+          "image": "food_sides-and-sweets_seasoned-potatoes_446.png",
+          "price": 2.29,
+          "calories": {
+            "min": 280,
+            "max": 510
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "449",
+          "name": "Apple Bites",
+          "slug": "apple-bites",
+          "image": "food_sides-and-sweets_apple-bites_449.png",
+          "price": 1.39,
+          "calories": {
+            "min": 35,
+            "max": 35
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "827",
+          "name": "Honey Butter Biscuit",
+          "slug": "honey-butter-biscuit",
+          "image": "food_sides-and-sweets_honey-butter-biscuit_827.png",
+          "price": 1.69,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "448",
+          "name": "Sausage Biscuit",
+          "slug": "sausage-biscuit",
+          "image": "food_sides-and-sweets_sausage-biscuit_448.png",
+          "price": 2.39,
+          "calories": {
+            "min": 470,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "single"
+        },
+        {
+          "id": "829",
+          "name": "Simply Orange Juice",
+          "slug": "simply-orange-juice",
+          "image": "food_sides-and-sweets_simply-orange-juice_829.png",
+          "price": 2.99,
+          "calories": {
+            "min": 160,
+            "max": 160
+          },
+          "isCombo": false,
+          "productType": "single"
+        }
+      ]
+    },
+    {
+      "id": "cat_breakfast_meal_deals",
+      "name": "Breakfast Meal Deals",
+      "slug": "breakfast-meal-deals",
+      "daypart": "breakfast",
+      "items": [
+        {
+          "id": "bmd_001",
+          "name": "Breakfast Biggie Bundles",
+          "slug": "breakfast-biggie-bundles",
+          "image": "food_breakfast-combos_breakfast-baconator-combo_841.png",
+          "price": 3,
+          "calories": {
+            "min": 600,
+            "max": 900
+          },
+          "isCombo": true,
+          "productType": "combo"
+        }
+      ]
+    },
+    {
+      "id": "cat_breakfast-biggie-deals",
+      "name": "Breakfast Biggie Deals",
+      "slug": "breakfast-biggie-deals",
+      "daypart": "breakfast",
+      "displayOrder": 17,
+      "itemCount": 5,
+      "items": [
+        {
+          "id": "448",
+          "name": "Sausage Biscuit",
+          "slug": "sausage-biscuit",
+          "image": "food_breakfast-biggie-deals_sausage-biscuit_448.png",
+          "price": 2.39,
+          "calories": {
+            "min": 470,
+            "max": 470
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        },
+        {
+          "id": "1685",
+          "name": "Egg Cheese Biscuit",
+          "slug": "egg-cheese-biscuit",
+          "image": "food_breakfast-biggie-deals_egg-cheese-biscuit_1685.png",
+          "price": 2.69,
+          "calories": {
+            "min": 370,
+            "max": 370
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        },
+        {
+          "id": "827",
+          "name": "Honey Butter Biscuit",
+          "slug": "honey-butter-biscuit",
+          "image": "food_breakfast-biggie-deals_honey-butter-biscuit_827.png",
+          "price": 1.69,
+          "calories": {
+            "min": 330,
+            "max": 330
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        },
+        {
+          "id": "437",
+          "name": "Sausage Gravy Biscuit",
+          "slug": "sausage-gravy-biscuit",
+          "image": "food_breakfast-biggie-deals_sausage-gravy-biscuit_437.png",
+          "price": 3.39,
+          "calories": {
+            "min": 410,
+            "max": 410
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        },
+        {
+          "id": "1712",
+          "name": "Homestyle French Toast Sticks 4 Pc",
+          "slug": "homestyle-french-toast-sticks-4-pc",
+          "image": "food_breakfast-biggie-deals_homestyle-french-toast-sticks-4-pc_1712.png",
+          "price": 3.39,
+          "calories": {
+            "min": 460,
+            "max": 460
+          },
+          "isCombo": false,
+          "productType": "value-meal"
+        }
+      ]
+    }
+  ]
+}

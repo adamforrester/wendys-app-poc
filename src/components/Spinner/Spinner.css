@@ -1,0 +1,31 @@
+/* Material-style indeterminate circular spinner */
+.wds-spinner {
+  animation: wds-spinner-rotate 1.4s linear infinite;
+}
+
+.wds-spinner__arc {
+  stroke-dasharray: 82; /* ~circumference of r=13 */
+  stroke-dashoffset: 60;
+  animation: wds-spinner-dash 1.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes wds-spinner-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes wds-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 82;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 60, 82;
+    stroke-dashoffset: -20;
+  }
+  100% {
+    stroke-dasharray: 60, 82;
+    stroke-dashoffset: -78;
+  }
+}

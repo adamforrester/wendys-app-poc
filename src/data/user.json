@@ -1,0 +1,77 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "note": "Mock user data for authenticated state. Guest state uses null user."
+  },
+  "authenticatedUser": {
+    "id": "user_001",
+    "firstName": "Alex",
+    "lastName": "Johnson",
+    "email": "alex.johnson@email.com",
+    "phone": "(614) 555-1234",
+    "rewardsProfile": {
+      "memberId": "WEN-9847362",
+      "points": 2450,
+      "tier": "Gold",
+      "tierProgress": {
+        "currentTier": "Gold",
+        "nextTier": "Platinum",
+        "pointsToNextTier": 550,
+        "nextTierThreshold": 3000
+      },
+      "lifetimePoints": 12380
+    },
+    "favoriteLocation": "loc_001",
+    "paymentMethods": [
+      {
+        "id": "pm_001",
+        "type": "credit-card",
+        "brand": "Visa",
+        "lastFour": "4242",
+        "isDefault": true
+      },
+      {
+        "id": "pm_002",
+        "type": "credit-card",
+        "brand": "Mastercard",
+        "lastFour": "8901",
+        "isDefault": false
+      }
+    ],
+    "recentOrders": [
+      {
+        "id": "order_001",
+        "date": "2026-03-28T18:45:00Z",
+        "location": "loc_001",
+        "total": 14.97,
+        "items": [
+          { "productId": "2388", "name": "Dave's Double", "quantity": 1 },
+          { "productId": "165", "name": "French Fries", "quantity": 1, "size": "medium" },
+          { "productId": "199", "name": "Sweet Iced Tea", "quantity": 1 }
+        ]
+      },
+      {
+        "id": "order_002",
+        "date": "2026-03-22T12:15:00Z",
+        "location": "loc_002",
+        "total": 11.48,
+        "items": [
+          { "productId": "2391", "name": "Classic Chicken Sandwich", "quantity": 1 },
+          { "productId": "727", "name": "10 Pc. Chicken Nuggets", "quantity": 1 },
+          { "productId": "196", "name": "All Natural Lemonade", "quantity": 1 }
+        ]
+      },
+      {
+        "id": "order_003",
+        "date": "2026-03-15T07:30:00Z",
+        "location": "loc_001",
+        "total": 8.97,
+        "items": [
+          { "productId": "826", "name": "Breakfast Baconator", "quantity": 1 },
+          { "productId": "205", "name": "Regular Hot Coffee", "quantity": 1 },
+          { "productId": "446", "name": "Seasoned Potatoes", "quantity": 1 }
+        ]
+      }
+    ]
+  }
+}

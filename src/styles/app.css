@@ -1,0 +1,226 @@
+@import 'tailwindcss';
+@import './fonts.css';
+@import './tokens.css';
+
+/*
+ * Tailwind v4 Theme — maps Wendy's design tokens to utility classes.
+ *
+ * Usage examples:
+ *   bg-wds-red-500       → Wendy's brand red
+ *   text-wds-text-primary → semantic text color
+ *   p-wds-16             → 16px spacing
+ *   rounded-wds-m        → 8px radius
+ *   shadow-wds-s         → small elevation
+ *   font-display         → Wendys Fresh
+ *   font-body            → Roboto
+ */
+
+@theme {
+  /* ── Font Families ── */
+  --font-display: 'Wendys Fresh', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+
+  /* ── Primitive Colors ── */
+  --color-wds-red-100: var(--color-red-100);
+  --color-wds-red-200: var(--color-red-200);
+  --color-wds-red-300: var(--color-red-300);
+  --color-wds-red-400: var(--color-red-400);
+  --color-wds-red-500: var(--color-red-500);
+  --color-wds-red-600: var(--color-red-600);
+  --color-wds-red-700: var(--color-red-700);
+  --color-wds-red-800: var(--color-red-800);
+  --color-wds-red-900: var(--color-red-900);
+  --color-wds-red-1000: var(--color-red-1000);
+
+  --color-wds-blue-100: var(--color-blue-100);
+  --color-wds-blue-200: var(--color-blue-200);
+  --color-wds-blue-300: var(--color-blue-300);
+  --color-wds-blue-400: var(--color-blue-400);
+  --color-wds-blue-500: var(--color-blue-500);
+  --color-wds-blue-600: var(--color-blue-600);
+  --color-wds-blue-700: var(--color-blue-700);
+  --color-wds-blue-800: var(--color-blue-800);
+  --color-wds-blue-900: var(--color-blue-900);
+  --color-wds-blue-1000: var(--color-blue-1000);
+
+  --color-wds-crimson-100: var(--color-crimson-100);
+  --color-wds-crimson-200: var(--color-crimson-200);
+  --color-wds-crimson-300: var(--color-crimson-300);
+  --color-wds-crimson-400: var(--color-crimson-400);
+  --color-wds-crimson-500: var(--color-crimson-500);
+  --color-wds-crimson-600: var(--color-crimson-600);
+  --color-wds-crimson-700: var(--color-crimson-700);
+  --color-wds-crimson-800: var(--color-crimson-800);
+  --color-wds-crimson-900: var(--color-crimson-900);
+  --color-wds-crimson-1000: var(--color-crimson-1000);
+
+  --color-wds-green-100: var(--color-green-100);
+  --color-wds-green-200: var(--color-green-200);
+  --color-wds-green-300: var(--color-green-300);
+  --color-wds-green-400: var(--color-green-400);
+  --color-wds-green-500: var(--color-green-500);
+  --color-wds-green-600: var(--color-green-600);
+  --color-wds-green-700: var(--color-green-700);
+  --color-wds-green-800: var(--color-green-800);
+  --color-wds-green-900: var(--color-green-900);
+  --color-wds-green-1000: var(--color-green-1000);
+
+  --color-wds-orange-100: var(--color-orange-100);
+  --color-wds-orange-200: var(--color-orange-200);
+  --color-wds-orange-300: var(--color-orange-300);
+  --color-wds-orange-400: var(--color-orange-400);
+  --color-wds-orange-500: var(--color-orange-500);
+  --color-wds-orange-600: var(--color-orange-600);
+  --color-wds-orange-700: var(--color-orange-700);
+  --color-wds-orange-800: var(--color-orange-800);
+  --color-wds-orange-900: var(--color-orange-900);
+  --color-wds-orange-1000: var(--color-orange-1000);
+
+  --color-wds-yellow-100: var(--color-yellow-100);
+  --color-wds-yellow-200: var(--color-yellow-200);
+  --color-wds-yellow-300: var(--color-yellow-300);
+  --color-wds-yellow-400: var(--color-yellow-400);
+  --color-wds-yellow-500: var(--color-yellow-500);
+  --color-wds-yellow-600: var(--color-yellow-600);
+  --color-wds-yellow-700: var(--color-yellow-700);
+  --color-wds-yellow-800: var(--color-yellow-800);
+  --color-wds-yellow-900: var(--color-yellow-900);
+  --color-wds-yellow-1000: var(--color-yellow-1000);
+
+  --color-wds-gray-100: var(--color-gray-100);
+  --color-wds-gray-200: var(--color-gray-200);
+  --color-wds-gray-300: var(--color-gray-300);
+  --color-wds-gray-400: var(--color-gray-400);
+  --color-wds-gray-500: var(--color-gray-500);
+  --color-wds-gray-600: var(--color-gray-600);
+  --color-wds-gray-700: var(--color-gray-700);
+  --color-wds-gray-800: var(--color-gray-800);
+  --color-wds-gray-900: var(--color-gray-900);
+  --color-wds-gray-1000: var(--color-gray-1000);
+  --color-wds-gray-1100: var(--color-gray-1100);
+
+  --color-wds-cobalt-100: var(--color-cobalt-100);
+  --color-wds-cobalt-200: var(--color-cobalt-200);
+  --color-wds-cobalt-300: var(--color-cobalt-300);
+  --color-wds-cobalt-400: var(--color-cobalt-400);
+  --color-wds-cobalt-500: var(--color-cobalt-500);
+  --color-wds-cobalt-600: var(--color-cobalt-600);
+  --color-wds-cobalt-700: var(--color-cobalt-700);
+  --color-wds-cobalt-800: var(--color-cobalt-800);
+  --color-wds-cobalt-900: var(--color-cobalt-900);
+  --color-wds-cobalt-1000: var(--color-cobalt-1000);
+
+  /* ── Semantic Colors: Text ── */
+  --color-wds-text-primary: var(--color-text-primary-default);
+  --color-wds-text-primary-inverse: var(--color-text-primary-inverse);
+  --color-wds-text-secondary: var(--color-text-secondary-default);
+  --color-wds-text-secondary-inverse: var(--color-text-secondary-inverse);
+  --color-wds-text-brand-primary: var(--color-text-brand-primary-default);
+  --color-wds-text-brand-secondary: var(--color-text-brand-secondary-default);
+  --color-wds-text-onbrand: var(--color-text-onbrand-default);
+  --color-wds-text-disabled: var(--color-text-disabled-default);
+  --color-wds-text-link: var(--color-text-link-default);
+  --color-wds-text-validation-critical: var(--color-text-validation-critical);
+  --color-wds-text-validation-positive: var(--color-text-validation-positive);
+  --color-wds-text-validation-caution: var(--color-text-validation-caution);
+
+  /* ── Semantic Colors: Background ── */
+  --color-wds-bg-primary: var(--color-bg-primary-default);
+  --color-wds-bg-primary-inverse: var(--color-bg-primary-inverse-default);
+  --color-wds-bg-secondary: var(--color-bg-secondary-default);
+  --color-wds-bg-secondary-inverse: var(--color-bg-secondary-inverse-default);
+  --color-wds-bg-brand-primary: var(--color-bg-brand-primary-default);
+  --color-wds-bg-brand-secondary: var(--color-bg-brand-secondary-default);
+  --color-wds-bg-brand-tertiary: var(--color-bg-brand-tertiary-default);
+  --color-wds-bg-onbrand: var(--color-bg-onbrand-default);
+  --color-wds-bg-disabled: var(--color-bg-disabled-default);
+  --color-wds-bg-validation-critical: var(--color-bg-validation-critical);
+  --color-wds-bg-validation-positive: var(--color-bg-validation-positive);
+  --color-wds-bg-validation-caution: var(--color-bg-validation-caution);
+
+  /* ── Semantic Colors: Border ── */
+  --color-wds-border-primary: var(--color-border-primary-default);
+  --color-wds-border-secondary: var(--color-border-secondary-default);
+  --color-wds-border-tertiary: var(--color-border-tertiary-default);
+  --color-wds-border-brand-primary: var(--color-border-brand-primary-default);
+  --color-wds-border-brand-secondary: var(--color-border-brand-secondary-default);
+  --color-wds-border-onbrand: var(--color-border-onbrand-default);
+  --color-wds-border-disabled: var(--color-border-disabled-default);
+  --color-wds-border-focus: var(--color-border-focus-default);
+  --color-wds-border-validation-critical: var(--color-border-validation-critical);
+  --color-wds-border-validation-positive: var(--color-border-validation-positive);
+  --color-wds-border-validation-caution: var(--color-border-validation-caution);
+
+  /* ── Semantic Colors: Icon ── */
+  --color-wds-icon-primary: var(--color-icon-primary-default);
+  --color-wds-icon-primary-inverse: var(--color-icon-primary-inverse);
+  --color-wds-icon-secondary: var(--color-icon-secondary-default);
+  --color-wds-icon-brand-primary: var(--color-icon-brand-primary-default);
+  --color-wds-icon-brand-secondary: var(--color-icon-brand-secondary-default);
+  --color-wds-icon-onbrand: var(--color-icon-onbrand-default);
+  --color-wds-icon-disabled: var(--color-icon-disabled-default);
+  --color-wds-icon-link: var(--color-icon-link-default);
+
+  /* ── Spacing (4px grid) ── */
+  --spacing-wds-4: var(--space-4);
+  --spacing-wds-8: var(--space-8);
+  --spacing-wds-12: var(--space-12);
+  --spacing-wds-16: var(--space-16);
+  --spacing-wds-20: var(--space-20);
+  --spacing-wds-24: var(--space-24);
+  --spacing-wds-28: var(--space-28);
+  --spacing-wds-32: var(--space-32);
+  --spacing-wds-36: var(--space-36);
+  --spacing-wds-40: var(--space-40);
+  --spacing-wds-44: var(--space-44);
+  --spacing-wds-48: var(--space-48);
+  --spacing-wds-56: var(--space-56);
+  --spacing-wds-64: var(--space-64);
+  --spacing-wds-72: var(--space-72);
+  --spacing-wds-80: var(--space-80);
+  --spacing-wds-96: var(--space-96);
+
+  /* ── Border Radius ── */
+  --radius-wds-none: var(--radius-none);
+  --radius-wds-xs: var(--radius-2);
+  --radius-wds-s: var(--radius-4);
+  --radius-wds-m: var(--radius-8);
+  --radius-wds-l: var(--radius-12);
+  --radius-wds-xl: var(--radius-16);
+  --radius-wds-2xl: var(--radius-20);
+  --radius-wds-3xl: var(--radius-24);
+  --radius-wds-full: var(--radius-9999);
+
+  /* ── Border Width ── */
+  --border-wds-s: var(--border-1);
+  --border-wds-m: var(--border-2);
+  --border-wds-l: var(--border-3);
+
+  /* ── Shadows (on-light) ── */
+  --shadow-wds-xs: var(--onlight-xs);
+  --shadow-wds-s: var(--onlight-s);
+  --shadow-wds-m: var(--onlight-m);
+  --shadow-wds-l: var(--onlight-l);
+  --shadow-wds-xl: var(--onlight-xl);
+}
+
+/* ── Base Styles ── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-wds-text-primary);
+  background-color: #f5f5f5;
+  margin: 0;
+}
+
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+input:focus, input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}

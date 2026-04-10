@@ -1,0 +1,171 @@
+{
+  "_meta": {
+    "version": "1.1.0",
+    "note": "Mock offer data with realistic titles and product image mappings. Covers all 4 eligibility states."
+  },
+  "offers": [
+    {
+      "id": "offer_001",
+      "title": "$2 Off Breakfast Combo",
+      "description": "Get $2 off any Breakfast Combo meal. Valid during breakfast hours only.",
+      "image": "food_breakfast-combos_bacon-egg-cheese-biscuit-combo_840.png",
+      "type": "discount",
+      "isForYou": false,
+      "deliveryEligible": false,
+      "eligibility": {
+        "state": "available",
+        "minimumPurchase": null,
+        "progress": null
+      },
+      "expiresAt": "2026-04-05T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Valid on breakfast combos only. Not valid with other offers.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_002",
+      "title": "$3 Off Qualifying Purchase of $20 or more",
+      "description": "Save $3 when you spend $20 or more on your order.",
+      "image": null,
+      "type": "discount",
+      "isForYou": false,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "available",
+        "minimumPurchase": 20,
+        "progress": null
+      },
+      "expiresAt": "2026-04-27T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Minimum $20 purchase required. One use per account.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_003",
+      "title": "Happy Wendy-versary! Free 6pc Chicken Nuggets w/ Purchase",
+      "description": "Celebrate your Wendy's anniversary with free 6pc Chicken Nuggets with any purchase.",
+      "image": "food_chicken-nuggets-more_6-pc-chicken-nuggets_726.png",
+      "type": "free-item",
+      "isForYou": true,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "available",
+        "minimumPurchase": 1,
+        "progress": null
+      },
+      "expiresAt": "2026-05-01T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Valid with any purchase of $1 or more. One use per account.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_004",
+      "title": "$1 Off Any Size Soft Drink w/ $5 Qualifying Purchase",
+      "description": "Get $1 off any size Coca-Cola Freestyle beverage when you spend $5 or more.",
+      "image": "food_beverages_coca-cola-freestyle_425.png",
+      "type": "discount",
+      "isForYou": false,
+      "deliveryEligible": false,
+      "eligibility": {
+        "state": "available",
+        "minimumPurchase": 5,
+        "progress": null
+      },
+      "expiresAt": "2026-04-27T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Valid on Coca-Cola Freestyle beverages. $5 minimum purchase required.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_005",
+      "title": "Free Small Frosty with Any Purchase",
+      "description": "Get a free Small Chocolate or Vanilla Frosty when you make any purchase of $1 or more.",
+      "image": "food_frosty-_classic-chocolate-frosty_179.png",
+      "type": "free-item",
+      "isForYou": true,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "available",
+        "minimumPurchase": 1,
+        "progress": null
+      },
+      "expiresAt": "2026-04-30T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Valid with any purchase of $1 or more.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_006",
+      "title": "Free 10 Pc. Nuggets with $15+ Order",
+      "description": "Spend $15 or more and get a free 10 Pc. Chicken Nuggets added to your order.",
+      "image": "food_chicken-nuggets-more_10-pc-chicken-nuggets_727.png",
+      "type": "threshold",
+      "isForYou": false,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "progress",
+        "minimumPurchase": 15,
+        "progress": {
+          "current": 8.49,
+          "target": 15,
+          "remaining": 6.51
+        }
+      },
+      "expiresAt": "2026-05-01T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Minimum $15 purchase required before tax.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_007",
+      "title": "Free Delivery on Orders Over $12",
+      "description": "Get free delivery when your order subtotal is $12 or more.",
+      "image": null,
+      "type": "delivery",
+      "isForYou": false,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "unavailable",
+        "reason": "Delivery not available at selected location"
+      },
+      "expiresAt": "2026-06-01T23:59:59Z",
+      "redemptionLimit": 3,
+      "terms": "Valid for delivery orders $12+. Limited to participating locations.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_008",
+      "title": "50% Off Breakfast Combo",
+      "description": "Get 50% off any Breakfast Combo. Valid during breakfast hours only.",
+      "image": "food_breakfast-combos_sausage-egg-cheese-biscuit-combo_839.png",
+      "type": "discount",
+      "isForYou": false,
+      "deliveryEligible": false,
+      "eligibility": {
+        "state": "unavailable",
+        "reason": "Only available during breakfast hours (6:30 AM - 10:30 AM)"
+      },
+      "expiresAt": "2026-04-30T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "Valid during breakfast hours only. Not valid with other offers.",
+      "isRedeemed": false
+    },
+    {
+      "id": "offer_009",
+      "title": "Free Small Fries — Welcome Offer",
+      "description": "Welcome to Wendy's Rewards! Enjoy a free Small Fries on us.",
+      "image": "food_fries-sides_french-fries_165.png",
+      "type": "welcome",
+      "isForYou": false,
+      "deliveryEligible": true,
+      "eligibility": {
+        "state": "redeemed",
+        "redeemedAt": "2026-03-28T14:22:00Z"
+      },
+      "expiresAt": "2026-03-31T23:59:59Z",
+      "redemptionLimit": 1,
+      "terms": "One-time welcome offer for new Rewards members.",
+      "isRedeemed": true
+    }
+  ]
+}

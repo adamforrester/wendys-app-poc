@@ -2,7 +2,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-
 // https://vite.dev/config/
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +11,13 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // PWA manifest is handled via a static file (public/manifest.json)
+    // vite-plugin-pwa's service worker generation breaks due to apostrophe in project path
+    // The manifest + meta tags are sufficient for Add to Home Screen functionality
+  ],
   test: {
     projects: [{
       extends: true,

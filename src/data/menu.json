@@ -660,54 +660,6 @@
             "ing_007",
             "ing_008"
           ]
-        },
-        {
-          "id": "2448",
-          "name": "Cheesy Bacon Cheeseburger Double",
-          "slug": "cheesy-bacon-cheeseburger-double",
-          "image": "food_hamburgers_cheesy-bacon-cheeseburger-double_2448.png",
-          "price": 3.67,
-          "calories": {
-            "min": 300,
-            "max": 360
-          },
-          "isCombo": false,
-          "productType": "single"
-        },
-        {
-          "id": "2432",
-          "name": "Cheesy Bacon Cheeseburger Single",
-          "slug": "cheesy-bacon-cheeseburger-single",
-          "image": "food_hamburgers_cheesy-bacon-cheeseburger-single_2432.png",
-          "price": 2.2,
-          "calories": {
-            "min": 800,
-            "max": 820
-          },
-          "isCombo": false,
-          "productType": "single",
-          "ingredientIds": [
-            "ing_001",
-            "ing_002",
-            "ing_003",
-            "ing_004",
-            "ing_005",
-            "ing_006",
-            "ing_014"
-          ]
-        },
-        {
-          "id": "2452",
-          "name": "Cheesy Bacon Cheeseburger Triple",
-          "slug": "cheesy-bacon-cheeseburger-triple",
-          "image": "food_hamburgers_cheesy-bacon-cheeseburger-triple_2452.png",
-          "price": 5.03,
-          "calories": {
-            "min": 320,
-            "max": 360
-          },
-          "isCombo": false,
-          "productType": "single"
         }
       ]
     },

@@ -376,6 +376,114 @@
     }
   },
   "productIngredientMap": {
+    "150": [
+      "ing_001",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009"
+    ],
+    "438": [
+      "ing_020",
+      "ing_011",
+      "ing_013",
+      "ing_002"
+    ],
+    "439": [
+      "ing_020",
+      "ing_014",
+      "ing_013",
+      "ing_002"
+    ],
+    "823": [
+      "ing_019",
+      "ing_023",
+      "ing_011",
+      "ing_024"
+    ],
+    "825": [
+      "ing_019",
+      "ing_011",
+      "ing_013",
+      "ing_012"
+    ],
+    "826": [
+      "ing_020",
+      "ing_011",
+      "ing_013",
+      "ing_002",
+      "ing_014",
+      "ing_017"
+    ],
+    "1798": [
+      "ing_007",
+      "ing_002",
+      "ing_009",
+      "ing_016",
+      "ing_021"
+    ],
+    "2253": [
+      "ing_001",
+      "ing_007",
+      "ing_009",
+      "ing_011",
+      "ing_012",
+      "ing_015",
+      "ing_021"
+    ],
+    "2258": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_011"
+    ],
+    "2259": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009"
+    ],
+    "2260": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_009",
+      "ing_011"
+    ],
+    "2261": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009"
+    ],
+    "2262": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006"
+    ],
     "2387": [
       "ing_001",
       "ing_002",
@@ -421,6 +529,22 @@
       "ing_006",
       "ing_011"
     ],
+    "2391": [
+      "ing_001",
+      "ing_004",
+      "ing_005",
+      "ing_007",
+      "ing_009",
+      "ing_021"
+    ],
+    "2392": [
+      "ing_001",
+      "ing_004",
+      "ing_005",
+      "ing_007",
+      "ing_009",
+      "ing_022"
+    ],
     "2399": [
       "ing_001",
       "ing_002",
@@ -433,6 +557,18 @@
       "ing_009",
       "ing_011",
       "ing_018"
+    ],
+    "2400": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
+      "ing_011"
     ],
     "2403": [
       "ing_001",
@@ -460,50 +596,6 @@
       "ing_011",
       "ing_018"
     ],
-    "2400": [
-      "ing_001",
-      "ing_002",
-      "ing_003",
-      "ing_004",
-      "ing_005",
-      "ing_006",
-      "ing_007",
-      "ing_008",
-      "ing_009",
-      "ing_011"
-    ],
-    "150": [
-      "ing_001",
-      "ing_003",
-      "ing_004",
-      "ing_005",
-      "ing_006",
-      "ing_007",
-      "ing_008",
-      "ing_009"
-    ],
-    "2259": [
-      "ing_001",
-      "ing_002",
-      "ing_003",
-      "ing_004",
-      "ing_005",
-      "ing_006",
-      "ing_007",
-      "ing_008",
-      "ing_009"
-    ],
-    "2260": [
-      "ing_001",
-      "ing_002",
-      "ing_003",
-      "ing_004",
-      "ing_005",
-      "ing_006",
-      "ing_007",
-      "ing_009",
-      "ing_011"
-    ],
     "2432": [
       "ing_001",
       "ing_002",
@@ -517,31 +609,6 @@
       "ing_011",
       "ing_017"
     ],
-    "2391": [
-      "ing_001",
-      "ing_004",
-      "ing_005",
-      "ing_007",
-      "ing_009",
-      "ing_021"
-    ],
-    "2392": [
-      "ing_001",
-      "ing_004",
-      "ing_005",
-      "ing_007",
-      "ing_009",
-      "ing_022"
-    ],
-    "2253": [
-      "ing_001",
-      "ing_007",
-      "ing_009",
-      "ing_011",
-      "ing_012",
-      "ing_015",
-      "ing_021"
-    ],
     "2440": [
       "ing_007",
       "ing_002",
@@ -549,44 +616,31 @@
       "ing_016",
       "ing_021"
     ],
-    "1798": [
+    "2448": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
       "ing_007",
-      "ing_002",
+      "ing_008",
       "ing_009",
-      "ing_016",
-      "ing_021"
-    ],
-    "438": [
-      "ing_020",
       "ing_011",
-      "ing_013",
-      "ing_002"
-    ],
-    "439": [
-      "ing_020",
-      "ing_014",
-      "ing_013",
-      "ing_002"
-    ],
-    "825": [
-      "ing_019",
-      "ing_011",
-      "ing_013",
-      "ing_012"
-    ],
-    "826": [
-      "ing_020",
-      "ing_011",
-      "ing_013",
-      "ing_002",
-      "ing_014",
       "ing_017"
     ],
-    "823": [
-      "ing_019",
-      "ing_023",
+    "2452": [
+      "ing_001",
+      "ing_002",
+      "ing_003",
+      "ing_004",
+      "ing_005",
+      "ing_006",
+      "ing_007",
+      "ing_008",
+      "ing_009",
       "ing_011",
-      "ing_024"
+      "ing_017"
     ]
   },
   "addOns": {
@@ -667,7 +721,7 @@
     "addon_extra_patty": {
       "id": "addon_extra_patty",
       "name": "Extra Beef Patty",
-      "price": 2.0,
+      "price": 2,
       "calories": 250,
       "category": "protein",
       "maxQuantity": 1
@@ -682,7 +736,7 @@
     },
     "addon_jalapenos": {
       "id": "addon_jalapenos",
-      "name": "Jalape\u00f1os",
+      "name": "Jalapeños",
       "price": 0.3,
       "calories": 5,
       "category": "topping",
@@ -691,7 +745,7 @@
     "addon_egg": {
       "id": "addon_egg",
       "name": "Egg",
-      "price": 1.0,
+      "price": 1,
       "calories": 90,
       "category": "protein",
       "maxQuantity": 1
@@ -772,52 +826,52 @@
     }
   },
   "productAddOnGroupMap": {
-    "_note": "Maps product IDs to their add-on group. Products not listed here have no add-ons available.",
-    "2390": "burger",
+    "150": "burger",
+    "437": "breakfast",
+    "438": "breakfast",
+    "439": "breakfast",
+    "440": "breakfast",
+    "823": "breakfast_croissant",
+    "824": "breakfast",
+    "825": "breakfast",
+    "826": "breakfast",
+    "1224": "chicken",
+    "1321": "salad",
+    "1323": "salad",
+    "1685": "breakfast",
+    "1770": "salad",
+    "1798": "chicken",
+    "2147": "salad",
+    "2253": "chicken",
+    "2258": "burger",
+    "2259": "burger",
+    "2260": "burger",
+    "2261": "burger",
+    "2262": "burger",
+    "2263": "chicken",
+    "2264": "chicken",
+    "2306": "chicken",
     "2387": "burger",
     "2388": "burger",
     "2389": "burger",
+    "2390": "burger",
+    "2391": "chicken",
+    "2392": "chicken",
     "2399": "burger",
     "2400": "burger",
-    "2258": "burger",
     "2403": "burger",
     "2404": "burger",
     "2432": "burger",
+    "2440": "chicken",
+    "2446": "chicken",
     "2448": "burger",
     "2452": "burger",
-    "2262": "burger",
-    "2260": "burger",
-    "2259": "burger",
-    "2261": "burger",
-    "150": "burger",
-    "2391": "chicken",
-    "2392": "chicken",
-    "2253": "chicken",
-    "2306": "chicken",
-    "1224": "chicken",
-    "2263": "chicken",
-    "2264": "chicken",
-    "2440": "chicken",
-    "1798": "chicken",
-    "2446": "chicken",
-    "438": "breakfast",
-    "439": "breakfast",
-    "825": "breakfast",
-    "826": "breakfast",
-    "824": "breakfast",
-    "823": "breakfast_croissant",
-    "440": "breakfast",
-    "1685": "breakfast",
-    "437": "breakfast",
-    "1321": "salad",
-    "1770": "salad",
-    "1323": "salad",
-    "2147": "salad"
+    "_note": "Maps product IDs to their add-on group. Products not listed here have no add-ons available."
   },
   "ingredientEditOverrides": {
-    "_note": "hasEdit on the ingredient is the DEFAULT. Some products override this. For example, Applewood Smoked Bacon defaults to hasEdit:false but has Edit on the Maple Bacon Chicken Croissant. This map provides per-product overrides. Format: { productId: { ingredientId: hasEdit } }",
     "823": {
       "ing_011": true
-    }
+    },
+    "_note": "hasEdit on the ingredient is the DEFAULT. Some products override this. For example, Applewood Smoked Bacon defaults to hasEdit:false but has Edit on the Maple Bacon Chicken Croissant. This map provides per-product overrides. Format: { productId: { ingredientId: hasEdit } }"
   }
 }

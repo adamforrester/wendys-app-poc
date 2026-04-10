@@ -400,4 +400,14 @@ Figma Variables → Token Press Export (CSS) → tokens.css → Tailwind @theme 
 
 ---
 
+## Deployment
+
+- **Repository:** github.com/adamforrester/wendys-app-poc (private)
+- **Hosting:** Vercel (auto-deploys from `main` branch)
+- **SPA routing:** `vercel.json` rewrites all routes to `index.html`
+- **Environment:** `VITE_MAPBOX_TOKEN` set in Vercel env vars for Order screen map
+- **Branch strategy:** `main` for stable deploys, `feature/*` branches for active work
+
+---
+
 *This document is updated as the project progresses. Last updated: April 10, 2026.*

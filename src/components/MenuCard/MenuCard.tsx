@@ -35,7 +35,7 @@ export function MenuCard({
   caption,
   showRewardsIcon = false,
   imageSrc,
-  fallbackSrc = '/images/wendys-wave-red.svg',
+  fallbackSrc = '/images/fallback.png',
   label,
   disabled = false,
   onPress,

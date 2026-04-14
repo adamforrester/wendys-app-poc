@@ -13,7 +13,7 @@ export interface HeroImageProps {
 
 export function HeroImage({
   imageSrc,
-  fallbackSrc = '/images/wendys-wave-red.svg',
+  fallbackSrc = '/images/fallback.png',
   alt = '',
   extraPadding = false,
 }: HeroImageProps) {

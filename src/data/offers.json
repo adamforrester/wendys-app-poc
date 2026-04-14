@@ -26,7 +26,7 @@
       "id": "offer_002",
       "title": "$3 Off Qualifying Purchase of $20 or more",
       "description": "Save $3 when you spend $20 or more on your order.",
-      "image": null,
+      "image": "3-dollars-off.png",
       "type": "discount",
       "isForYou": false,
       "deliveryEligible": true,

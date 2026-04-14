@@ -18,7 +18,7 @@ export interface CategoryCardProps {
 export function CategoryCard({
   title,
   imageSrc,
-  fallbackSrc = '/images/wendys-wave-red.svg',
+  fallbackSrc = '/images/fallback.png',
   disabled = false,
   onPress,
 }: CategoryCardProps) {

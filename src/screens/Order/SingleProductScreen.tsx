@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TransparentTopBar } from '../../components/TransparentTopBar/TransparentTopBar';
 import { MediumTopAppBar } from '../../components/MediumTopAppBar/MediumTopAppBar';
 import { HeroImage } from '../../components/HeroImage/HeroImage';
@@ -53,6 +54,9 @@ const addOnImageMap: Record<string, string> = {
   'Honey Mustard Dipping Sauce': '/images/sauces-dressings/honey-mustard-ramekin.png',
   'Creamy Ranch Dipping Sauce': '/images/sauces-dressings/creamy-ranch-sauce-ramekin.png',
   'Honey BBQ Dipping Sauce': '/images/sauces-dressings/honey-bbq-sauce-ramekin.png',
+  'Egg': '/images/ingredient-images/american-cheese-slice.png',
+  'Sausage Patty': '/images/ingredient-images/patty.png',
+  'Swiss Cheese Sauce': '/images/sauces-dressings/cheese-ramekin.png',
 };
 
 function getIngredientImage(name: string): string {
@@ -423,16 +427,18 @@ const friesSidesAddExtras: Record<string, FrostyAddOn[]> = {
 /** Products in fries-sides that get the 4-size selector */
 const friesSizeProducts = new Set(['French Fries']);
 
-/* ── Nugget sauce accompaniment (for nuggets in sides) ── */
+/* ── Nugget/Tender sauce accompaniment ── */
 const nuggetSauceAccompaniment: IncludedAccompaniment = {
-  name: "Wendy's Signature Dipping Sauce",
-  calories: '130 cal (x2)',
-  image: '/images/sauces-dressings/creamy-ranch-sauce-ramekin.png',
+  name: 'Honey BBQ Dipping Sauce (x2)',
+  calories: '70 Cal',
+  image: '/images/sauces-dressings/honey-bbq-sauce-ramekin.png',
 };
 
-const nuggetNames = new Set([
-  '6 Pc. Chicken Nuggets', '4 Pc. Chicken Nuggets',
-  '6 Pc. Spicy Chicken Nuggets', '4 Pc. Spicy Chicken Nuggets',
+const nuggetTenderNames = new Set([
+  '4 Pc. Chicken Nuggets', '6 Pc. Chicken Nuggets', '10 Pc. Chicken Nuggets',
+  '4 Pc. Spicy Chicken Nuggets', '6 Pc. Spicy Chicken Nuggets', '10 Pc. Spicy Chicken Nuggets',
+  'Nuggs Party Pack',
+  '3 Pc. Tenders', '4 Pc. Tenders',
 ]);
 
 function formatPrice(price: number): string {
@@ -472,6 +478,7 @@ export function SingleProductScreen() {
     getIngredientsForProduct,
     hasEditForProduct,
     getAddOnGroupsForProduct,
+    categories,
   } = useMenuData();
 
   const product = getProductById(productId || '');
@@ -486,14 +493,14 @@ export function SingleProductScreen() {
   const showSizeSelector = (sizableCategories.has(slug || '') && !noSizeProducts.has(productName))
     || isFrosty || hasFriesSize;
   const showFlavorSelector = product ? isFreestyle(productName) : false;
-  const nonComboCategories = new Set(['beverages', 'coffee', 'frosty', 'fries-sides', 'bakery']);
+  const nonComboCategories = new Set(['beverages', 'coffee', 'frosty', 'fries-sides', 'bakery', 'give-something-back', 'sides-and-sweets', 'breakfast-biggie-deals', 'breakfast-meal-deals', 'everyday-value', 'biggie-deals']);
   const showMakeItCombo = !product?.isCombo && product?.productType === 'single' && !nonComboCategories.has(slug || '');
   const coldBrewIngs = coldBrewIngredients[productName] || null;
   const frostyIngs = frostyIngredients[productName] || null;
   const frostyExtras = frostyAddExtras[productName] || null;
   const sizeOptions = isFrosty || hasFriesSize ? frostySizes : standardSizes;
   const accompaniment = saladDressings[productName]
-    || (nuggetNames.has(productName) ? nuggetSauceAccompaniment : null);
+    || (nuggetTenderNames.has(productName) ? nuggetSauceAccompaniment : null);
   const saladIngs = saladIngredients[productName] || null;
   const fsIngs = friesSidesIngredients[productName] || null;
   const fsExtras = friesSidesAddExtras[productName] || null;
@@ -567,6 +574,64 @@ export function SingleProductScreen() {
     nutritionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Build "Your Changes" list from removed ingredients + selected add-ons
+  const changes: { id: string; label: string; type: 'removal' | 'addition' }[] = [];
+  // Removals — look up ingredient names from all available ingredient sources
+  removedIngredients.forEach(ingId => {
+    const ing = ingredients.find(i => i.id === ingId);
+    const name = ing?.name
+      || saladIngs?.find(i => i.name === ingId)?.name
+      || coldBrewIngs?.find(i => i.name === ingId)?.name
+      || frostyIngs?.find(i => i.name === ingId)?.name
+      || fsIngs?.find(i => i.name === ingId)?.name
+      || ingId;
+    changes.push({ id: `rem_${ingId}`, label: `No ${name}`, type: 'removal' });
+  });
+  // Additions
+  selectedAddOns.forEach(addonId => {
+    const addon = addOns.find(a => a.id === addonId);
+    const fExtra = frostyExtras?.find(a => a.id === addonId);
+    const fsExtra = fsExtras?.find(a => a.id === addonId);
+    const name = addon?.name || fExtra?.name || fsExtra?.name || addonId;
+    changes.push({ id: `add_${addonId}`, label: name, type: 'addition' });
+  });
+  const hasChanges = changes.length > 0;
+
+  const handleResetAll = () => {
+    setRemovedIngredients(new Set());
+    setSelectedAddOns(new Set());
+    setAddOnChips({});
+    setAddOnCounters({});
+  };
+
+  const handleDismissChange = (changeId: string) => {
+    if (changeId.startsWith('rem_')) {
+      const ingId = changeId.slice(4);
+      setRemovedIngredients(prev => {
+        const next = new Set(prev);
+        next.delete(ingId);
+        return next;
+      });
+    } else if (changeId.startsWith('add_')) {
+      const addonId = changeId.slice(4);
+      setSelectedAddOns(prev => {
+        const next = new Set(prev);
+        next.delete(addonId);
+        return next;
+      });
+      setAddOnChips(prev => {
+        const next = { ...prev };
+        delete next[addonId];
+        return next;
+      });
+      setAddOnCounters(prev => {
+        const next = { ...prev };
+        delete next[addonId];
+        return next;
+      });
+    }
+  };
+
   // Visible add-ons (collapsed vs expanded)
   const addOns = addOnGroup?.addOns || [];
   const visibleAddOns = showAllAddOns ? addOns : addOns.slice(0, 5);
@@ -602,10 +667,19 @@ export function SingleProductScreen() {
         className="h-full overflow-y-auto"
         onScroll={handleScroll}
       >
-        {/* Transparent top bar — visible initially */}
+        {/* Transparent top bar — X for combos, back arrow for singles */}
         <TransparentTopBar
-          leadingIcon="back"
-          onBack={() => navigate(`/order/menu/${slug || 'hamburgers'}`)}
+          leadingIcon={product.isCombo ? 'close' : 'back'}
+          onBack={() => {
+            if (product.isCombo) {
+              // TODO: replace with CustomDialog when built
+              if (window.confirm('Leave combo? You\'ll lose your current selections.')) {
+                navigate(`/order/menu/${slug || 'hamburgers'}`);
+              }
+            } else {
+              navigate(`/order/menu/${slug || 'hamburgers'}`);
+            }
+          }}
         />
 
       {/* Module 1: Hero Image */}
@@ -619,7 +693,7 @@ export function SingleProductScreen() {
       <div ref={headerRef}>
         <ProductHeader
           title={product.name}
-          price={priceDisplay}
+          price={product.isCombo ? 'Price in Bag' : priceDisplay}
           calories={caloriesDisplay}
           isFavorited={isFavorited}
           onFavoriteToggle={setIsFavorited}
@@ -627,6 +701,97 @@ export function SingleProductScreen() {
         />
       </div>
 
+      {/* ── COMBO LAYOUT: Component Cards ── */}
+      {product.isCombo && (product as any).defaultComponents && (
+        <>
+          {/* Combo size selector */}
+          {(product as any).sizeSelectorEnabled && (
+            <div className="flex items-center gap-wds-8 px-wds-16 pb-wds-8">
+              <button
+                className="flex items-center gap-wds-4 border-none"
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 9999,
+                  border: '1.5px solid var(--color-border-brand-secondary-default)',
+                  backgroundColor: 'var(--color-bg-primary-default)',
+                  color: 'var(--color-text-brand-secondary-default)',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                Med
+                <span
+                  className="inline-block"
+                  style={{
+                    width: 12, height: 12,
+                    backgroundColor: 'var(--color-icon-brand-secondary-default)',
+                    maskImage: 'url(/icons/caret-down.svg)', maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
+                    WebkitMaskImage: 'url(/icons/caret-down.svg)', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
+                  }}
+                />
+              </button>
+            </div>
+          )}
+
+          {/* Component cards */}
+          <div className="px-wds-16 pb-wds-16" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {((product as any).defaultComponents as Array<{ role: string; productRef: string | null; label: string; sizePrefix: string | null; subtitle: string | null }>).map((comp, i) => {
+              const displayName = comp.sizePrefix ? `${comp.sizePrefix} ${comp.label}` : comp.label;
+              const compImage = comp.productRef
+                ? getProductImagePath(categories.flatMap(c => c.items).find(p => p.id === comp.productRef)?.image || '')
+                : '/images/fallback.png';
+              return (
+                <div
+                  key={`${comp.role}-${i}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16,
+                    padding: '12px 16px',
+                    borderRadius: 8,
+                    border: '1px solid var(--color-border-secondary-default)',
+                    backgroundColor: 'var(--color-bg-primary-default)',
+                  }}
+                >
+                  <img
+                    src={compImage}
+                    alt=""
+                    style={{ width: 56, height: 56, objectFit: 'contain', borderRadius: 4, flexShrink: 0 }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <span
+                      className="font-display text-[16px] leading-[20px] font-semibold"
+                      style={{ color: 'var(--color-text-primary-default)', display: 'block' }}
+                    >
+                      {displayName}
+                    </span>
+                    {comp.subtitle && (
+                      <span
+                        className="font-body text-[14px] leading-[20px]"
+                        style={{ color: 'var(--color-text-secondary-default)', display: 'block' }}
+                      >
+                        {comp.subtitle}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    className="font-display text-[14px] border-none bg-transparent p-0"
+                    style={{ fontWeight: 700, color: 'var(--color-text-brand-secondary-default)', flexShrink: 0 }}
+                    onClick={() => {
+                      if (comp.productRef) navigate(`/order/menu/${slug}/${comp.productRef}`);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* ── SINGLE ITEM LAYOUT: Standard modules ── */}
       {/* Module 5: Size Selector (conditional — beverages, coffee, frosty, fries) */}
       {showSizeSelector && (
         <div className="flex gap-wds-8 px-wds-16 pb-wds-16">
@@ -873,6 +1038,67 @@ export function SingleProductScreen() {
           </div>
         </>
       )}
+
+      {/* Module 9: "Your Changes" Summary (conditional — appears when modifications exist) */}
+      <AnimatePresence>
+        {hasChanges && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Header: "Your Changes" + "Reset" */}
+            <div className="flex items-center justify-between px-wds-16" style={{ paddingTop: 16, paddingBottom: 8 }}>
+              <span
+                className="font-display text-[18px] leading-[24px]"
+                style={{ fontWeight: 800, color: 'var(--color-text-primary-default)' }}
+              >
+                Your Changes
+              </span>
+              <button
+                className="font-display text-[16px] leading-[20px] border-none bg-transparent p-0"
+                style={{ fontWeight: 700, color: 'var(--color-text-brand-secondary-default)' }}
+                onClick={handleResetAll}
+              >
+                Reset
+              </button>
+            </div>
+            {/* Change pills */}
+            <div className="flex flex-wrap gap-wds-8 px-wds-16 pb-wds-16">
+              <AnimatePresence>
+                {changes.map((change) => (
+                  <motion.button
+                    key={change.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center gap-wds-4 border-none"
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: 9999,
+                      backgroundColor: change.type === 'removal'
+                        ? 'var(--color-bg-validation-critical)'
+                        : 'var(--color-bg-brand-secondary-default)',
+                      color: 'var(--color-text-onbrand-default)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      lineHeight: '16px',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onClick={() => handleDismissChange(change.id)}
+                  >
+                    {change.label}
+                    <span style={{ marginLeft: 2, fontSize: 14 }}>×</span>
+                  </motion.button>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Module 10: What's On It (conditional — from ingredient data) */}
       {ingredients.length > 0 && (

@@ -372,17 +372,23 @@ Figma Variables → Token Press Export (CSS) → tokens.css → Tailwind @theme 
 
 ## What's Next
 
-### SPP Phase 2 — Conditional Modules
-- **Size selector** — for drinks, fries, Frosty (S/M/L pills, Junior variant)
-- **Included accompaniment card** — sauce/dressing card for nuggets, tenders, salads
-- **Featured add-on upsell card** — "Add even more goodness" (e.g., Bacon on Dave's Single)
-- **"Your Changes" summary** — change pills with × dismiss, Reset link
-- **Flavor selector** — Freestyle drinks only (radio button list with brand logos)
+### SPP Phase 2 — Conditional Modules (4/5 complete)
+- ~~**Size selector**~~ ✅ — S/M/L standard + Jr/S/M/L for Frosty, with exclusions for single-serve drinks
+- ~~**Included accompaniment card**~~ ✅ — salad dressings (4 salads) + nugget/tender sauces (all nugget/tender products)
+- **Featured add-on upsell card** ❌ — "Add even more goodness" (Figma specs to be provided)
+- ~~**"Your Changes" summary**~~ ✅ — red pills (removals) + teal pills (additions) + Reset link, Framer Motion animated
+- ~~**Flavor selector**~~ ✅ — Freestyle drinks with real flavor images
 
-### SPP Phase 3 — Combo Wizard & Flows
-- **Combo wizard bottom sheet** — 6 step types (entrée modifier, side, sauce, drink, pick-from-pool)
-- **Populated combo SPP** — component cards with Edit links, "Price in Bag" display
-- **Pre-SPP wizards** — sauce selection for nuggets/tenders, dressing for salads
+### SPP Phase 3 — Combo Layout & Wizard
+- ~~**comboConfig data**~~ ✅ — 39 combo products have `defaultComponents` + `sizeSelectorEnabled` in menu.json
+- ~~**Populated combo SPP layout**~~ ✅ — component cards with Edit links, "Price in Bag", combo size selector ("Med ▼"), close X with confirm dialog
+- **CustomDialog component** ❌ — needed to replace window.confirm() on combo close (Figma specs to be provided)
+- **FullscreenDialog component** ❌ — shares variant structure with CustomDialog (Figma specs to be provided)
+- **Combo wizard bottom sheet** ❌ — 6 step types (entrée modifier, side, sauce, drink, pick-from-pool)
+- **Pre-SPP wizards** ❌ — sauce selection for nuggets/tenders, dressing for salads
+
+### SPP Product Type Coverage (17/17 product types covered)
+All product types are now covered. Single items have full module support. Combos and Kids Meals have the populated layout with component cards. Remaining: combo wizard (interactive selection flow), dialog components, featured upsell card.
 
 ### Remaining Screens
 - **Bag + Checkout** — order summary, payment, confirmation

@@ -475,9 +475,47 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 
 ### Build Priority (from PRD)
 1. ~~**Foundation:** Scaffolding, tokens, core components~~ — **DONE**
-2. **Order flow:** ~~Location Selection → Menu Categories → PLP → SPP~~ (Phase 1 DONE) → Bag → Checkout → Confirmation
+2. **Order flow:** ~~Location Selection → Menu Categories → PLP → SPP~~ → Bag → Checkout → Confirmation
 3. ~~**Home & Auth:** Home screen (unauth/auth variants), Login~~ — Home (auth) DONE, Offers DONE
 4. **Offers & Polish:** ~~Offers list~~, edge cases, empty/error/loading states
+
+### SPP Module Status
+| Module | Status | Notes |
+|---|---|---|
+| M1: Hero Image | ✅ Done | All products |
+| M2: Product Header | ✅ Done | Name, favorite, price/calories |
+| M3: Price & Calories | ✅ Done | Standard + combo variants |
+| M4: Nutrition Link | ✅ Done | Scrolls to nutrition tabs |
+| M5: Size Selector | ✅ Done | S/M/L standard + Jr/S/M/L Frosty |
+| M6: Make it a Combo | ✅ Done | Conditional on single items in combo-eligible categories |
+| M7: Included Accompaniment | ✅ Done | Salad dressings + nugget/tender sauces |
+| M8: Featured Upsell Card | ❌ Not built | "Add even more goodness" — Figma specs needed |
+| M9: "Your Changes" Summary | ✅ Done | Red pills (removals) + teal pills (additions) + Reset link, animated |
+| M10: What's On It | ✅ Done | 3-column tiles, editable/removable/display states |
+| M11: Flavor Selector | ✅ Done | Freestyle drinks only |
+| M12: Add Extras | ✅ Done | Counter + chips + toggle modifiers |
+| M13: Nutrition/Ingredients Tabs | ✅ Done | Allergens + IngredientTable + text |
+| M14: Sticky OrderBar | ✅ Done | Quantity stepper + Add button |
+
+### SPP Product Type Coverage
+| Product Type | Status | Modules Active |
+|---|---|---|
+| Hamburgers | ✅ Full | M1-4, M6, M10, M12, M13-14 |
+| Chicken sandwiches | ✅ Full | M1-4, M6, M10, M12, M13-14 |
+| Breakfast biscuits | ✅ Full | M1-4, M6, M10, M12, M13-14 |
+| Breakfast croissants | ✅ Full | M1-4, M6, M10, M12, M13-14 |
+| Breakfast burritos | ✅ Full | M1-4, M6, M10, M12, M13-14 |
+| Nuggets/Tenders | ✅ Full | M1-4, M6, M7, M12, M13-14 |
+| Salads | ✅ Full | M1-4, M7, M10, M12, M13-14 |
+| Frosty | ✅ Full | M1-4, M5, M10, M12, M13-14 |
+| Coffee | ✅ Full | M1-4, M5, M10, M13-14 |
+| Beverages | ✅ Full | M1-4, M5, M11, M13-14 |
+| Fries & Sides | ✅ Full | M1-4, M5, M10, M12, M13-14 |
+| Bakery | ✅ Bare minimum | M1-4, M13-14 (correct) |
+| Non-food (Key Tags) | ✅ Bare minimum | M1-4, M13-14 (correct) |
+| Value/Deals | ✅ Full | Same as parent category items |
+| Combos (all) | ✅ Populated layout | Component cards with Edit links, "Price in Bag", combo size selector. Close X with confirm dialog. 39 combos have defaultComponents data. Combo wizard not yet built. |
+| Kids Meals | ✅ Populated layout | Same combo pattern — 4 component cards (entrée + side + drink + toy) |
 
 ### Screens Built (9)
 - **Splash Screen** — cameo logo → Lottie animation → fade to app (configurable timing, swappable animation)

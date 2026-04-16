@@ -82,7 +82,31 @@
                 "priceAdjustment": 0.7
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2387",
+              "label": "Dave’s Single®",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2396",
@@ -127,7 +151,31 @@
                 "priceAdjustment": 0.7
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2390",
+              "label": "Baconator®",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2402",
@@ -140,7 +188,31 @@
             "max": 1500
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2400",
+              "label": "Son of Baconator®",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "1497",
@@ -153,7 +225,31 @@
             "max": 1400
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "727",
+              "label": "10 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2397",
@@ -216,7 +312,31 @@
                 "priceAdjustment": 0.7
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2391",
+              "label": "Classic Chicken Sandwich",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2398",
@@ -229,7 +349,31 @@
             "max": 1500
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2392",
+              "label": "Spicy Chicken Sandwich",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "169",
@@ -242,7 +386,31 @@
             "max": 1300
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "1798",
+              "label": "Grilled Chicken Wrap",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2490",
@@ -255,7 +423,31 @@
             "max": 1600
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2399",
+              "label": "Big Bacon Classic®",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2276",
@@ -268,7 +460,31 @@
             "max": 1700
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2253",
+              "label": "Asiago Ranch Club, Classic",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2368",
@@ -281,7 +497,31 @@
             "max": 1400
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2365",
+              "label": "3 PC. Tenders",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2369",
@@ -294,7 +534,31 @@
             "max": 1600
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2366",
+              "label": "4 PC. Tenders",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "1229",
@@ -307,7 +571,31 @@
             "max": 1350
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Asiago Ranch Chicken Club",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "265",
@@ -333,7 +621,31 @@
             "max": 1660
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Cheesy Bacon Cheeseburger Double",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2443",
@@ -346,7 +658,31 @@
             "max": 1590
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Cheesy Bacon Cheeseburger Single",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2454",
@@ -359,7 +695,31 @@
             "max": 1320
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Cheesy Bacon Cheeseburger Triple",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2441",
@@ -372,7 +732,31 @@
             "max": 1020
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Chicken Tenders Ranch Wrap",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2447",
@@ -385,7 +769,31 @@
             "max": 860
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Crispy Panko Fish Sandwich",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": "165",
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         }
       ]
     },
@@ -1959,7 +2367,38 @@
             ],
             "defaultSide": null,
             "defaultDrink": null
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "725",
+              "label": "4 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Milk",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "toy",
+              "productRef": null,
+              "label": "Kids Meal Toy (Age 3+)",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "953",
@@ -2004,7 +2443,38 @@
             ],
             "defaultSide": null,
             "defaultDrink": null
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "942",
+              "label": "4 PC. Spicy Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Milk",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "toy",
+              "productRef": null,
+              "label": "Kids Meal Toy (Age 3+)",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "187",
@@ -2044,7 +2514,38 @@
             ],
             "defaultSide": null,
             "defaultDrink": null
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Hamburger",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Milk",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "toy",
+              "productRef": null,
+              "label": "Kids Meal Toy (Age 3+)",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "186",
@@ -2084,7 +2585,38 @@
             ],
             "defaultSide": null,
             "defaultDrink": null
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Cheeseburger",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Milk",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "toy",
+              "productRef": null,
+              "label": "Kids Meal Toy (Age 3+)",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "2367",
@@ -2129,7 +2661,38 @@
             ],
             "defaultSide": null,
             "defaultDrink": null
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "2 PC. Tenders",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Milk",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "toy",
+              "productRef": null,
+              "label": "Kids Meal Toy (Age 3+)",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         }
       ]
     },
@@ -2317,7 +2880,38 @@
                 "options": "DRINK_OPTIONS"
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2259",
+              "label": "Jr. Cheeseburger",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side2",
+              "productRef": "725",
+              "label": "4 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Small",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "1763",
@@ -2360,7 +2954,38 @@
                 "options": "DRINK_OPTIONS"
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Crispy Chicken Sandwich",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side2",
+              "productRef": "725",
+              "label": "4 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Small",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "1762",
@@ -2403,7 +3028,38 @@
                 "options": "DRINK_OPTIONS"
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Double Stack",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side2",
+              "productRef": "725",
+              "label": "4 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Small",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "1761",
@@ -2446,7 +3102,38 @@
                 "options": "DRINK_OPTIONS"
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": null,
+              "label": "Jr. Bacon Cheeseburger",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side2",
+              "productRef": "725",
+              "label": "4 PC. Chicken Nuggets",
+              "sizePrefix": null,
+              "subtitle": "Wendy’s Signature Dipping Sauce"
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Natural-Cut Fries",
+              "sizePrefix": "Jr.",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coca-Cola®",
+              "sizePrefix": "Small",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         },
         {
           "id": "2423",
@@ -2473,7 +3160,24 @@
                 "options": "BIGGIE_BUNDLE_OPTIONS"
               }
             ]
-          }
+          },
+          "defaultComponents": [
+            {
+              "role": "pick1",
+              "productRef": null,
+              "label": "Select your 1st item",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "pick2",
+              "productRef": null,
+              "label": "Select your 2nd item",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         }
       ]
     },
@@ -2532,7 +3236,31 @@
             "max": 980
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "823",
+              "label": "Maple Bacon Chicken Croissant",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "836",
@@ -2545,7 +3273,31 @@
             "max": 1230
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "824",
+              "label": "Sausage, Egg & Swiss Croissant",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "837",
@@ -2558,7 +3310,31 @@
             "max": 1180
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "825",
+              "label": "Bacon, Egg & Swiss Croissant",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "1980",
@@ -2571,7 +3347,31 @@
             "max": 1190
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "1979",
+              "label": "Breakfast Burrito, Bacon",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "2054",
@@ -2584,7 +3384,31 @@
             "max": 950
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "2053",
+              "label": "Breakfast Burrito, Sausage",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "838",
@@ -2597,7 +3421,31 @@
             "max": 1120
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "440",
+              "label": "Honey Buddy Chicken Biscuit",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "839",
@@ -2610,7 +3458,31 @@
             "max": 800
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "439",
+              "label": "Sausage, Egg & Cheese Biscuit",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "840",
@@ -2623,7 +3495,31 @@
             "max": 1070
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "438",
+              "label": "Bacon, Egg & Cheese Biscuit",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "1827",
@@ -2636,7 +3532,31 @@
             "max": 820
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "1685",
+              "label": "Egg & Cheese Biscuit",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "841",
@@ -2649,7 +3569,31 @@
             "max": 610
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "826",
+              "label": "Breakfast Baconator®",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         },
         {
           "id": "1705",
@@ -2662,7 +3606,31 @@
             "max": 950
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "entree",
+              "productRef": "1713",
+              "label": "Homestyle French Toast Sticks, 6 PC",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "side",
+              "productRef": null,
+              "label": "Seasoned Potatoes",
+              "sizePrefix": "Small",
+              "subtitle": null
+            },
+            {
+              "role": "drink",
+              "productRef": null,
+              "label": "Coffee",
+              "sizePrefix": "Medium",
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": true
         }
       ]
     },
@@ -3055,7 +4023,24 @@
             "max": 900
           },
           "isCombo": true,
-          "productType": "combo"
+          "productType": "combo",
+          "defaultComponents": [
+            {
+              "role": "pick1",
+              "productRef": null,
+              "label": "Select your 1st item",
+              "sizePrefix": null,
+              "subtitle": null
+            },
+            {
+              "role": "pick2",
+              "productRef": null,
+              "label": "Select your 2nd item",
+              "sizePrefix": null,
+              "subtitle": null
+            }
+          ],
+          "sizeSelectorEnabled": false
         }
       ]
     },

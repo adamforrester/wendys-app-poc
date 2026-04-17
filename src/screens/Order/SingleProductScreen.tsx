@@ -664,7 +664,7 @@ export function SingleProductScreen() {
             if (product.isCombo) {
               setShowLeaveDialog(true);
             } else {
-              navigate(`/order/menu/${slug || 'hamburgers'}`);
+              navigate(-1);
             }
           }}
           visible={true}
@@ -685,7 +685,7 @@ export function SingleProductScreen() {
               if (product.isCombo) {
                 setShowLeaveDialog(true);
               } else {
-                navigate(`/order/menu/${slug || 'hamburgers'}`);
+                navigate(-1);
               }
             }}
           />

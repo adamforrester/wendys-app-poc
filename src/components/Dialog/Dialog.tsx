@@ -54,7 +54,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { type: 'spring', stiffness: 400, damping: 30 },
+    transition: { type: 'spring' as const, stiffness: 400, damping: 30 },
   },
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.15 } },
 };
@@ -64,7 +64,7 @@ const fullscreenVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 400, damping: 30 },
+    transition: { type: 'spring' as const, stiffness: 400, damping: 30 },
   },
   exit: { opacity: 0, y: 40, transition: { duration: 0.15 } },
 };

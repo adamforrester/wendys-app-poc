@@ -437,8 +437,8 @@ When using figma-console:
 
 ## Build Progress
 
-### Components Built (35)
-Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar
+### Components Built (37)
+Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar, Dialog, UpsellCard
 
 ### Remaining Components
 SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
@@ -489,7 +489,7 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 | M5: Size Selector | ✅ Done | S/M/L standard + Jr/S/M/L Frosty |
 | M6: Make it a Combo | ✅ Done | Conditional on single items in combo-eligible categories |
 | M7: Included Accompaniment | ✅ Done | Salad dressings + nugget/tender sauces |
-| M8: Featured Upsell Card | ❌ Not built | "Add even more goodness" — Figma specs needed |
+| M8: Featured Upsell Card | ✅ Done | UpsellCard component — "Add a little bonus" overline, ingredient image, price, Add/Remove toggle with "Added" label |
 | M9: "Your Changes" Summary | ✅ Done | Red pills (removals) + teal pills (additions) + Reset link, animated |
 | M10: What's On It | ✅ Done | 3-column tiles, editable/removable/display states |
 | M11: Flavor Selector | ✅ Done | Freestyle drinks only |

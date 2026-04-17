@@ -53,6 +53,36 @@ This is the canonical reference for all built components. Use this when building
 | `showHandle` | `boolean` | Almost always true; false only for non-dismissible sheets |
 | `showScrim` | `boolean` | True for modal overlays; false if sheet is part of page layout |
 
+### Dialog
+**Location:** `src/components/Dialog/Dialog.tsx`
+**Use when:** Confirmations, prompts, alerts — centered modal overlay or fullscreen takeover.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `variant` | `'standard' \| 'prompt'` | Standard allows close X + secondary action; Prompt has primary action only |
+| `fullscreen` | `boolean` | True for fullscreen takeover (no scrim, white bg); false for centered card with scrim |
+| `icon` | `string` | Icon filename (e.g., `'rewards-simple'`) — displayed above headline |
+| `iconMultiColor` | `boolean` | Render icon as `<img>` to preserve multi-color fills |
+| `imageSrc` | `string` | Image URL displayed above headline (replaces icon) |
+| `headline` | `string` | Dialog title — Wendys Fresh 23px XBold |
+| `supportText` | `string` | Body text — Roboto 14px Regular, gray |
+| `primaryAction` | `DialogAction` | `{ label, onClick, colorScheme? }` — filled button |
+| `secondaryAction` | `DialogAction` | `{ label, onClick, colorScheme? }` — text button (standard only) |
+| `showClose` | `boolean` | Show/hide close X (standard only, default true) |
+| `children` | `ReactNode` | Custom content between support text and actions |
+
+**Key behaviors:**
+- Scrim tap dismisses (non-fullscreen only)
+- Escape key dismisses
+- Material-style animation: fade + scale for card, fade + slide for fullscreen
+- Prompt variant enforces no close X, no secondary action
+
+**Use cases:**
+- Combo builder exit confirmation (standard, no close, headline + Stay/Leave)
+- Ingredient quantity editing (standard, with custom children for counter)
+- Success/reward alerts (prompt with icon)
+- Fullscreen content (fullscreen variant)
+
 ### MediumTopAppBar
 **Location:** `src/components/MediumTopAppBar/MediumTopAppBar.tsx`
 **Use when:** SPP scroll-triggered header — slides in when user scrolls past the product header.
@@ -340,6 +370,26 @@ Added `iconColor` prop — pass a token color to override the default (e.g., `va
 ```
 
 Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (kebab-case).
+
+### UpsellCard
+**Location:** `src/components/UpsellCard/UpsellCard.tsx`
+**Use when:** SPP Module M8 — "Featured Upsell Card" for suggesting add-ons (e.g., bacon on Dave's Single).
+
+| Prop | Type | When to use |
+|---|---|---|
+| `overline` | `string` | Defaults to "Add a little bonus" |
+| `title` | `string` | Add-on name (e.g., "Applewood Smoked Bacon") |
+| `subtitle` | `string` | Price string (e.g., "+$1.99") |
+| `imageSrc` | `string` | Ingredient image URL |
+| `isAdded` | `boolean` | Toggle between resting/active states |
+| `onAdd` | `() => void` | "Add it on" handler |
+| `onRemove` | `() => void` | "Remove it" handler |
+
+**States:**
+- **Resting:** "Add it on" teal link
+- **Active:** Green bordered "Added" label with checkmark + "Remove it" teal link
+
+**Renders conditionally** on SPP when an add-on has `isFeaturedUpsell: true`.
 
 ---
 

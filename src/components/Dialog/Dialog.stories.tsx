@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof Dialog>;
 
 /* ── Interactive wrapper ── */
-function DialogDemo(props: React.ComponentProps<typeof Dialog>) {
+function DialogDemo(props: Partial<React.ComponentProps<typeof Dialog>>) {
   const [isOpen, setIsOpen] = useState(true);
   return (
     <>

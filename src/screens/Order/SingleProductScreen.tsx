@@ -14,6 +14,7 @@ import { ListRow } from '../../components/ListRow/ListRow';
 import { Chip } from '../../components/Chip/Chip';
 import { RadioButton } from '../../components/RadioButton/RadioButton';
 import { OrderBar } from '../../components/OrderBar/OrderBar';
+import { Dialog } from '../../components/Dialog/Dialog';
 import { useMenuData } from '../../hooks/useMenuData';
 
 /* ── Ingredient name → image path resolver ── */
@@ -515,6 +516,7 @@ export function SingleProductScreen() {
   const [addOnChips, setAddOnChips] = useState<Record<string, string>>({});
   const [addOnCounters, setAddOnCounters] = useState<Record<string, number>>({});
   const [showMediumBar, setShowMediumBar] = useState(false);
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [nutritionTab, setNutritionTab] = useState('nutrition');
   const [showAllAddOns, setShowAllAddOns] = useState(false);
 
@@ -657,7 +659,14 @@ export function SingleProductScreen() {
           subtitle={subtitleDisplay}
           isFavorited={isFavorited}
           onFavoriteToggle={setIsFavorited}
-          onBack={() => navigate(`/order/menu/${slug || 'hamburgers'}`)}
+          leadingIcon={product.isCombo ? 'close' : 'back'}
+          onBack={() => {
+            if (product.isCombo) {
+              setShowLeaveDialog(true);
+            } else {
+              navigate(`/order/menu/${slug || 'hamburgers'}`);
+            }
+          }}
           visible={true}
         />
       </div>
@@ -668,19 +677,19 @@ export function SingleProductScreen() {
         onScroll={handleScroll}
       >
         {/* Transparent top bar — X for combos, back arrow for singles */}
-        <TransparentTopBar
-          leadingIcon={product.isCombo ? 'close' : 'back'}
-          onBack={() => {
-            if (product.isCombo) {
-              // TODO: replace with CustomDialog when built
-              if (window.confirm('Leave combo? You\'ll lose your current selections.')) {
+        {/* Hidden when MediumTopAppBar is visible to prevent overlap */}
+        {!showMediumBar && (
+          <TransparentTopBar
+            leadingIcon={product.isCombo ? 'close' : 'back'}
+            onBack={() => {
+              if (product.isCombo) {
+                setShowLeaveDialog(true);
+              } else {
                 navigate(`/order/menu/${slug || 'hamburgers'}`);
               }
-            } else {
-              navigate(`/order/menu/${slug || 'hamburgers'}`);
-            }
-          }}
-        />
+            }}
+          />
+        )}
 
       {/* Module 1: Hero Image */}
       <HeroImage
@@ -1262,6 +1271,24 @@ export function SingleProductScreen() {
           onAddToBag={handleAddToBag}
         />
       </div>
+
+      {/* Combo leave confirmation dialog */}
+      <Dialog
+        isOpen={showLeaveDialog}
+        onClose={() => setShowLeaveDialog(false)}
+        variant="standard"
+        showClose={false}
+        headline="Don't lose those tasty changes!"
+        supportText="Changes will be lost if you leave before adding to the bag."
+        primaryAction={{
+          label: 'Stay',
+          onClick: () => setShowLeaveDialog(false),
+        }}
+        secondaryAction={{
+          label: 'Leave',
+          onClick: () => navigate(`/order/menu/${slug || 'hamburgers'}`),
+        }}
+      />
     </div>
   );
 }

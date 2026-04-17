@@ -9,6 +9,8 @@ export interface MediumTopAppBarProps {
   isFavorited?: boolean;
   /** Favorite toggle handler */
   onFavoriteToggle?: (favorited: boolean) => void;
+  /** Leading icon — back arrow (default) or close X */
+  leadingIcon?: 'back' | 'close';
   /** Custom back handler */
   onBack?: () => void;
   /** Whether the bar is visible (controlled by scroll position) */
@@ -20,6 +22,7 @@ export function MediumTopAppBar({
   subtitle,
   isFavorited = false,
   onFavoriteToggle,
+  leadingIcon = 'back',
   onBack,
 }: MediumTopAppBarProps) {
   const navigate = useNavigate();
@@ -43,12 +46,12 @@ export function MediumTopAppBar({
         className="flex items-center justify-between"
         style={{ height: 48, padding: '0 4px' }}
       >
-        {/* Back button */}
+        {/* Back / Close button */}
         <button
           className="flex items-center justify-center border-none bg-transparent"
           style={{ width: 48, height: 48, padding: 0 }}
           onClick={handleBack}
-          aria-label="Go back"
+          aria-label={leadingIcon === 'close' ? 'Close' : 'Go back'}
         >
           <span
             aria-hidden="true"
@@ -56,8 +59,10 @@ export function MediumTopAppBar({
             style={{
               width: 24, height: 24,
               backgroundColor: 'var(--color-icon-primary-default)',
-              maskImage: 'url(/icons/arrow-left.svg)', maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
-              WebkitMaskImage: 'url(/icons/arrow-left.svg)', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
+              maskImage: `url(/icons/${leadingIcon === 'close' ? 'close' : 'arrow-left'}.svg)`,
+              maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
+              WebkitMaskImage: `url(/icons/${leadingIcon === 'close' ? 'close' : 'arrow-left'}.svg)`,
+              WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
             }}
           />
         </button>

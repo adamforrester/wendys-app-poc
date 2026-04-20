@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, type ReactNode } from 'react';
 
-export type FulfillmentMethod = 'drive-thru' | 'carry-out' | 'curbside';
+export type FulfillmentMethod = 'drive-thru' | 'carry-out' | 'dine-in' | 'curbside';
 export type LocationPermission = 'granted' | 'denied' | 'prompt';
 
 export interface Location {

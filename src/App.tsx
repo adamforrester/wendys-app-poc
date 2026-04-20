@@ -17,6 +17,7 @@ import { DevToolsScreen } from './screens/Account/DevToolsScreen';
 import { MenuCategoryScreen } from './screens/Order/MenuCategoryScreen';
 import { MenuProductListScreen } from './screens/Order/MenuProductListScreen';
 import { SingleProductScreen } from './screens/Order/SingleProductScreen';
+import { LocationConfirmationScreen } from './screens/Order/LocationConfirmationScreen';
 import splashAnimation from './animations/lottie/splash.json';
 
 export default function App() {
@@ -49,6 +50,8 @@ export default function App() {
                     </Route>
                     {/* SPP — full screen, no tab bar */}
                     <Route path="/order/menu/:slug/:productId" element={<SingleProductScreen />} />
+                    {/* Location confirmation — shown once before bag */}
+                    <Route path="/order/confirm-location" element={<LocationConfirmationScreen />} />
                   </Routes>
                 </DeviceFrame>
               </BrowserRouter>

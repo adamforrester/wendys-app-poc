@@ -14,8 +14,10 @@ import { ListRow } from '../../components/ListRow/ListRow';
 import { Chip } from '../../components/Chip/Chip';
 import { RadioButton } from '../../components/RadioButton/RadioButton';
 import { OrderBar } from '../../components/OrderBar/OrderBar';
+import { Snackbar } from '../../components/Snackbar/Snackbar';
 import { Dialog } from '../../components/Dialog/Dialog';
 import { useMenuData } from '../../hooks/useMenuData';
+import { useBag } from '../../context/BagContext';
 
 /* ── Ingredient name → image path resolver ── */
 const ingredientImageMap: Record<string, string> = {
@@ -481,6 +483,7 @@ export function SingleProductScreen() {
     getAddOnGroupsForProduct,
     categories,
   } = useMenuData();
+  const { state: bagState, dispatch: bagDispatch } = useBag();
 
   const product = getProductById(productId || '');
   const ingredients = product ? getIngredientsForProduct(product.id) : [];
@@ -517,6 +520,7 @@ export function SingleProductScreen() {
   const [addOnCounters, setAddOnCounters] = useState<Record<string, number>>({});
   const [showMediumBar, setShowMediumBar] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
+  const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
   const [nutritionTab, setNutritionTab] = useState('nutrition');
   const [showAllAddOns, setShowAllAddOns] = useState(false);
 
@@ -568,8 +572,23 @@ export function SingleProductScreen() {
   };
 
   const handleAddToBag = () => {
-    // TODO: dispatch to BagContext
-    navigate(-1);
+    if (!product) return;
+    const price = product.isCombo && product.comboPrice
+      ? product.comboPrice
+      : product.price || 0;
+    bagDispatch({
+      type: 'ADD_ITEM',
+      item: {
+        id: `${product.id}-${Date.now()}`,
+        menuItemId: product.id,
+        name: product.name,
+        quantity,
+        price: typeof price === 'number' ? price : parseFloat(String(price)) || 0,
+        customizations: { removed: Array.from(removedIngredients) },
+        comboSelections: null,
+      },
+    });
+    setShowAddedSnackbar(true);
   };
 
   const scrollToNutrition = () => {
@@ -1244,6 +1263,32 @@ export function SingleProductScreen() {
           onAddToBag={handleAddToBag}
         />
       </div>
+
+      {/* Add to Bag snackbar */}
+      <AnimatePresence>
+        {showAddedSnackbar && (
+          <div style={{ position: 'absolute', bottom: 100, left: 0, right: 0, zIndex: 30 }}>
+            <Snackbar
+              message="Item added to bag"
+              actionLabel="Checkout"
+              onAction={() => {
+                setShowAddedSnackbar(false);
+                if (bagState.locationConfirmed) {
+                  navigate('/order/bag');
+                } else {
+                  navigate('/order/confirm-location');
+                }
+              }}
+              showClose
+              onClose={() => {
+                setShowAddedSnackbar(false);
+                navigate(-1);
+              }}
+              duration={4000}
+            />
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Combo leave confirmation dialog */}
       <Dialog

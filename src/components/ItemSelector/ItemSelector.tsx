@@ -1,5 +1,5 @@
 export type ItemSelectorSize = 'large' | 'small';
-export type CaptionColor = 'default' | 'positive' | 'critical';
+export type CaptionColor = 'default' | 'positive' | 'critical' | 'warning';
 
 export interface ItemSelectorProps {
   /** Title text below image */
@@ -24,6 +24,7 @@ const captionColorTokens: Record<CaptionColor, string> = {
   default: 'var(--color-text-secondary-default)',
   positive: 'var(--color-text-validation-positive)',
   critical: 'var(--color-text-validation-critical)',
+  warning: 'var(--color-text-validation-caution)',
 };
 
 export function ItemSelector({

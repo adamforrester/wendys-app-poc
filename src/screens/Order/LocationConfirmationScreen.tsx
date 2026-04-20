@@ -104,7 +104,6 @@ export function LocationConfirmationScreen() {
         titleWeight="semibold"
         showBackButton
         onBack={() => navigate(-1)}
-        showBag
       />
 
       <div className="flex-1 overflow-y-auto">

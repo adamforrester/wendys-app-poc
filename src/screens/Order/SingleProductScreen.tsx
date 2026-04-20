@@ -707,41 +707,14 @@ export function SingleProductScreen() {
           isFavorited={isFavorited}
           onFavoriteToggle={setIsFavorited}
           onNutritionPress={scrollToNutrition}
+          sizeLabel={product.isCombo && (product as any).sizeSelectorEnabled ? 'Med' : undefined}
+          onSizePress={product.isCombo && (product as any).sizeSelectorEnabled ? () => {/* TODO: combo size bottom sheet */} : undefined}
         />
       </div>
 
       {/* ── COMBO LAYOUT: Component Cards ── */}
       {product.isCombo && (product as any).defaultComponents && (
         <>
-          {/* Combo size selector */}
-          {(product as any).sizeSelectorEnabled && (
-            <div className="flex items-center gap-wds-8 px-wds-16 pb-wds-8">
-              <button
-                className="flex items-center gap-wds-4 border-none"
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 9999,
-                  border: '1.5px solid var(--color-border-brand-secondary-default)',
-                  backgroundColor: 'var(--color-bg-primary-default)',
-                  color: 'var(--color-text-brand-secondary-default)',
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 16,
-                  fontWeight: 700,
-                }}
-              >
-                Med
-                <span
-                  className="inline-block"
-                  style={{
-                    width: 12, height: 12,
-                    backgroundColor: 'var(--color-icon-brand-secondary-default)',
-                    maskImage: 'url(/icons/caret-down.svg)', maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
-                    WebkitMaskImage: 'url(/icons/caret-down.svg)', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
-                  }}
-                />
-              </button>
-            </div>
-          )}
 
           {/* Component cards */}
           <div className="px-wds-16 pb-wds-16" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

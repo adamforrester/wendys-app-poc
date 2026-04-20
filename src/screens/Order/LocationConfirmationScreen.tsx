@@ -8,6 +8,13 @@ import { useBag } from '../../context/BagContext';
 import { useLocation } from '../../context/LocationContext';
 import { useLocationData } from '../../hooks/useLocationData';
 
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+
+function getStaticMapUrl(lat: number, lng: number): string | null {
+  if (!MAPBOX_TOKEN) return null;
+  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+cd2028(${lng},${lat})/${lng},${lat},14,0/390x179@2x?access_token=${MAPBOX_TOKEN}`;
+}
+
 interface FulfillmentOption {
   id: string;
   label: string;
@@ -101,44 +108,23 @@ export function LocationConfirmationScreen() {
       />
 
       <div className="flex-1 overflow-y-auto">
-        {/* Static map placeholder */}
-        <div
+        {/* Static map image */}
+        <img
+          src={
+            getStaticMapUrl(location.coordinates.lat, location.coordinates.lng)
+            || '/images/generic-map.png'
+          }
+          alt={`Map showing ${location.name}`}
           style={{
             width: '100%',
             height: 179,
-            backgroundColor: 'var(--color-bg-secondary-default)',
-            position: 'relative',
-            overflow: 'hidden',
+            objectFit: 'cover',
+            display: 'block',
           }}
-        >
-          {/* Map placeholder with pin */}
-          <div
-            className="flex items-center justify-center"
-            style={{
-              width: '100%',
-              height: '100%',
-              background: 'linear-gradient(135deg, #e8e8e8 0%, #d4d4d4 100%)',
-            }}
-          >
-            <span
-              aria-hidden="true"
-              className="inline-block"
-              style={{
-                width: 32,
-                height: 40,
-                backgroundColor: 'var(--color-bg-brand-primary-default)',
-                maskImage: 'url(/icons/map-pin.svg)',
-                maskSize: 'contain',
-                maskRepeat: 'no-repeat',
-                maskPosition: 'center',
-                WebkitMaskImage: 'url(/icons/map-pin.svg)',
-                WebkitMaskSize: 'contain',
-                WebkitMaskRepeat: 'no-repeat',
-                WebkitMaskPosition: 'center',
-              }}
-            />
-          </div>
-        </div>
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/images/generic-map.png';
+          }}
+        />
 
         {/* Section Header: Confirm Your Location */}
         <SectionHeader title="Confirm Your Location" />

@@ -61,7 +61,7 @@ function ComboItemDemo() {
       comboItems={[
         { name: "Dave's Single", imageSrc: '/images/product-images/food_hamburgers_dave-s-single_2387.png' },
         { name: 'Medium Natural-Cut Fries', imageSrc: '/images/product-images/food_fries-sides_french-fries_165.png' },
-        { name: 'Medium Sweetened Iced Tea' },
+        { name: 'Medium Sweetened Iced Tea', imageSrc: '/images/product-images/food_beverages_sweet-iced-tea_199.png' },
       ]}
     />
   );
@@ -97,7 +97,7 @@ function MultipleBagItems() {
         comboItems={[
           { name: "Dave's Single", imageSrc: '/images/product-images/food_hamburgers_dave-s-single_2387.png' },
           { name: 'Medium Natural-Cut Fries', imageSrc: '/images/product-images/food_fries-sides_french-fries_165.png' },
-          { name: 'Medium Sweetened Iced Tea' },
+          { name: 'Medium Sweetened Iced Tea', imageSrc: '/images/product-images/food_beverages_sweet-iced-tea_199.png' },
         ]}
       />
     </>

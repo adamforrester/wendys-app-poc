@@ -207,9 +207,9 @@ export function BagItemCard({
         </span>
       </div>
 
-      {/* Combo sub-items */}
+      {/* Combo sub-items — inset to align with product name */}
       {isCombo && (
-        <div className="flex flex-col px-wds-16 pb-wds-8" style={{ gap: 8 }}>
+        <div className="flex flex-col pb-wds-8" style={{ gap: 8, paddingLeft: 88, paddingRight: 16 }}>
           {comboItems.map((item, i) => (
             <div
               key={`${item.name}-${i}`}
@@ -249,13 +249,16 @@ export function BagItemCard({
       {/* Actions row */}
       <div
         className="flex items-center"
-        style={{ padding: '0 16px', gap: 0 }}
+        style={{ padding: '0 16px 16px 16px', gap: 0 }}
       >
         {/* Quantity selector */}
         <QuantitySelector
           quantity={quantity}
           onPress={() => setShowQuantitySheet(true)}
         />
+
+        {/* Spacer between quantity and favorite */}
+        <div style={{ width: 8 }} />
 
         {/* Favorite heart */}
         <button

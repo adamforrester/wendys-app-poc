@@ -412,6 +412,27 @@ Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (keb
 
 **28 Figma variants** across title size, image side, image size, CTA style, and loading state. Card is 358px wide, white bg, 1px gray border, 8px radius.
 
+### BagItemCard
+**Location:** `src/components/BagItemCard/BagItemCard.tsx`
+**Use when:** Bag screen — displays a product in the cart with quantity selector, favorite, edit/remove actions. Handles both single items and combos.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `name` | `string` | Product name |
+| `price` | `string` | Price display (e.g., "$10.49") |
+| `imageSrc` | `string` | Product image URL |
+| `quantity` | `number` | Current quantity |
+| `onQuantityChange` | `(qty: number) => void` | Quantity change handler |
+| `isFavorited` | `boolean` | Favorite state |
+| `onFavoriteToggle` | `(boolean) => void` | Favorite toggle handler |
+| `onEdit` | `() => void` | Edit button handler |
+| `onRemove` | `() => void` | Remove button handler |
+| `comboItems` | `BagComboSubItem[]` | Combo sub-items (renders nested bordered cards) |
+
+**Quantity selector:** Bordered button with number + caret-down. Tapping opens a BottomSheet with "Choose Quantity:" title and numbers 1-10. Current selection shown in bold.
+
+**Combo items:** Nested bordered cards with 40px image + product name. Read-only, no actions.
+
 ---
 
 ## Screen Composition Patterns

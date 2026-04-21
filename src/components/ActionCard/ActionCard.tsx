@@ -131,10 +131,14 @@ export function ActionCard({
   /* ── Content element ── */
   const titleStyles = getTitleStyles(titleSize);
 
+  const contentPadding = imageSide === 'left'
+    ? '8px 16px 12px 4px'
+    : '8px 4px 12px 16px';
+
   const contentElement = (
     <div
       className="flex flex-col flex-1 min-w-0"
-      style={{ padding: '8px 16px 12px 4px', gap: 12 }}
+      style={{ padding: contentPadding, gap: 12 }}
     >
       {/* Text content */}
       <div className="flex flex-col" style={{ gap: 4 }}>

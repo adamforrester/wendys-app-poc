@@ -179,7 +179,7 @@ export function ActionCard({
 
       {/* Label + CTA */}
       {(label || (ctaType !== 'none' && ctaLabel)) && (
-        <div className="flex flex-col" style={{ gap: 12 }}>
+        <div className="flex flex-col" style={{ gap: 8 }}>
           {label && (
             <div className="flex">
               <Label>{label}</Label>

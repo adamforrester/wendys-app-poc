@@ -25,7 +25,7 @@ export const ImageLeftOutline: Story = {
     overline: 'Overline',
     title: 'Baconator Fries',
     subtitle: '$3.99 | 480 Cal.',
-    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_2407.png',
+    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_217.png',
     imageSide: 'left',
     imageSize: 112,
     ctaType: 'outline',
@@ -40,7 +40,7 @@ export const ImageRightOutline: Story = {
     overline: 'Limited Time',
     title: 'Classic Frosty',
     subtitle: '$1.00 | 4 Sizes',
-    imageSrc: '/images/product-images/food_frosty_chocolate-frosty_2412.png',
+    imageSrc: '/images/product-images/food_frosty-_classic-chocolate-frosty_179.png',
     imageSide: 'right',
     imageSize: 112,
     ctaType: 'outline',
@@ -53,7 +53,7 @@ export const ImageLeftText: Story = {
   args: {
     title: 'Baconator Fries',
     subtitle: '$3.99 | 480 Cal.',
-    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_2407.png',
+    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_217.png',
     imageSide: 'left',
     imageSize: 112,
     ctaType: 'text',
@@ -67,7 +67,7 @@ export const SmallImage: Story = {
     overline: 'Add-on',
     title: 'Small Chili',
     subtitle: '$2.49',
-    imageSrc: '/images/product-images/food_fries-sides_chili_2408.png',
+    imageSrc: '/images/product-images/food_fries-sides_chili_170.png',
     imageSize: 48,
     ctaType: 'text',
     ctaLabel: 'Add to Bag',
@@ -79,7 +79,7 @@ export const ImageRightSmall: Story = {
   args: {
     title: 'Jr. Frosty',
     subtitle: 'Free with purchase',
-    imageSrc: '/images/product-images/food_frosty_chocolate-frosty_2412.png',
+    imageSrc: '/images/product-images/food_frosty-_classic-chocolate-frosty_179.png',
     imageSide: 'right',
     imageSize: 48,
     ctaType: 'outline',
@@ -93,7 +93,7 @@ export const TitleXS: Story = {
     title: 'Baconator Fries',
     subtitle: '$3.99 | 480 Cal.',
     titleSize: 'title-xs',
-    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_2407.png',
+    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_217.png',
     ctaType: 'text',
     ctaLabel: 'Add to Bag',
   },
@@ -102,10 +102,10 @@ export const TitleXS: Story = {
 /* ── Title 2XS ── */
 export const Title2XS: Story = {
   args: {
-    title: 'Small Side Salad',
+    title: 'Caesar Salad',
     subtitle: '$1.99',
     titleSize: 'title-2xs',
-    imageSrc: '/images/product-images/food_salads_caesar-side-salad_2400.png',
+    imageSrc: '/images/product-images/food_fresh-made-salads_parmesan-caesar-salad_1323.png',
     imageSize: 48,
     ctaType: 'text',
     ctaLabel: 'Add',
@@ -116,9 +116,9 @@ export const Title2XS: Story = {
 export const NoCTA: Story = {
   args: {
     overline: 'Featured',
-    title: 'Dave\'s Single',
+    title: "Dave's Single",
     subtitle: '$6.49 | 590 Cal.',
-    imageSrc: '/images/product-images/food_hamburgers_daves-single_2376.png',
+    imageSrc: '/images/product-images/food_hamburgers_dave-s-single_2387.png',
     ctaType: 'none',
     label: 'Popular',
   },
@@ -130,7 +130,7 @@ export const WithLabel: Story = {
     overline: 'Recommended',
     title: 'Baconator Fries',
     subtitle: '$3.99 | 480 Cal.',
-    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_2407.png',
+    imageSrc: '/images/product-images/food_fries-sides_baconator-fries_217.png',
     label: '$3.99',
     ctaType: 'outline',
     ctaLabel: 'Add to Bag',
@@ -164,7 +164,7 @@ export const BagCarouselPreview: Story = {
         <ActionCard
           title="Baconator Fries"
           subtitle="$3.99 | 480 Cal."
-          imageSrc="/images/product-images/food_fries-sides_baconator-fries_2407.png"
+          imageSrc="/images/product-images/food_fries-sides_baconator-fries_217.png"
           imageSide="right"
           imageSize={112}
           ctaType="text"
@@ -175,7 +175,7 @@ export const BagCarouselPreview: Story = {
         <ActionCard
           title="Classic Frosty"
           subtitle="$1.00 | 4 Sizes"
-          imageSrc="/images/product-images/food_frosty_chocolate-frosty_2412.png"
+          imageSrc="/images/product-images/food_frosty-_classic-chocolate-frosty_179.png"
           imageSide="right"
           imageSize={112}
           ctaType="text"

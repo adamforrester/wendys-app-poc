@@ -391,6 +391,27 @@ Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (keb
 
 **Renders conditionally** on SPP when an add-on has `isFeaturedUpsell: true`.
 
+### ActionCard
+**Location:** `src/components/ActionCard/ActionCard.tsx`
+**Use when:** Bag "Complete your meal" upsell carousel, cross-sell suggestions, promo cards. Horizontal card with image + text + CTA.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `titleSize` | `'title-m' \| 'title-xs' \| 'title-2xs'` | Title typography — m (20px), xs (16px), 2xs (12px) |
+| `imageSrc` | `string` | Product/promo image |
+| `imageSide` | `'left' \| 'right'` | Image position |
+| `imageSize` | `112 \| 48` | Image dimensions in px |
+| `overline` | `string` | Small text above title |
+| `title` | `string` | Main title text |
+| `subtitle` | `string` | Below title (price, calories) |
+| `label` | `string` | Bordered pill label (e.g., price tag) |
+| `ctaType` | `'outline' \| 'text' \| 'none'` | CTA button style |
+| `ctaLabel` | `string` | CTA button text |
+| `onCtaPress` | `() => void` | CTA click handler |
+| `loading` | `boolean` | Shimmer skeleton state |
+
+**28 Figma variants** across title size, image side, image size, CTA style, and loading state. Card is 358px wide, white bg, 1px gray border, 8px radius.
+
 ---
 
 ## Screen Composition Patterns

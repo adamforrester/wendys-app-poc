@@ -50,16 +50,24 @@ function getTitleStyles(size: ActionCardTitleSize) {
 /* ── Skeleton shimmer ── */
 function Skeleton({ width, height, radius = 4 }: { width: number | string; height: number; radius?: number }) {
   return (
-    <div
-      style={{
-        width,
-        height,
-        borderRadius: radius,
-        background: 'linear-gradient(90deg, var(--color-bg-secondary-default) 25%, var(--color-bg-tertiary-default) 50%, var(--color-bg-secondary-default) 75%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 1.5s infinite',
-      }}
-    />
+    <>
+      <div
+        style={{
+          width,
+          height,
+          borderRadius: radius,
+          background: 'linear-gradient(90deg, #e8e8e8 0%, #f5f5f5 40%, #e8e8e8 80%)',
+          backgroundSize: '200% 100%',
+          animation: 'action-card-shimmer 1.5s ease-in-out infinite',
+        }}
+      />
+      <style>{`
+        @keyframes action-card-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+    </>
   );
 }
 

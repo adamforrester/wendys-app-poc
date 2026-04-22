@@ -136,7 +136,7 @@ export function BagScreen() {
         onBack={() => navigate('/order/menu')}
       />
 
-      <div className="flex-1 min-h-0 overflow-y-auto">
+      <div style={{ flex: '1 1 0', minHeight: 0, overflowY: 'auto' }}>
         {/* Pickup / Location row */}
         {location && (
           <ListRow
@@ -270,11 +270,11 @@ export function BagScreen() {
         <div
           ref={carouselRef}
           className="flex gap-wds-12 overflow-x-auto pb-wds-8"
-          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', paddingLeft: 16, paddingRight: 16 }}
+          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
           onScroll={handleCarouselScroll}
         >
           {crossSellItems.map((item, i) => (
-            <div key={i} className="flex-shrink-0" style={{ scrollSnapAlign: 'start' }}>
+            <div key={i} className="flex-shrink-0" style={{ scrollSnapAlign: 'start', marginLeft: i === 0 ? 16 : 0, marginRight: i === crossSellItems.length - 1 ? 16 : 0 }}>
               <ActionCard
                 title={item.title}
                 subtitle={item.subtitle}

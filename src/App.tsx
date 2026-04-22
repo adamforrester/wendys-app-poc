@@ -18,6 +18,7 @@ import { MenuCategoryScreen } from './screens/Order/MenuCategoryScreen';
 import { MenuProductListScreen } from './screens/Order/MenuProductListScreen';
 import { SingleProductScreen } from './screens/Order/SingleProductScreen';
 import { LocationConfirmationScreen } from './screens/Order/LocationConfirmationScreen';
+import { BagScreen } from './screens/Order/BagScreen';
 import splashAnimation from './animations/lottie/splash.json';
 
 export default function App() {
@@ -52,6 +53,8 @@ export default function App() {
                     <Route path="/order/menu/:slug/:productId" element={<SingleProductScreen />} />
                     {/* Location confirmation — shown once before bag */}
                     <Route path="/order/confirm-location" element={<LocationConfirmationScreen />} />
+                    {/* Bag screen */}
+                    <Route path="/order/bag" element={<BagScreen />} />
                   </Routes>
                 </DeviceFrame>
               </BrowserRouter>

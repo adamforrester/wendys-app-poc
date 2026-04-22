@@ -437,8 +437,8 @@ When using figma-console:
 
 ## Build Progress
 
-### Components Built (39)
-Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar, Dialog, UpsellCard, ActionCard, BagItemCard
+### Components Built (41)
+Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar, Dialog, UpsellCard, ActionCard, BagItemCard, OrderSummary, DonationSection
 
 ### Remaining Components
 SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
@@ -517,16 +517,18 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 | Combos (all) | ✅ Populated layout | Component cards with Edit links, "Price in Bag", combo size selector. Close X with confirm dialog. 39 combos have defaultComponents data. Combo wizard not yet built. |
 | Kids Meals | ✅ Populated layout | Same combo pattern — 4 component cards (entrée + side + drink + toy) |
 
-### Screens Built (9)
+### Screens Built (12)
 - **Splash Screen** — cameo logo → Lottie animation → fade to app (configurable timing, swappable animation)
 - **Home Screen (auth)** — hero banner, offers section with real data, privacy policy link. Sticky TopAppBar.
 - **Offers Screen** — Offers tab (segmented control, promo code button, available/unavailable/redeemed sections) + Rewards tab (2-up card grid with 21 items sorted by points, View History button, Learn More section)
 - **Order Screen** — Mapbox map, BottomSheet with OrderLocationCards, Pickup/Delivery segmented control, search
 - **Menu Category Screen** (`/order/menu`) — daypart-aware category grid (14 all-day, 9 breakfast), quick action icons (Recents/Favorites/Rewards), pickup location + offer applied ListRows
 - **Menu Product List (PLP)** (`/order/menu/:slug`) — scrollable category tabs with swipe, 2-up MenuCard grid with price + calories, daypart-aware tab sets
-- **Single Product Page (SPP)** (`/order/menu/:slug/:productId`) — modular shell: TransparentTopBar → HeroImage → ProductHeader → Make it a Combo → What's On It ingredient tiles → Add Extras with counters/chips → Nutrition/Ingredients tabs → sticky OrderBar. MediumTopAppBar slides in on scroll. Full screen (no tab bar).
-- **Account Screen** (`/account`) — red hero with cameo logo + greeting, 7 ListRows (Mobile Pay, Favorites, History, Settings, Privacy, Contact Us, Developer Tools)
-- **Developer Tools Screen** (`/account/dev-tools`) — 14 feature flags with auto-generated toggles from registry, state controls (auth, daypart, location, fulfillment, bag), session reset, current state JSON dump
+- **Single Product Page (SPP)** (`/order/menu/:slug/:productId`) — modular shell with Add to Bag → snackbar → location confirmation gate
+- **Account Screen** (`/account`) — red hero with cameo logo + greeting, 7 ListRows
+- **Developer Tools Screen** (`/account/dev-tools`) — 14 feature flags with auto-generated toggles
+- **Location Confirmation** (`/order/confirm-location`) — static Mapbox map, store details, fulfillment method selector, one-time gate
+- **Bag Screen** (`/order/bag`) — pickup/payment/time ListRows, BagItemCards (single + combo), ActionCard carousel, Round Up & Donate, OrderSummary, sticky Place Order CTA
 
 ## Open Questions (from PRD)
 

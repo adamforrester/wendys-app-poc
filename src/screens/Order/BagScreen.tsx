@@ -102,7 +102,7 @@ export function BagScreen() {
           titlePlacement="center"
           titleWeight="black"
           showBackButton
-          onBack={() => navigate(-1)}
+          onBack={() => navigate('/order/menu')}
         />
         <div className="flex-1 flex flex-col items-center justify-center px-wds-16" style={{ gap: 16 }}>
           <span
@@ -133,15 +133,16 @@ export function BagScreen() {
         titlePlacement="center"
         titleWeight="black"
         showBackButton
-        onBack={() => navigate(-1)}
+        onBack={() => navigate('/order/menu')}
       />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {/* Pickup / Location row */}
         {location && (
           <ListRow
             headline={`Pickup | ${fulfillmentLabel}`}
             supportText={getFormattedAddress(location)}
+            leading="icon"
             leadingIcon="location-outline"
             metadata="Edit"
             metadataColor="var(--color-text-brand-secondary-default)"
@@ -154,6 +155,7 @@ export function BagScreen() {
         <ListRow
           headline="Payment Method"
           supportText="Apple Pay"
+          leading="icon"
           leadingIcon="credit-card"
           metadata="Edit"
           metadataColor="var(--color-text-brand-secondary-default)"
@@ -166,6 +168,7 @@ export function BagScreen() {
             <ListRow
               headline="Pickup Time"
               supportText={selectedPickupTime ? `Today, ${selectedPickupTime}` : undefined}
+              leading="icon"
               leadingIcon="clock"
               metadata={selectedPickupTime ? 'Edit' : undefined}
               metadataColor="var(--color-text-brand-secondary-default)"
@@ -260,13 +263,14 @@ export function BagScreen() {
         {/* Complete your meal — cross-sell carousel */}
         <SectionHeader
           title="Complete your meal"
+          size="small"
           ctaLabel="View All"
           onCtaPress={() => {/* TODO: bottom sheet with all items */}}
         />
         <div
           ref={carouselRef}
-          className="flex gap-wds-12 overflow-x-auto px-wds-16 pb-wds-8"
-          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
+          className="flex gap-wds-12 overflow-x-auto pb-wds-8"
+          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', paddingLeft: 16, paddingRight: 16 }}
           onScroll={handleCarouselScroll}
         >
           {crossSellItems.map((item, i) => (

@@ -100,6 +100,8 @@ function QuantitySheet({
 }) {
   const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+  if (!isOpen) return null;
+
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose} height="60%" scrollable>
       <div className="flex flex-col items-center px-wds-16">

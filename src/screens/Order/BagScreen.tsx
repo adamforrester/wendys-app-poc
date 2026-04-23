@@ -126,17 +126,17 @@ export function BagScreen() {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ backgroundColor: 'var(--color-bg-primary-default)' }}>
-      <TopAppBar
-        titleMode="title"
-        title="Your Bag"
-        titlePlacement="center"
-        titleWeight="black"
-        showBackButton
-        onBack={() => navigate('/order/menu')}
-      />
+    <div className="relative h-full" style={{ backgroundColor: 'var(--color-bg-primary-default)' }}>
+      <div className="h-full overflow-y-auto">
+        <TopAppBar
+          titleMode="title"
+          title="Your Bag"
+          titlePlacement="center"
+          titleWeight="black"
+          showBackButton
+          onBack={() => navigate('/order/menu')}
+        />
 
-      <div style={{ flex: '1 1 0', minHeight: 0, overflowY: 'auto' }}>
         {/* Pickup / Location row */}
         {location && (
           <ListRow
@@ -274,7 +274,7 @@ export function BagScreen() {
           onScroll={handleCarouselScroll}
         >
           {crossSellItems.map((item, i) => (
-            <div key={i} className="flex-shrink-0" style={{ scrollSnapAlign: 'start', marginLeft: i === 0 ? 16 : 0, marginRight: i === crossSellItems.length - 1 ? 16 : 0 }}>
+            <div key={i} className="flex-shrink-0" style={{ scrollSnapAlign: 'start', paddingLeft: i === 0 ? 16 : 0, paddingRight: i === crossSellItems.length - 1 ? 16 : 0 }}>
               <ActionCard
                 title={item.title}
                 subtitle={item.subtitle}
@@ -361,10 +361,15 @@ export function BagScreen() {
         <div style={{ height: 80 }} />
       </div>
 
-      {/* Place Order — sticky bottom */}
+      {/* Place Order — absolutely positioned at bottom */}
       <div
         className="px-wds-24 pb-wds-24 pt-wds-16"
         style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 20,
           backgroundColor: 'var(--color-bg-primary-default)',
           borderTop: '1px solid var(--color-border-tertiary-default)',
         }}

@@ -371,25 +371,6 @@ Added `iconColor` prop — pass a token color to override the default (e.g., `va
 
 Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (kebab-case).
 
-### UpsellCard
-**Location:** `src/components/UpsellCard/UpsellCard.tsx`
-**Use when:** SPP Module M8 — "Featured Upsell Card" for suggesting add-ons (e.g., bacon on Dave's Single).
-
-| Prop | Type | When to use |
-|---|---|---|
-| `overline` | `string` | Defaults to "Add a little bonus" |
-| `title` | `string` | Add-on name (e.g., "Applewood Smoked Bacon") |
-| `subtitle` | `string` | Price string (e.g., "+$1.99") |
-| `imageSrc` | `string` | Ingredient image URL |
-| `isAdded` | `boolean` | Toggle between resting/active states |
-| `onAdd` | `() => void` | "Add it on" handler |
-| `onRemove` | `() => void` | "Remove it" handler |
-
-**States:**
-- **Resting:** "Add it on" teal link
-- **Active:** Green bordered "Added" label with checkmark + "Remove it" teal link
-
-**Renders conditionally** on SPP when an add-on has `isFeaturedUpsell: true`.
 
 ### ActionCard
 **Location:** `src/components/ActionCard/ActionCard.tsx`
@@ -408,9 +389,14 @@ Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (keb
 | `ctaType` | `'outline' \| 'text' \| 'none'` | CTA button style |
 | `ctaLabel` | `string` | CTA button text |
 | `onCtaPress` | `() => void` | CTA click handler |
+| `isAdded` | `boolean` | Shows animated "Added" badge + switches CTA to "Remove it" |
+| `onAdd` | `() => void` | "Add it on" handler (SPP upsell mode) |
+| `onRemove` | `() => void` | "Remove it" handler (SPP upsell mode) |
 | `loading` | `boolean` | Shimmer skeleton state |
 
 **28 Figma variants** across title size, image side, image size, CTA style, and loading state. Card is 358px wide, white bg, 1px gray border, 8px radius.
+
+**SPP upsell mode:** Pass `onAdd`/`onRemove` instead of `ctaType`/`ctaLabel` to get the add/remove toggle with animated "Added" green badge (replaces the former UpsellCard component).
 
 ### BagItemCard
 **Location:** `src/components/BagItemCard/BagItemCard.tsx`

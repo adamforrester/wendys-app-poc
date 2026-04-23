@@ -1,5 +1,7 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../Button/Button';
 import { Label } from '../Label/Label';
+import { haptics } from '../../animations/haptics';
 
 export type ActionCardTitleSize = 'title-m' | 'title-xs' | 'title-2xs';
 export type ActionCardCTA = 'outline' | 'text' | 'none';
@@ -31,6 +33,12 @@ export interface ActionCardProps {
   ctaLabel?: string;
   /** CTA click handler */
   onCtaPress?: () => void;
+  /** Whether the item has been added (shows "Added" badge, switches CTA to "Remove") */
+  isAdded?: boolean;
+  /** Called when user taps "Add" CTA in added mode */
+  onAdd?: () => void;
+  /** Called when user taps "Remove" CTA in added mode */
+  onRemove?: () => void;
   /** Show loading skeleton */
   loading?: boolean;
 }
@@ -84,6 +92,9 @@ export function ActionCard({
   ctaType = 'outline',
   ctaLabel,
   onCtaPress,
+  isAdded = false,
+  onAdd,
+  onRemove,
   loading = false,
 }: ActionCardProps) {
   const imagePadding = 8;
@@ -186,14 +197,84 @@ export function ActionCard({
       </div>
 
       {/* Label + CTA */}
-      {(label || (ctaType !== 'none' && ctaLabel)) && (
+      {(label || (ctaType !== 'none' && ctaLabel) || onAdd || onRemove) && (
         <div className="flex flex-col" style={{ gap: 8 }}>
-          {label && (
+          {/* "Added" badge — animated in/out */}
+          <AnimatePresence>
+            {isAdded && (
+              <motion.div
+                className="flex"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 24 }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <span
+                  className="inline-flex items-center gap-wds-4"
+                  style={{
+                    padding: '4px 12px 4px 8px',
+                    borderRadius: 8,
+                    border: '1px solid var(--color-border-validation-positive)',
+                    fontSize: 12,
+                    lineHeight: '16px',
+                    color: 'var(--color-text-validation-positive)',
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="inline-block"
+                    style={{
+                      width: 12,
+                      height: 12,
+                      backgroundColor: 'var(--color-icon-validation-positive)',
+                      maskImage: 'url(/icons/check.svg)',
+                      maskSize: 'contain',
+                      maskRepeat: 'no-repeat',
+                      maskPosition: 'center',
+                      WebkitMaskImage: 'url(/icons/check.svg)',
+                      WebkitMaskSize: 'contain',
+                      WebkitMaskRepeat: 'no-repeat',
+                      WebkitMaskPosition: 'center',
+                    }}
+                  />
+                  <span className="font-display font-bold">Added</span>
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Add/Remove toggle CTA */}
+          {(onAdd || onRemove) && (
+            <button
+              className="self-start font-display font-bold underline"
+              style={{
+                fontSize: 14,
+                lineHeight: '20px',
+                color: 'var(--color-text-brand-secondary-default)',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                haptics.light();
+                if (isAdded) onRemove?.();
+                else onAdd?.();
+              }}
+            >
+              {isAdded ? 'Remove it' : 'Add it on'}
+            </button>
+          )}
+
+          {/* Standard label */}
+          {label && !onAdd && !onRemove && (
             <div className="flex">
               <Label>{label}</Label>
             </div>
           )}
-          {ctaType === 'outline' && ctaLabel && (
+
+          {/* Standard CTA — only when not using add/remove mode */}
+          {!onAdd && !onRemove && ctaType === 'outline' && ctaLabel && (
             <div className="flex">
               <Button
                 variant="outline"
@@ -204,7 +285,7 @@ export function ActionCard({
               </Button>
             </div>
           )}
-          {ctaType === 'text' && ctaLabel && (
+          {!onAdd && !onRemove && ctaType === 'text' && ctaLabel && (
             <button
               className="self-start font-display font-bold underline"
               style={{

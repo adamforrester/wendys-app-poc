@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 import { ActionCard } from './ActionCard';
 
 const meta: Meta<typeof ActionCard> = {
@@ -153,6 +154,40 @@ export const NoImage: Story = {
     subtitle: 'Limited time offer',
     ctaType: 'outline',
     ctaLabel: 'Apply',
+  },
+};
+
+/* ── Add/Remove Toggle (SPP upsell) ── */
+function UpsellToggleDemo() {
+  const [isAdded, setIsAdded] = useState(false);
+  return (
+    <ActionCard
+      overline="Add a little bonus"
+      title="Applewood Smoked Bacon"
+      subtitle="+$1.99"
+      titleSize="title-xs"
+      imageSrc="/images/product-images/food_hamburgers_dave-s-single_2387.png"
+      imageSize={48}
+      isAdded={isAdded}
+      onAdd={() => setIsAdded(true)}
+      onRemove={() => setIsAdded(false)}
+    />
+  );
+}
+
+export const UpsellToggle: Story = {
+  render: () => <UpsellToggleDemo />,
+};
+
+export const UpsellAdded: Story = {
+  args: {
+    overline: 'Add a little bonus',
+    title: 'Applewood Smoked Bacon',
+    subtitle: '+$1.99',
+    titleSize: 'title-xs',
+    imageSrc: '/images/product-images/food_hamburgers_dave-s-single_2387.png',
+    imageSize: 48,
+    isAdded: true,
   },
 };
 

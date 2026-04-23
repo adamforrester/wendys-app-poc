@@ -278,7 +278,7 @@ export function BagScreen() {
               <ActionCard
                 title={item.title}
                 subtitle={item.subtitle}
-                titleSize="title-xs"
+                titleSize="title-2xs"
                 imageSrc={item.imageSrc}
                 imageSide="right"
                 imageSize={112}

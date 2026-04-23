@@ -43,16 +43,16 @@ export interface ActionCardProps {
   loading?: boolean;
 }
 
-/* ── Title size styles ── */
+/* ── Title size styles (from Figma type styles) ── */
 function getTitleStyles(size: ActionCardTitleSize) {
   if (size === 'title-m') {
     return { fontSize: 20, lineHeight: '24px', fontWeight: 800 };
   }
   if (size === 'title-xs') {
-    return { fontSize: 16, lineHeight: '20px', fontWeight: 600 };
+    return { fontSize: 16, lineHeight: '20px', fontWeight: 700 };
   }
   // title-2xs
-  return { fontSize: 12, lineHeight: '16px', fontWeight: 800 };
+  return { fontSize: 14, lineHeight: '16px', fontWeight: 700 };
 }
 
 /* ── Skeleton shimmer ── */

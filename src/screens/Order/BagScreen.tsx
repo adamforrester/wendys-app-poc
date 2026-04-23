@@ -304,21 +304,23 @@ export function BagScreen() {
         </div>
 
         {/* Carousel dot indicators */}
-        <div className="flex justify-center gap-wds-4 pb-wds-16">
-          {crossSellItems.map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: i === carouselIndex
-                  ? 'var(--color-bg-primary-inverse-default)'
-                  : 'var(--color-bg-tertiary-default)',
-                transition: 'background-color 0.2s',
-              }}
-            />
-          ))}
+        <div className="flex justify-center items-center gap-wds-8 pb-wds-16">
+          {crossSellItems.map((_, i) => {
+            const isActive = i === carouselIndex;
+            return (
+              <div
+                key={i}
+                style={{
+                  width: isActive ? 24 : 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: isActive ? 'var(--color-bg-primary-inverse-default)' : 'transparent',
+                  border: isActive ? 'none' : '2px solid var(--color-border-secondary-default)',
+                  transition: 'all 0.2s',
+                }}
+              />
+            );
+          })}
         </div>
 
         {/* Disclaimer + Add More Items */}

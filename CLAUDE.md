@@ -102,6 +102,7 @@ After completing a new component or making significant changes:
 | Category images | `assets/category-images/` → `public/images/category-images/` | 14 category thumbnails, named `category_{name}_{id}.png` |
 | Content card images | `assets/images/content-cards/` → `public/images/content-cards/` | Large + small placeholder banners |
 | Splash animation | `assets/splash-screen-animation/splash.json` → `src/animations/lottie/` | Lottie JSON |
+| Voice ordering animation | `assets/voice-animation.json` → `src/animations/lottie/voice-animation.json` | Lottie JSON — plays during agent speech on the `/voice` screen |
 | Voice-ordering data (vendored) | `src/features/voice-ordering/data/` | `system_prompt.md` (authored), `semantic_menu_v3.json` (derived from sibling repo), `wendys-locations.json` (5,629 stores, scraped) |
 | Voice-ordering data pipeline (sibling repo) | `../Menu Images/voice-ordering/` | NOT in this repo — Playwright scrapers + merge build that produce v3 from `menu.json`+`ingredients.json`+scraped sources. Run via `npm run refresh-voice-data`. |
 
@@ -157,8 +158,11 @@ AI-powered voice ordering, isolated under `src/features/voice-ordering/`. The on
 | `src/features/voice-ordering/useClaudeConversation.ts` | Orchestration hook. Owns conversation history, composes the system prompt with prompt-cache markers, routes mock/live, parses orders, dispatches `ADD_ITEM` to `BagContext`. |
 | `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. Exposes `isPlaying` so the mic auto-loop waits until TTS finishes before re-opening. |
 | `src/features/voice-ordering/useSpeechInput.ts` | STT hook. Wraps the browser-native `SpeechRecognition` (Web Speech API) with continuous + interim results and a silence timer that auto-commits after ~1.2s of quiet. Returns `{ supported, listening, error, start, stop }`. iOS Safari fallback (Whisper via proxy) deferred. |
-| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | Chat UI. Mic + text input + TTS playback (mute toggle in header, Live mode only). Mic replaces Send when input is empty; live transcript mirrors into the input as the user speaks; the mic re-opens once after each assistant turn (keyed off message id, not listening state). Layout uses explicit pixel geometry — not the shared `BottomSheet` component (its math + the project's flex parents disagreed about containing block). |
-| `src/features/voice-ordering/VoiceOrderingLauncher.tsx` | Mounts the FAB + panel. Single-line integration in `App.tsx`. **Temporary placement** — final UX TBD with Adam (FAB above tab bar for now). |
+| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | **Legacy chat panel.** Kept in place for A/B comparisons. The active entry point is `VoiceOrderingScreen` (full-screen, voice-first). Mic replaces Send when input is empty; live transcript mirrors into the input; the mic re-opens once after each assistant turn. |
+| `src/features/voice-ordering/VoiceOrderingScreen.tsx` | **Active full-screen voice UI** at `/voice`. Cream background, large agent text with active-word brand-red highlight, stacked `VoiceBagItemTile` cards that animate in as orders parse, central Lottie voice animation that plays only while the agent speaks or the user is listened to, "Review in bag" CTA on order complete. No chat scrollback, no text input, no header band, no mute toggle. |
+| `src/features/voice-ordering/VoiceBagItemTile.tsx` | Drive-thru-style item pill (image + name + price) used in the screen's animating stack. |
+| `src/features/voice-ordering/useSpokenHighlight.ts` | Tokenizes the agent's reply and drives an `activeIndex` against the playing TTS audio's `currentTime`. Word timing estimated from `audio.duration` weighted by word length — no proxy changes needed. Production-grade timing would switch to ElevenLabs `with-timestamps`. |
+| `src/features/voice-ordering/VoiceOrderingLauncher.tsx` | Mounts the FAB. Navigates to `/voice` on tap; auto-hides while on the voice screen or when the flag is `off`. **Temporary placement** — final UX TBD with Adam. |
 | `api/claude.ts` | **Active.** Dual-transport Claude proxy — Anthropic-direct (preferred) or Bedrock (fallback). Picks based on which env vars are set. |
 | `api/tts.ts` | **Active.** ElevenLabs TTS REST proxy. Plain `fetch`. Live when `ELEVENLABS_API_KEY` is set. |
 | `api/README.md` | Proxy deployment notes — env vars, transport selection, troubleshooting table. |
@@ -630,7 +634,7 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 | Combos (all) | ✅ Populated layout | Component cards with Edit links, "Price in Bag", combo size selector. Close X with confirm dialog. 39 combos have defaultComponents data. Combo wizard not yet built. |
 | Kids Meals | ✅ Populated layout | Same combo pattern — 4 component cards (entrée + side + drink + toy) |
 
-### Screens Built (12)
+### Screens Built (13)
 - **Splash Screen** — cameo logo → Lottie animation → fade to app (configurable timing, swappable animation)
 - **Home Screen (auth)** — hero banner, offers section with real data, privacy policy link. Sticky TopAppBar.
 - **Offers Screen** — Offers tab (segmented control, promo code button, available/unavailable/redeemed sections) + Rewards tab (2-up card grid with 21 items sorted by points, View History button, Learn More section)
@@ -643,6 +647,7 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 - **Developer Tools Screen** (`/account/dev-tools`) — 14 feature flags with auto-generated toggles
 - **Location Confirmation** (`/order/confirm-location`) — static Mapbox map, store details, fulfillment method selector, one-time gate
 - **Bag Screen** (`/order/bag`) — pickup/payment/time ListRows, BagItemCards (single + combo), ActionCard carousel, Round Up & Donate, OrderSummary, sticky Place Order CTA
+- **Voice Ordering Screen** (`/voice`) — full-screen voice-first experience: cream bg, large agent text with active-word red highlight (timed against TTS audio), animating bag-item stack, central Lottie voice animation, "Review in bag" CTA on order complete. Reached via FAB; back arrow returns to previous screen.
 
 ## Open Questions (from PRD)
 

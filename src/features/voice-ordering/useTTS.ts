@@ -24,10 +24,20 @@ interface UseTTSOptions {
   voiceId?: string;
   /** Override TTS model — defaults to 'eleven_turbo_v2'. */
   modelId?: string;
+  /**
+   * Called once playback starts with the audio element + the text being
+   * spoken. Lets the consumer subscribe to `timeupdate` for word-by-word
+   * highlighting without breaking the abstraction.
+   */
+  onPlaybackStart?: (audio: HTMLAudioElement, text: string) => void;
 }
 
 export function useTTS(options: UseTTSOptions) {
-  const { enabled, endpoint = '/api/tts', voiceId, modelId } = options;
+  const { enabled, endpoint = '/api/tts', voiceId, modelId, onPlaybackStart } = options;
+  const onPlaybackStartRef = useRef(onPlaybackStart);
+  useEffect(() => {
+    onPlaybackStartRef.current = onPlaybackStart;
+  }, [onPlaybackStart]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
@@ -109,7 +119,10 @@ export function useTTS(options: UseTTSOptions) {
 
         try {
           await audio.play();
-          if (audioRef.current === audio) setIsPlaying(true);
+          if (audioRef.current === audio) {
+            setIsPlaying(true);
+            onPlaybackStartRef.current?.(audio, trimmed);
+          }
         } catch {
           // Browsers may block autoplay until first user gesture; ignore.
           if (audioRef.current === audio) setIsPlaying(false);

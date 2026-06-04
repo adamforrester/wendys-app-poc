@@ -49,6 +49,12 @@ export function VoiceOrderingPanel({ isOpen, onClose }: VoiceOrderingPanelProps)
   // autoplay (TTS) and getUserMedia prompts to surface inline. We gate
   // auto-loop start on this.
   const userActivatedRef = useRef(false);
+  // Last assistant message id we've auto-listened to. Each assistant turn
+  // gets exactly one auto-restart of the mic — if the user stays silent and
+  // the recognizer ends, we DON'T immediately retry (that would be an
+  // infinite loop in low-noise environments and a battery drain in high-
+  // noise ones). The user can tap the mic again or type instead.
+  const lastAutoListenIdRef = useRef<string | null>(null);
 
   const tts = useTTS({ enabled: !muted && mode === 'live' });
 
@@ -89,14 +95,11 @@ export function VoiceOrderingPanel({ isOpen, onClose }: VoiceOrderingPanelProps)
     void tts.speak(last.content);
   }, [messages, mode, muted, tts]);
 
-  // Auto-listen loop: open the mic whenever it's safe to do so.
-  // Conditions:
-  //   - Panel open, not in 'off' mode, STT supported
-  //   - User has activated (clicked the mic at least once, satisfying
-  //     browser permission/autoplay gates)
-  //   - We're not currently waiting on the assistant or speaking TTS
-  //   - User hasn't paused the loop by typing
-  //   - Recognizer isn't already running
+  // Auto-listen loop: open the mic *once* per assistant turn, after the
+  // assistant has finished speaking. We key off the last assistant message
+  // id — once we've opened the mic for that turn, we don't reopen it (even
+  // if the recognizer ends on silence). The user can tap the mic to retry
+  // or type instead.
   useEffect(() => {
     if (!isOpen) return;
     if (mode === 'off') return;
@@ -105,8 +108,13 @@ export function VoiceOrderingPanel({ isOpen, onClose }: VoiceOrderingPanelProps)
     if (pending || tts.isPlaying) return;
     if (voiceLoopPaused) return;
     if (speech.listening) return;
+
+    const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant');
+    if (!lastAssistant) return;
+    if (lastAutoListenIdRef.current === lastAssistant.id) return;
+    lastAutoListenIdRef.current = lastAssistant.id;
     speech.start();
-  }, [isOpen, mode, pending, tts.isPlaying, voiceLoopPaused, speech]);
+  }, [isOpen, mode, pending, tts.isPlaying, voiceLoopPaused, speech, messages]);
 
   // Stop everything when the panel closes.
   useEffect(() => {

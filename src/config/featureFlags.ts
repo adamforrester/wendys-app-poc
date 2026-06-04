@@ -14,6 +14,7 @@ export type FallbackImage = 'wave' | 'variant-b';
 export type PostOrderSurprise = 'none' | 'confetti' | 'animation';
 export type DarkMode = 'off' | 'on';
 export type LoadingScenario = 'none' | 'slow-network' | 'error-state';
+export type VoiceOrdering = 'off' | 'mock' | 'live';
 
 export interface FeatureFlags {
   addToBagTransition: AddToBagTransition;
@@ -30,6 +31,7 @@ export interface FeatureFlags {
   postOrderSurprise: PostOrderSurprise;
   darkMode: DarkMode;
   loadingScenario: LoadingScenario;
+  voiceOrdering: VoiceOrdering;
 }
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -47,6 +49,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   postOrderSurprise: 'none',
   darkMode: 'off',
   loadingScenario: 'none',
+  voiceOrdering: 'mock',
 };
 
 /* ── Flag Metadata (drives admin UI auto-generation) ── */
@@ -172,6 +175,15 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'none', label: 'None' },
       { value: 'slow-network', label: 'Slow Network' },
       { value: 'error-state', label: 'Error State' },
+    ],
+  },
+  voiceOrdering: {
+    label: 'Voice Ordering (POC)',
+    description: 'AI voice ordering experience. Mock returns canned responses; Live calls Claude via the proxy (Anthropic API or Bedrock, whichever is configured).',
+    options: [
+      { value: 'off', label: 'Off' },
+      { value: 'mock', label: 'Mock (no API)' },
+      { value: 'live', label: 'Live (Claude proxy)' },
     ],
   },
 };

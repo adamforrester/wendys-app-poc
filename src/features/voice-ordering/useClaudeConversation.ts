@@ -1,0 +1,288 @@
+/**
+ * Orchestrates a turn-based conversation with Claude (or the mock).
+ *
+ * Owns:
+ *   - Conversation history
+ *   - Per-turn runtime context assembly (menu summary + bag + offers + rewards)
+ *   - System prompt + context injection
+ *   - Mock vs. live routing via the `voiceOrdering` feature flag
+ *   - Parse + resolve `\`\`\`order` JSON blocks → BagContext.addItem()
+ *
+ * Boundary with the rest of the app: BagContext (read state, dispatch ADD_ITEM).
+ * Everything else is voice-internal.
+ */
+
+import { useCallback, useMemo, useRef, useState } from 'react';
+import offersJson from '../../data/offers.json';
+import systemPromptRaw from './data/system_prompt.md?raw';
+import { useBag } from '../../context/BagContext';
+import { useAuth } from '../../context/AuthContext';
+import { useFeatureFlags } from '../../context/FeatureFlagsContext';
+import { useSemanticMenu } from './useSemanticMenu';
+import { useMockConversation } from './useMockConversation';
+import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
+import { parseAndResolveOrder, stripOrderFence } from './orderParser';
+import type {
+  ConversationMessage,
+  ParsedOrder,
+  RewardsContext,
+} from './types';
+import type { Offer } from '../../data/types';
+import userJson from '../../data/user.json';
+
+const allOffers = (offersJson as { offers: Offer[] }).offers;
+const userData = userJson as unknown as {
+  authenticatedUser: {
+    rewardsProfile: {
+      points: number;
+      tier: string;
+      tierProgress: { nextTier: string; pointsToNextTier: number };
+    };
+  };
+};
+
+/**
+ * Strip frontmatter from system_prompt.md raw import. The frontmatter is
+ * for human/agent context, not for Claude.
+ */
+function stripFrontmatter(md: string): string {
+  if (!md.startsWith('---')) return md;
+  const end = md.indexOf('\n---', 3);
+  if (end === -1) return md;
+  return md.slice(end + 4).trimStart();
+}
+
+const SYSTEM_PROMPT_BODY = stripFrontmatter(systemPromptRaw);
+
+let messageIdSeq = 0;
+const nextId = () => `msg_${++messageIdSeq}_${Date.now().toString(36)}`;
+
+export interface UseClaudeConversationOptions {
+  /** Override the proxy URL when in 'live' mode. Default: '/api/claude'. */
+  liveEndpoint?: string;
+}
+
+export function useClaudeConversation(options: UseClaudeConversationOptions = {}) {
+  const { liveEndpoint = '/api/claude' } = options;
+  const { flags } = useFeatureFlags();
+  const { state: bagState, dispatch: bagDispatch } = useBag();
+  const { state: authState } = useAuth();
+  const semanticMenu = useSemanticMenu();
+  const mock = useMockConversation();
+
+  const [messages, setMessages] = useState<ConversationMessage[]>([]);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastParsedOrder, setLastParsedOrder] = useState<ParsedOrder | null>(null);
+
+  // Cache the menu summary — it's static per build, expensive-ish to format.
+  const menuSummaryRef = useRef<string | null>(null);
+  if (menuSummaryRef.current == null) {
+    menuSummaryRef.current = semanticMenu.buildMenuSummary();
+  }
+
+  /** Build the rewards context fragment, or null for guests. */
+  const buildRewardsContext = useCallback((): RewardsContext | null => {
+    if (!authState.isAuthenticated || !userData.authenticatedUser) return null;
+    const rp = userData.authenticatedUser.rewardsProfile;
+    return {
+      points: rp.points,
+      tier: rp.tier,
+      pointsToNextTier: rp.tierProgress.pointsToNextTier,
+      nextTier: rp.tierProgress.nextTier,
+    };
+  }, [authState.isAuthenticated]);
+
+  /**
+   * Compose the system prompt as a two-block array so the static prefix
+   * (behavior spec + menu — ~6k tokens, never changes within a session) is
+   * cacheable, and only the small dynamic block (bag/offers/rewards — a
+   * couple hundred tokens) re-flows each turn.
+   *
+   * Anthropic's prompt cache: `cache_control: { type: 'ephemeral' }` on a
+   * content block tells the API to cache that block (5-min TTL by default).
+   * Subsequent requests that prefix-match the cached block read from cache
+   * at ~10% of normal input cost. Bedrock supports the same shape.
+   *
+   * Effective per-turn cost: ~$0.001 instead of ~$0.005.
+   */
+  const composeSystemPrompt = useCallback(() => {
+    const ctx = buildRuntimeContext({
+      menuSummary: menuSummaryRef.current!,
+      bagItems: bagState.items,
+      offers: allOffers,
+      rewards: buildRewardsContext(),
+    });
+    return [
+      {
+        type: 'text' as const,
+        // Static across the session: behavior spec + menu summary.
+        text: `${SYSTEM_PROMPT_BODY}\n\n## MENU\n${menuSummaryRef.current!}`,
+        cache_control: { type: 'ephemeral' as const },
+      },
+      {
+        type: 'text' as const,
+        // Dynamic per turn: bag, offers, rewards. Not cached.
+        text: renderRuntimeContext({ ...ctx, menuSummary: '' }),
+      },
+    ];
+  }, [bagState.items, buildRewardsContext]);
+
+  /** Send a user message, get a reply, route order JSON to the bag. */
+  const send = useCallback(
+    async (userInput: string) => {
+      if (!userInput.trim() || pending) return;
+      setError(null);
+
+      const userMsg: ConversationMessage = {
+        id: nextId(),
+        role: 'user',
+        content: userInput,
+        timestamp: Date.now(),
+      };
+      const nextHistory = [...messages, userMsg];
+      setMessages(nextHistory);
+      setPending(true);
+
+      try {
+        let assistantText: string;
+        if (flags.voiceOrdering === 'mock') {
+          assistantText = await mock.generate(userInput);
+        } else if (flags.voiceOrdering === 'live') {
+          assistantText = await callLiveProxy({
+            endpoint: liveEndpoint,
+            system: composeSystemPrompt(),
+            messages: nextHistory.map(m => ({ role: m.role, content: m.content })),
+          });
+        } else {
+          throw new Error('Voice ordering is off — flip the flag to "mock" or "live".');
+        }
+
+        // Try to parse an order block. Strip it from the visible text.
+        const parsed = parseAndResolveOrder(assistantText, {
+          getItemById: semanticMenu.getItemById,
+          resolveByName: semanticMenu.resolveByName,
+        });
+
+        const visibleText = parsed ? stripOrderFence(assistantText) : assistantText;
+        const resolutionNotes = parsed
+          ? parsed.items.flatMap(i => (i.resolutionWarning ? [i.resolutionWarning] : []))
+          : undefined;
+
+        const assistantMsg: ConversationMessage = {
+          id: nextId(),
+          role: 'assistant',
+          content: visibleText,
+          timestamp: Date.now(),
+          parsedOrder: parsed ?? undefined,
+          resolutionNotes,
+        };
+        setMessages(h => [...h, assistantMsg]);
+
+        // If we got a complete, fully-resolved order, push items to the bag.
+        if (parsed) {
+          setLastParsedOrder(parsed);
+          for (const item of parsed.items) {
+            if (!item.resolved) continue;
+            bagDispatch({
+              type: 'ADD_ITEM',
+              item: {
+                id: `${item.resolved.id}-voice-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                menuItemId: item.resolved.id,
+                name: item.resolved.name,
+                quantity: item.source.quantity || 1,
+                price: item.resolved.base_price ?? 0,
+                customizations: {
+                  removed:
+                    item.source.modifiers
+                      ?.filter(m => m.type === 'remove' || m.type === 'no')
+                      .map(m => m.ingredient) ?? [],
+                },
+                comboSelections: item.source.is_combo
+                  ? {
+                      side: { id: 'fries-medium', name: 'French Fries (Medium)' },
+                      drink: {
+                        id: 'voice-drink',
+                        name: item.source.combo_drink ?? 'Drink',
+                      },
+                      sizeUpgrade: item.source.combo_size === 'large',
+                    }
+                  : null,
+              },
+            });
+          }
+        }
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Unknown error contacting the assistant.';
+        setError(msg);
+      } finally {
+        setPending(false);
+      }
+    },
+    [bagDispatch, composeSystemPrompt, flags.voiceOrdering, liveEndpoint, messages, mock, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
+  );
+
+  const reset = useCallback(() => {
+    setMessages([]);
+    setError(null);
+    setLastParsedOrder(null);
+    mock.reset();
+  }, [mock]);
+
+  return useMemo(
+    () => ({
+      messages,
+      pending,
+      error,
+      lastParsedOrder,
+      send,
+      reset,
+      mode: flags.voiceOrdering,
+      systemPrompt: SYSTEM_PROMPT_BODY,
+    }),
+    [messages, pending, error, lastParsedOrder, send, reset, flags.voiceOrdering],
+  );
+}
+
+/* ── Live proxy call ── */
+
+interface SystemContentBlock {
+  type: 'text';
+  text: string;
+  cache_control?: { type: 'ephemeral' };
+}
+
+interface LiveCallArgs {
+  endpoint: string;
+  system: string | SystemContentBlock[];
+  messages: { role: 'user' | 'assistant'; content: string }[];
+}
+
+async function callLiveProxy({ endpoint, system, messages }: LiveCallArgs): Promise<string> {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      // Model defaults handled server-side based on transport (anthropic vs bedrock).
+      max_tokens: 1024,
+      system,
+      messages,
+    }),
+  });
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Proxy returned ${response.status}: ${detail || response.statusText}`);
+  }
+  const json = await response.json();
+  // Anthropic-shaped response: { content: [{ type: 'text', text: '...' }, ...] }
+  const text = Array.isArray(json?.content)
+    ? json.content
+        .filter((c: { type: string }) => c.type === 'text')
+        .map((c: { text: string }) => c.text)
+        .join('\n')
+    : typeof json?.text === 'string'
+      ? json.text
+      : '';
+  if (!text) throw new Error('Proxy response had no text content.');
+  return text;
+}

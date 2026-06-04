@@ -6,3 +6,4 @@ assets
 .env
 .env.*
 !.env.example
+.playwright-mcp

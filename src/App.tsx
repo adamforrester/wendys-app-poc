@@ -20,6 +20,7 @@ import { SingleProductScreen } from './screens/Order/SingleProductScreen';
 import { LocationConfirmationScreen } from './screens/Order/LocationConfirmationScreen';
 import { BagScreen } from './screens/Order/BagScreen';
 import splashAnimation from './animations/lottie/splash.json';
+import { VoiceOrderingLauncher } from './features/voice-ordering/VoiceOrderingLauncher';
 
 export default function App() {
   const [splashComplete, setSplashComplete] = useState(false);
@@ -56,6 +57,7 @@ export default function App() {
                     {/* Bag screen */}
                     <Route path="/order/bag" element={<BagScreen />} />
                   </Routes>
+                  <VoiceOrderingLauncher />
                 </DeviceFrame>
               </BrowserRouter>
             </DaypartProvider>

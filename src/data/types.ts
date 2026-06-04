@@ -43,6 +43,9 @@ export interface Product {
   productType: string;
   comboConfig?: ComboConfig;
   comboPrice?: number;
+  isLTO?: boolean;
+  daypart?: string;
+  goLive?: string;
 }
 
 export interface Category {

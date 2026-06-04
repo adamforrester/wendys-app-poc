@@ -24,9 +24,10 @@ The canonical specification is `/assets/wendys-prototype-prd.md` — read it bef
 ## Commands
 
 ```bash
-npm run dev          # Vite dev server on :5173
-npm run storybook    # Storybook on :6006
-npm run build        # Production build (tsc + vite build)
+npm run dev                  # Vite dev server on :5173
+npm run storybook            # Storybook on :6006
+npm run build                # Production build (tsc + vite build)
+npm run refresh-voice-data   # Rebuild + re-vendor voice ordering data (run after editing menu.json or ingredients.json)
 ```
 
 ---
@@ -96,10 +97,13 @@ After completing a new component or making significant changes:
 | SVG icons (mono) | `assets/icons/` → `public/icons/` | 134+ icons, kebab-case naming |
 | SVG icons (multi-color) | Same folder | `rewards-simple.svg`, `bag-red.svg`, `*-multi-color.svg` |
 | Images (logos) | `assets/images/` → `public/images/` | Wendy's wave, Rewards logo, bag icon |
-| Product images | `assets/product-images/` → `public/images/product-images/` | 175 food photos, named `food_{category}_{name}_{id}.png` |
+| Product images | `assets/product-images/` → `public/images/product-images/` | 181 food photos, named `food_{category}_{slug}_{id}.{png\|webp}` (LTO art arrives as webp from order.wendys.com — fine to keep as-is, the `image` field stores the full filename including extension) |
+| Jalapeño LTO source images | `assets/jalapeno-ltos/` (numeric Wendy's IDs) | Original webp files from order.wendys.com — already copied + renamed into `public/images/product-images/` for `lto_9001`–`lto_9006` |
 | Category images | `assets/category-images/` → `public/images/category-images/` | 14 category thumbnails, named `category_{name}_{id}.png` |
 | Content card images | `assets/images/content-cards/` → `public/images/content-cards/` | Large + small placeholder banners |
 | Splash animation | `assets/splash-screen-animation/splash.json` → `src/animations/lottie/` | Lottie JSON |
+| Voice-ordering data (vendored) | `src/features/voice-ordering/data/` | `system_prompt.md` (authored), `semantic_menu_v3.json` (derived from sibling repo), `wendys-locations.json` (5,629 stores, scraped) |
+| Voice-ordering data pipeline (sibling repo) | `../Menu Images/voice-ordering/` | NOT in this repo — Playwright scrapers + merge build that produce v3 from `menu.json`+`ingredients.json`+scraped sources. Run via `npm run refresh-voice-data`. |
 
 ---
 
@@ -128,6 +132,112 @@ After completing a new component or making significant changes:
 - `StatusBar` is a **global overlay** (absolute positioned, pointer-events-none) with Dynamic Island notch, time, and indicators
 - `TopAppBar` includes a 54px safe area spacer at top so its background extends behind the transparent status bar
 - Status bar supports `light` (white text, for dark/colored backgrounds) and `dark` (black text, for light backgrounds) modes
+
+---
+
+## Voice Ordering POC
+
+AI-powered voice ordering, isolated under `src/features/voice-ordering/`. The only shared boundary with the rest of the app is `BagContext` — voice fills the bag the same way the menu UI does. Removing the feature is a single-folder delete + flag removal. **First conceptual feature** beyond parity with the production app.
+
+**See `src/features/voice-ordering/README.md`** for full architecture, planned file layout, and data provenance.
+
+### Key files
+
+| File | Purpose |
+|---|---|
+| `src/features/voice-ordering/README.md` | Module overview, layout, provenance, refresh contract |
+| `src/features/voice-ordering/data/system_prompt.md` | LLM behavioral spec — encodes FreshAI conversation rules. Frontmatter has full provenance. **Treat as authoritative** for tone/disambiguation/upsell/offers behavior. |
+| `src/features/voice-ordering/data/semantic_menu_v3.json` | LLM menu context — 180 items with voice aliases, disambiguation groups, allergens, ingredients_text. **Derived artifact** — do not hand-edit. |
+| `src/features/voice-ordering/data/wendys-locations.json` | 5,629 real Wendy's stores. Vendored but **not yet wired** — reserved for nearest-store lookup (voice POC + future Order tab integration). |
+| `src/features/voice-ordering/types.ts` | Shared TS types for the semantic menu, conversation, parsed orders, and runtime context. |
+| `src/features/voice-ordering/useSemanticMenu.ts` | Read-only hook over v3. Provides `getItemById`, `resolveByName` (alias-aware), disambiguation group lookups, and `buildMenuSummary` for the LLM. |
+| `src/features/voice-ordering/contextBuilder.ts` | Pure function — builds and renders the per-turn runtime context block (menu summary + bag + offers + rewards) appended to the system prompt. |
+| `src/features/voice-ordering/orderParser.ts` | Parses ` ```order ` JSON fence from Claude responses, resolves names→IDs, returns `ParsedOrder` ready for the bag flow. |
+| `src/features/voice-ordering/useMockConversation.ts` | Canned-reply script for `voiceOrdering: 'mock'` mode. Demonstrates greeting → disambiguation → combo → close → order JSON. **Replaceable** with the live proxy. |
+| `src/features/voice-ordering/useClaudeConversation.ts` | Orchestration hook. Owns conversation history, composes the system prompt with prompt-cache markers, routes mock/live, parses orders, dispatches `ADD_ITEM` to `BagContext`. |
+| `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. |
+| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | Chat UI. Text input + TTS playback (mute toggle in header, Live mode only). STT not yet wired. Layout uses explicit pixel geometry — not the shared `BottomSheet` component (its math + the project's flex parents disagreed about containing block). |
+| `src/features/voice-ordering/VoiceOrderingLauncher.tsx` | Mounts the FAB + panel. Single-line integration in `App.tsx`. **Temporary placement** — final UX TBD with Adam (FAB above tab bar for now). |
+| `api/claude.ts` | **Active.** Dual-transport Claude proxy — Anthropic-direct (preferred) or Bedrock (fallback). Picks based on which env vars are set. |
+| `api/tts.ts` | **Active.** ElevenLabs TTS REST proxy. Plain `fetch`. Live when `ELEVENLABS_API_KEY` is set. |
+| `api/README.md` | Proxy deployment notes — env vars, transport selection, troubleshooting table. |
+| `scripts/vite-api-middleware.ts` | Vite plugin that mounts `api/*.ts` at `/api/*` during `npm run dev`. Adapts Vercel `(req, res)` → Connect middleware. Auto-loads `.env.local`. |
+| `scripts/refresh-voice-data.js` | Refresh script. Shells into sibling repo to rebuild and re-vendor v3 + locations. Run after editing `menu.json` or `ingredients.json`. |
+
+### Single source of truth
+
+`src/data/menu.json` and `src/data/ingredients.json` are authoritative. `semantic_menu_v3.json` is **built from them** by the sibling `Menu Images/voice-ordering/` repo (Playwright scrapers + merge script). The sibling is a one-way data factory; this prototype is the consumer. After editing `menu.json` or `ingredients.json`:
+
+```bash
+npm run refresh-voice-data
+```
+
+If the sibling repo moves, edit `VOICE_REPO` in `scripts/refresh-voice-data.js`. The "don't run sync" warning in the sibling repo's CLAUDE.md is now obsolete — the LTOs that prompted it are upstream in the prototype as of 2026-06-04.
+
+### Status (2026-06-04)
+
+| Layer | State |
+|---|---|
+| Data plumbing (v3, locations, system prompt) | ✅ Vendored + refresh script |
+| Feature flag + 3-mode toggle (`off` / `mock` / `live`) | ✅ Default `mock` |
+| Hooks (useSemanticMenu, useClaudeConversation) | ✅ Built |
+| Context builder + order parser | ✅ Built |
+| UI (panel + FAB launcher) | ✅ Built (temporary placement; FAB icon is placeholder) |
+| Storybook stories | ✅ MockMode / Off / LiveMode |
+| Bedrock SDK installed (`@anthropic-ai/bedrock-sdk`) | ✅ Installed |
+| Vite dev middleware for `/api/*` | ✅ `scripts/vite-api-middleware.ts` — `/api/claude` + `/api/tts` work in `npm run dev` |
+| Going live (Claude transport) | ✅ **Live with Anthropic-direct.** Confirmed working 2026-06-04. Bedrock available as fallback when AWS creds are provided. |
+| Prompt caching | ✅ Static system prompt + menu summary cached as ephemeral block; ~5× cost reduction per turn |
+| Going live (TTS) | ✅ **Live with ElevenLabs.** TTS proxy + `useTTS` hook + mute toggle in panel header. Plays MP3 returned from `/api/tts` via HTML5 Audio. |
+| STT (mic input) | ⏸ Deferred — text-only POC for now |
+| TTS playback | ✅ Wired — auto-plays each new assistant message in Live mode. Mute toggle (🔊/🔇) in panel header. Browsers may block autoplay on first message until user gesture; chat itself still works. |
+| Nearest-store lookup | ⏸ Deferred — vendored, not wired |
+| FAB icon + final placement | ⏸ Adam to supply icon; placement TBD |
+
+### Stack
+
+- **STT:** Web Speech API (browser-native), planned. Fallback adapter for iOS Safari → Whisper via proxy.
+- **LLM:** Claude Haiku 4.5 via Bedrock, called through `api/claude.ts` proxy that holds AWS creds. Browser never sees keys.
+- **TTS:** ElevenLabs REST endpoint (synthesis only, not their agent platform), via `api/tts.ts` proxy.
+- **State:** Conversation history in `useClaudeConversation`. Integrates with `BagContext` only at order parse boundary.
+
+### Feature flag (3 modes)
+
+Set via Developer Tools → "Voice Ordering (POC)":
+- **off** — no FAB, no panel, no calls. Removes feature visually.
+- **mock** — canned conversation script. Default. Demos the full flow without a backend. Useful for designers.
+- **live** — calls `/api/claude`. Works locally as soon as `.env.local` has AWS + ElevenLabs creds and `npm run dev` is restarted (Vite dev middleware mounts the proxy — no Vercel deploy needed for local testing).
+
+### Going live in 5 steps (no deploy required)
+
+```bash
+cp .env.example .env.local       # then edit .env.local — set ANTHROPIC_API_KEY
+npm run dev                      # restart so the dev middleware picks up env vars
+```
+
+Then in the running app: Account → Developer Tools → Voice Ordering → **Live**. Open the panel, send a turn. Errors render as red banners in the panel; full stack traces print to the dev-server terminal under `[voice-ordering:dev-api]`. See `api/README.md` for the troubleshooting table.
+
+**Watch for stale dev server processes.** Vite picks the first available port — if a previous `npm run dev` is still running on `5173`, the new one boots on `5174`. Hitting the wrong port returns 401s because the stale server has the old (or no) env. Kill stale processes with `lsof -ti:5173 | xargs kill -9` before restarting.
+
+### Local dev architecture
+
+- `api/claude.ts` and `api/tts.ts` use Vercel's `(req, res)` handler signature so they deploy unchanged to Vercel.
+- `scripts/vite-api-middleware.ts` is a Vite plugin that adapts the same handlers to Connect-style middleware during `npm run dev`. It also reads `.env.local` at boot so env vars reach the handlers.
+- Production deploy: push to Vercel. The middleware becomes a no-op (`apply: 'serve'`); Vercel auto-discovers `api/*.ts`.
+
+### Mock conversation script
+
+Try in mock mode: `"I'd like a Dave's Single"` → `"yes combo"` → `"strawberry lemonade"` → `"medium"` → `"that's it"`. Order JSON parses, items hit the bag. The exact pattern matchers live in `useMockConversation.ts` — extend as needed for new demo scripts.
+
+### Locations data — deferred
+
+`wendys-locations.json` is vendored to lock in the single-source-of-truth contract, but no UI consumes it yet. When wired up (haversine-based nearest-store lookup), the same utility should serve both the voice POC and a future Order-tab integration that replaces the 5 mocks in `src/data/locations.json`.
+
+### What does NOT belong here
+
+- **Anything stateful that's not voice-specific** — keep it in the existing contexts (`BagContext`, `LocationContext`, etc.)
+- **Hand-edits to vendored JSON** — they'll be clobbered by `refresh-voice-data`. Edit upstream instead.
+- **The data pipeline itself** — Playwright scrapers, merge build, locations scraper. They live in the sibling repo for a reason (different lifecycle, heavy deps).
 
 ---
 
@@ -239,7 +349,7 @@ Icons that are multi-color: `rewards-simple.svg`, `bag-red.svg`, `letter-mark-co
 - Registry in `src/config/featureFlags.ts` — 14 flags with typed options + `flagMeta` for labels/descriptions
 - Admin UI auto-generates toggles from the `flagMeta` registry — adding a new flag automatically creates its toggle in Developer Tools
 - When building new features, always add a feature flag check from the start
-- Current flags: addToBagTransition, comboBuilderStyle, locationSelectionLayout, splashAnimation, menuCategoryLayout, menuPLPLayout, sppLayout, bottomNavStyle, homeLocationComponent, buttonColorScheme, fallbackImage, postOrderSurprise, darkMode, loadingScenario
+- Current flags: addToBagTransition, comboBuilderStyle, locationSelectionLayout, splashAnimation, menuCategoryLayout, menuPLPLayout, sppLayout, bottomNavStyle, homeLocationComponent, buttonColorScheme, fallbackImage, postOrderSurprise, darkMode, loadingScenario, voiceOrdering
 
 ### SPP Architecture
 
@@ -437,8 +547,8 @@ When using figma-console:
 
 ## Build Progress
 
-### Components Built (40)
-Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar, Dialog, ActionCard, BagItemCard, OrderSummary, DonationSection
+### Components Built (41)
+Button, TopAppBar, BottomTabBar, BottomSheet, Spinner, Label, HelperMessage, RadioButton, Checkbox, Toggle, ListRow, ContentCard, CategoryCard, MenuCard, DeviceFrame, StatusBar, BagButton, Tabs, SegmentedControl, Snackbar, SectionHeader, ProductHeader, ItemSelector, Chip, Counter, IconButton, OrderBar, IngredientCollapse, IngredientCard, OrderLocationCard, SplashScreen, IngredientTable, MediumTopAppBar, HeroImage, TransparentTopBar, Dialog, ActionCard, BagItemCard, OrderSummary, DonationSection, TextField
 
 ### Remaining Components
 SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
@@ -459,7 +569,9 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 - User recent orders use `location` (not `locationId`) as the field name.
 - Location phone field is `phoneNumber` (not `phone`).
 
-**Data scale:** 21 categories (14 all-day + 8 breakfast, with overlap on coffee/give-something-back), ~160 products, 29 combos, 24 ingredients, 16 add-ons, 5 add-on groups, 5 locations, 9 offers (with `isForYou` and `deliveryEligible` flags), 21 rewards store items, 1 user with 3 recent orders.
+**Data scale:** 22 categories (14 all-day + 9 breakfast, with overlap on coffee/give-something-back), 180 products (incl. 6 Jalapeño LTOs), 29 combos, 28 ingredients, 16 add-ons, 5 add-on groups, 5 locations, 9 offers (with `isForYou` and `deliveryEligible` flags), 21 rewards store items, 1 user with 3 recent orders.
+
+**Jalapeño LTO items (`lto_9001`–`lto_9006`):** Limited-time-offer items added 2026-06-04 to support the voice-ordering POC's FreshAI flow data. Three Jalapeño Ranch Cheeseburger variants (single/double/triple) in `cat_hamburgers`; Jalapeño Bacon + Sausage Biscuits in `cat_biscuits`; Jalapeño Bacon Breakfast Potato in `cat_classics`. Carry optional `isLTO`, `daypart`, `goLive` fields on `Product`. Prices and calories are realistic estimates anchored to the existing ladder — flagged in `_meta.note`. Real menu IDs from order.wendys.com are not yet known; prototype uses synthetic `lto_9xxx` IDs. The voice-ordering repo (`Menu Images/voice-ordering/`) consumes these via `npm run sync` + `npm run build` to produce `semantic_menu_v3.json`.
 
 **Data hooks vs. state contexts:** Data hooks (`useMenuData`, etc.) provide read-only access to static JSON. State contexts (`useAuth`, `useBag`, `useLocation`, etc.) manage mutable runtime state. Keep them separate.
 
@@ -525,6 +637,7 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 - **Menu Category Screen** (`/order/menu`) — daypart-aware category grid (14 all-day, 9 breakfast), quick action icons (Recents/Favorites/Rewards), pickup location + offer applied ListRows
 - **Menu Product List (PLP)** (`/order/menu/:slug`) — scrollable category tabs with swipe, 2-up MenuCard grid with price + calories, daypart-aware tab sets
 - **Single Product Page (SPP)** (`/order/menu/:slug/:productId`) — modular shell with Add to Bag → snackbar → location confirmation gate
+- **Earn Screen** (`/earn`) — QR code placeholder for Rewards scanning at restaurant, points display
 - **Account Screen** (`/account`) — red hero with cameo logo + greeting, 7 ListRows
 - **Developer Tools Screen** (`/account/dev-tools`) — 14 feature flags with auto-generated toggles
 - **Location Confirmation** (`/order/confirm-location`) — static Mapbox map, store details, fulfillment method selector, one-time gate

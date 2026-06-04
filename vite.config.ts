@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { viteApiMiddleware } from './scripts/vite-api-middleware';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
@@ -14,6 +15,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    viteApiMiddleware(),
     // PWA manifest is handled via a static file (public/manifest.json)
     // vite-plugin-pwa's service worker generation breaks due to apostrophe in project path
     // The manifest + meta tags are sufficient for Add to Home Screen functionality

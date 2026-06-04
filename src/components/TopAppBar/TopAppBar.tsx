@@ -73,6 +73,14 @@ export function TopAppBar({
     }
   };
 
+  // Default bag navigation — most screens just want to land on /order/bag.
+  // Pass `onBag` explicitly if a screen needs custom behavior (e.g. clearing
+  // a flow-local state before navigating).
+  const handleBag = () => {
+    if (onBag) onBag();
+    else navigate('/order/bag');
+  };
+
   const hasTrailingButtons = showPoints || showFind || showBag || !!trailingContent;
 
   const titleWeightClass = titleWeight === 'black' ? 'font-[800]' : 'font-semibold';
@@ -190,7 +198,7 @@ export function TopAppBar({
               </Button>
             )}
             {showBag && (
-              <BagButton count={bagCount} onClick={onBag} />
+              <BagButton count={bagCount} onClick={handleBag} />
             )}
             {trailingContent}
           </div>

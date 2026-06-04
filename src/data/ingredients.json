@@ -1,7 +1,8 @@
 {
   "_meta": {
     "version": "1.0.0",
-    "note": "Ingredient library with modifier support, plus add-extras system. SPP section labels: 'What\\'s On It' for default ingredients, 'Add Extras' for add-ons. Products reference ingredients by ID for customization (remove/edit with light/extra), and reference add-extra groups for items that can be added at extra cost."
+    "note": "Ingredient library with modifier support, plus add-extras system. SPP section labels: 'What\\'s On It' for default ingredients, 'Add Extras' for add-ons. Products reference ingredients by ID for customization (remove/edit with light/extra), and reference add-extra groups for items that can be added at extra cost. Added 4 ingredients (ing_025..028) and 6 LTO product mappings (lto_9001..lto_9006) on 2026-06-04.",
+    "totalIngredients": 28
   },
   "modifierTypes": {
     "remove": {
@@ -372,6 +373,59 @@
       "defaultState": "included",
       "appliesTo": [
         "breakfast-chicken"
+      ]
+    },
+    "jalapenos": {
+      "id": "ing_025",
+      "name": "Jalapeños",
+      "category": "topping",
+      "hasEdit": true,
+      "modifiers": [
+        "remove",
+        "extra"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers",
+        "biscuits",
+        "breakfast-potato"
+      ]
+    },
+    "premium_potato_bun": {
+      "id": "ing_026",
+      "name": "Premium Potato Bun",
+      "category": "bread",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "hamburgers"
+      ]
+    },
+    "breakfast_potatoes": {
+      "id": "ing_027",
+      "name": "Breakfast Potatoes",
+      "category": "side",
+      "hasEdit": false,
+      "modifiers": [],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast-potato"
+      ]
+    },
+    "swiss_cheese_sauce": {
+      "id": "ing_028",
+      "name": "Swiss Cheese Sauce",
+      "category": "condiment",
+      "hasEdit": false,
+      "modifiers": [
+        "remove"
+      ],
+      "defaultState": "included",
+      "appliesTo": [
+        "breakfast-potato"
       ]
     }
   },
@@ -812,6 +866,53 @@
       "ing_009",
       "ing_011",
       "ing_017"
+    ],
+    "lto_9001": [
+      "ing_026",
+      "ing_016",
+      "ing_025",
+      "ing_009",
+      "ing_007",
+      "ing_002",
+      "ing_006"
+    ],
+    "lto_9002": [
+      "ing_026",
+      "ing_016",
+      "ing_025",
+      "ing_009",
+      "ing_007",
+      "ing_002",
+      "ing_006"
+    ],
+    "lto_9003": [
+      "ing_026",
+      "ing_016",
+      "ing_025",
+      "ing_009",
+      "ing_007",
+      "ing_002",
+      "ing_006"
+    ],
+    "lto_9004": [
+      "ing_011",
+      "ing_013",
+      "ing_002",
+      "ing_025",
+      "ing_020"
+    ],
+    "lto_9005": [
+      "ing_014",
+      "ing_013",
+      "ing_002",
+      "ing_025",
+      "ing_020"
+    ],
+    "lto_9006": [
+      "ing_027",
+      "ing_028",
+      "ing_011",
+      "ing_025"
     ]
   },
   "addOns": {
@@ -1058,7 +1159,12 @@
     "2446": "chicken",
     "2448": "burger",
     "2452": "burger",
-    "_note": "Maps product IDs to their add-on group. Products not listed here have no add-ons available."
+    "_note": "Maps product IDs to their add-on group. Products not listed here have no add-ons available.",
+    "lto_9001": "burger",
+    "lto_9002": "burger",
+    "lto_9003": "burger",
+    "lto_9004": "breakfast",
+    "lto_9005": "breakfast"
   },
   "ingredientEditOverrides": {
     "823": {

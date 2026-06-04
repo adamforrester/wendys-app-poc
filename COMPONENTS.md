@@ -314,6 +314,22 @@ Use `docked` prop when placing at the bottom of a card (MenuCard).
 | `select` | Size selection, modifier amounts (Lite/Reg/Xtra), time slots |
 | `dismissible` | Active filters/customizations that can be removed |
 
+### TextField
+**Location:** `src/components/TextField/TextField.tsx`
+**Use when:** Form input — search, promo codes, generic text entry. Material-style floating label with validation states.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `label` | `string` | Floating label text (always visible) |
+| `value` | `string` | Controlled value |
+| `onValueChange` | `(value: string) => void` | Change handler |
+| `validation` | `'none' \| 'error' \| 'caution' \| 'success'` | Border + helper color state |
+| `helperText` | `string` | Helper/error message below the field |
+| `leadingIcon` / `trailingIcon` | `string` | Icon name (mono icon) |
+| `disabled` | `boolean` | Disabled state |
+| `fullWidth` | `boolean` | Stretch to parent width |
+| `persistLabel` | `boolean` | Keep label floating even when empty (no inline placeholder) |
+
 ### Counter
 **Location:** `src/components/Counter/Counter.tsx`
 **Use when:** Quantity selection — ingredient quantities, bag item quantities.
@@ -378,7 +394,7 @@ Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (keb
 
 | Prop | Type | When to use |
 |---|---|---|
-| `titleSize` | `'title-m' \| 'title-xs' \| 'title-2xs'` | Title typography — m (20px), xs (16px), 2xs (12px) |
+| `titleSize` | `'title-m' \| 'title-xs' \| 'title-2xs'` | Title typography — m (20px/800), xs (16px/700), 2xs (14px/700) |
 | `imageSrc` | `string` | Product/promo image |
 | `imageSide` | `'left' \| 'right'` | Image position |
 | `imageSize` | `112 \| 48` | Image dimensions in px |
@@ -418,6 +434,27 @@ Images: 88×88 centered in card. Use `/images/ingredient-images/{name}.png` (keb
 **Quantity selector:** Bordered button with number + caret-down. Tapping opens a BottomSheet with "Choose Quantity:" title and numbers 1-10. Current selection shown in bold.
 
 **Combo items:** Nested bordered cards with 40px image + product name. Read-only, no actions.
+
+### OrderSummary
+**Location:** `src/components/OrderSummary/OrderSummary.tsx`
+**Use when:** Bag and Checkout — displays line items (subtotal, discounts, fees, tax, total) in a stacked list with consistent label/value alignment.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `lines` | `OrderSummaryLine[]` | Array of `{ label, value, variant? }`. Variant: `'default'` (primary), `'discount'` (green), `'total'` (display font, bold) |
+
+**Typography:** Standard rows use Roboto 14/20 with bold label + regular value. Total row uses Wendys Fresh 18/20 with both label and value bold. Discount lines use `var(--color-text-validation-positive)` (green).
+
+### DonationSection
+**Location:** `src/components/DonationSection/DonationSection.tsx`
+**Use when:** Bag screen — Round Up & Donate to Dave Thomas Foundation for Adoption.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `isChecked` | `boolean` | Donation checkbox state |
+| `onChange` | `(checked: boolean) => void` | Checkbox change handler |
+
+**Layout:** DTFA logo (56px height) stacked above title, then title row with info icon, then checkbox row with body copy. 16px vertical padding.
 
 ---
 
@@ -562,4 +599,90 @@ const activeOffers = getActiveOffers(); // available + progress
 const { getUser, getRewardsPoints, getRecentOrders, getDefaultPayment } = useUserData();
 const user = getUser(); // Alex Johnson
 const points = getRewardsPoints(); // 2450
+```
+
+---
+
+## Voice Ordering (POC)
+
+Feature module under `src/features/voice-ordering/`. See `src/features/voice-ordering/README.md` for full architecture. Brief surface here:
+
+### VoiceOrderingPanel
+
+Chat-style UI panel (740×390 fixed geometry, slides up from bottom). **Does not use the shared `BottomSheet` component** — its math + the project's flex parents disagreed about which containing block to use, leaving the input row clipped. Inline pixel layout keeps geometry predictable.
+
+Brand-secondary (teal) header with voice glyph (`/icons/voice.svg`), mode label (Mock / Live / Disabled), mute toggle (Live mode only — 🔊/🔇), and Reset/Close. Renders user/assistant message bubbles, a typing indicator, an animated "✓ N items added" pill on order completion, and an inline error banner on failures. TTS plays each new assistant message in Live mode unless muted.
+
+**Use:** Mounted by `<VoiceOrderingLauncher />` — don't render directly.
+
+```tsx
+<VoiceOrderingPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
+```
+
+### VoiceOrderingLauncher
+
+Mounts the floating action button + the panel. Returns `null` when `voiceOrdering` flag is `off`. **Single-line integration** in `App.tsx`.
+
+```tsx
+<VoiceOrderingLauncher />
+```
+
+FAB placement is **temporary** — bottom-right, 16px from edge, 110px from bottom (above the tab bar). Final UX TBD.
+
+### useSemanticMenu()
+
+Read-only access to `semantic_menu_v3.json`. The LLM's enriched view of the menu (aliases, allergens, ingredients_text, disambiguation groups) — separate from `useMenuData` which is the prototype's source of truth.
+
+```tsx
+const { getItemById, resolveByName, getDisambiguationOptions, buildMenuSummary } = useSemanticMenu();
+const item = resolveByName("Dave's Single"); // alias-aware
+const options = getDisambiguationOptions('jalapeno_biscuit'); // [Bacon, Sausage]
+```
+
+### useClaudeConversation()
+
+Orchestrates a turn-based conversation. Manages history, composes the system prompt with runtime context per turn, routes mock vs. live, parses ` ```order ` JSON, dispatches `ADD_ITEM` to `BagContext`.
+
+```tsx
+const { messages, pending, error, send, reset, mode } = useClaudeConversation();
+await send("I'd like a Dave's Single");
+// → assistant reply pushed to `messages`
+// → if reply contains an order block, items added to bag automatically
+```
+
+Mode comes from `useFeatureFlags().flags.voiceOrdering`:
+- `mock` → uses `useMockConversation` (canned)
+- `live` → POSTs to `/api/claude` (Anthropic-direct or Bedrock proxy, whichever is configured)
+- `off` → `send()` throws
+
+System prompt is sent as a two-block array with `cache_control: { type: 'ephemeral' }` on the static prefix (behavior spec + menu summary). Anthropic and Bedrock both honor it; subsequent turns within a session read cached at ~10% input cost.
+
+### useTTS()
+
+Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on each new call; silent-fails if proxy isn't configured (TTS is non-critical — chat keeps working without audio).
+
+```tsx
+const tts = useTTS({ enabled: !muted && mode === 'live' });
+tts.speak('Hi there.');  // fire-and-forget
+tts.stop();              // explicit interrupt
+```
+
+### orderParser
+
+Pure functions, exported as named functions (not a hook):
+
+```tsx
+import { extractOrderJson, parseAndResolveOrder, stripOrderFence } from './orderParser';
+const order = parseAndResolveOrder(claudeResponse, { getItemById, resolveByName });
+// → null when no order fence present
+// → ParsedOrder when complete; check fullyResolved + per-item resolutionWarning
+```
+
+### contextBuilder
+
+Pure functions that assemble the per-turn runtime context block:
+
+```tsx
+const ctx = buildRuntimeContext({ menuSummary, bagItems, offers, rewards });
+const block = renderRuntimeContext(ctx); // markdown — appended to system_prompt.md body
 ```

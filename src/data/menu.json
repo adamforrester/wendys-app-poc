@@ -2,9 +2,9 @@
   "_meta": {
     "version": "1.0.0",
     "generatedFrom": "Image filename parsing + realistic price/calorie generation",
-    "totalProducts": 174,
+    "totalProducts": 180,
     "totalCategories": 21,
-    "note": "Prices and calories are realistic estimates for prototyping. Cross-listed products appear in multiple categories with the same product ID."
+    "note": "Prices and calories are realistic estimates for prototyping. Cross-listed products appear in multiple categories with the same product ID. LTO items lto_9001..lto_9006 added 2026-06-04 (Jalapeño Ranch Cheeseburger Single/Double/Triple, Jalapeño Bacon Biscuit, Jalapeño Sausage Biscuit, Jalapeño Bacon Breakfast Potato). Prices and calories are realistic estimates anchored to existing ladder."
   },
   "categories": [
     {
@@ -1068,6 +1068,54 @@
             "ing_007",
             "ing_008"
           ]
+        },
+        {
+          "id": "lto_9001",
+          "name": "Jalapeño Ranch Cheeseburger",
+          "slug": "jalapeno-ranch-cheeseburger-single",
+          "image": "food_hamburgers_jalapeno-ranch-cheeseburger-single_lto_9001.webp",
+          "price": 6.69,
+          "calories": {
+            "min": 620,
+            "max": 620
+          },
+          "isCombo": false,
+          "productType": "single",
+          "isLTO": true,
+          "daypart": "all-day",
+          "goLive": "2026-04-27"
+        },
+        {
+          "id": "lto_9002",
+          "name": "Jalapeño Ranch Cheeseburger Double",
+          "slug": "jalapeno-ranch-cheeseburger-double",
+          "image": "food_hamburgers_jalapeno-ranch-cheeseburger-double_lto_9002.webp",
+          "price": 8.29,
+          "calories": {
+            "min": 870,
+            "max": 870
+          },
+          "isCombo": false,
+          "productType": "double",
+          "isLTO": true,
+          "daypart": "all-day",
+          "goLive": "2026-04-27"
+        },
+        {
+          "id": "lto_9003",
+          "name": "Jalapeño Ranch Cheeseburger Triple",
+          "slug": "jalapeno-ranch-cheeseburger-triple",
+          "image": "food_hamburgers_jalapeno-ranch-cheeseburger-triple_lto_9003.webp",
+          "price": 9.59,
+          "calories": {
+            "min": 1160,
+            "max": 1160
+          },
+          "isCombo": false,
+          "productType": "triple",
+          "isLTO": true,
+          "daypart": "all-day",
+          "goLive": "2026-04-27"
         }
       ]
     },
@@ -3695,7 +3743,7 @@
       "slug": "biscuits",
       "daypart": "breakfast",
       "displayOrder": 13,
-      "itemCount": 7,
+      "itemCount": 9,
       "items": [
         {
           "id": "439",
@@ -3797,6 +3845,38 @@
           },
           "isCombo": false,
           "productType": "single"
+        },
+        {
+          "id": "lto_9004",
+          "name": "Jalapeño Bacon Biscuit",
+          "slug": "jalapeno-bacon-biscuit",
+          "image": "food_biscuits_jalapeno-bacon-biscuit_lto_9004.webp",
+          "price": 3.79,
+          "calories": {
+            "min": 490,
+            "max": 490
+          },
+          "isCombo": false,
+          "productType": "single",
+          "isLTO": true,
+          "daypart": "breakfast",
+          "goLive": "2026-04-27"
+        },
+        {
+          "id": "lto_9005",
+          "name": "Jalapeño Sausage Biscuit",
+          "slug": "jalapeno-sausage-biscuit",
+          "image": "food_biscuits_jalapeno-sausage-biscuit_lto_9005.webp",
+          "price": 3.79,
+          "calories": {
+            "min": 520,
+            "max": 520
+          },
+          "isCombo": false,
+          "productType": "single",
+          "isLTO": true,
+          "daypart": "breakfast",
+          "goLive": "2026-04-27"
         }
       ]
     },
@@ -3806,7 +3886,7 @@
       "slug": "classics",
       "daypart": "breakfast",
       "displayOrder": 15,
-      "itemCount": 3,
+      "itemCount": 4,
       "items": [
         {
           "id": "826",
@@ -3853,6 +3933,22 @@
           },
           "isCombo": false,
           "productType": "single"
+        },
+        {
+          "id": "lto_9006",
+          "name": "Jalapeño Bacon Breakfast Potato",
+          "slug": "jalapeno-bacon-breakfast-potato",
+          "image": "food_classics_jalapeno-bacon-breakfast-potato_lto_9006.webp",
+          "price": 3.49,
+          "calories": {
+            "min": 390,
+            "max": 390
+          },
+          "isCombo": false,
+          "productType": "single",
+          "isLTO": true,
+          "daypart": "breakfast",
+          "goLive": "2026-04-27"
         }
       ]
     },

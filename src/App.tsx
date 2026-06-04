@@ -21,6 +21,7 @@ import { LocationConfirmationScreen } from './screens/Order/LocationConfirmation
 import { BagScreen } from './screens/Order/BagScreen';
 import splashAnimation from './animations/lottie/splash.json';
 import { VoiceOrderingLauncher } from './features/voice-ordering/VoiceOrderingLauncher';
+import { VoiceOrderingScreen } from './features/voice-ordering/VoiceOrderingScreen';
 
 export default function App() {
   const [splashComplete, setSplashComplete] = useState(false);
@@ -56,6 +57,8 @@ export default function App() {
                     <Route path="/order/confirm-location" element={<LocationConfirmationScreen />} />
                     {/* Bag screen */}
                     <Route path="/order/bag" element={<BagScreen />} />
+                    {/* Voice ordering — full screen, no tab bar */}
+                    <Route path="/voice" element={<VoiceOrderingScreen />} />
                   </Routes>
                   <VoiceOrderingLauncher />
                 </DeviceFrame>

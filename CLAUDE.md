@@ -155,8 +155,9 @@ AI-powered voice ordering, isolated under `src/features/voice-ordering/`. The on
 | `src/features/voice-ordering/orderParser.ts` | Parses ` ```order ` JSON fence from Claude responses, resolves names→IDs, returns `ParsedOrder` ready for the bag flow. |
 | `src/features/voice-ordering/useMockConversation.ts` | Canned-reply script for `voiceOrdering: 'mock'` mode. Demonstrates greeting → disambiguation → combo → close → order JSON. **Replaceable** with the live proxy. |
 | `src/features/voice-ordering/useClaudeConversation.ts` | Orchestration hook. Owns conversation history, composes the system prompt with prompt-cache markers, routes mock/live, parses orders, dispatches `ADD_ITEM` to `BagContext`. |
-| `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. |
-| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | Chat UI. Text input + TTS playback (mute toggle in header, Live mode only). STT not yet wired. Layout uses explicit pixel geometry — not the shared `BottomSheet` component (its math + the project's flex parents disagreed about containing block). |
+| `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. Exposes `isPlaying` so the mic auto-loop waits until TTS finishes before re-opening. |
+| `src/features/voice-ordering/useSpeechInput.ts` | STT hook. Wraps the browser-native `SpeechRecognition` (Web Speech API) with continuous + interim results and a silence timer that auto-commits after ~1.2s of quiet. Returns `{ supported, listening, error, start, stop }`. iOS Safari fallback (Whisper via proxy) deferred. |
+| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | Chat UI. Mic + text input + TTS playback (mute toggle in header, Live mode only). Mic replaces Send when input is empty; live transcript mirrors into the input as the user speaks; the mic re-opens once after each assistant turn (keyed off message id, not listening state). Layout uses explicit pixel geometry — not the shared `BottomSheet` component (its math + the project's flex parents disagreed about containing block). |
 | `src/features/voice-ordering/VoiceOrderingLauncher.tsx` | Mounts the FAB + panel. Single-line integration in `App.tsx`. **Temporary placement** — final UX TBD with Adam (FAB above tab bar for now). |
 | `api/claude.ts` | **Active.** Dual-transport Claude proxy — Anthropic-direct (preferred) or Bedrock (fallback). Picks based on which env vars are set. |
 | `api/tts.ts` | **Active.** ElevenLabs TTS REST proxy. Plain `fetch`. Live when `ELEVENLABS_API_KEY` is set. |
@@ -189,14 +190,14 @@ If the sibling repo moves, edit `VOICE_REPO` in `scripts/refresh-voice-data.js`.
 | Going live (Claude transport) | ✅ **Live with Anthropic-direct.** Confirmed working 2026-06-04. Bedrock available as fallback when AWS creds are provided. |
 | Prompt caching | ✅ Static system prompt + menu summary cached as ephemeral block; ~5× cost reduction per turn |
 | Going live (TTS) | ✅ **Live with ElevenLabs.** TTS proxy + `useTTS` hook + mute toggle in panel header. Plays MP3 returned from `/api/tts` via HTML5 Audio. |
-| STT (mic input) | ⏸ Deferred — text-only POC for now |
+| STT (mic input) | ✅ Wired — Web Speech API via `useSpeechInput`. Mic replaces Send when input empty, live transcript mirrors into input, ~1.2s silence auto-commits. Mic re-opens once per assistant turn after TTS finishes. iOS Safari fallback (Whisper via proxy) still deferred. |
 | TTS playback | ✅ Wired — auto-plays each new assistant message in Live mode. Mute toggle (🔊/🔇) in panel header. Browsers may block autoplay on first message until user gesture; chat itself still works. |
 | Nearest-store lookup | ⏸ Deferred — vendored, not wired |
 | FAB icon + final placement | ⏸ Adam to supply icon; placement TBD |
 
 ### Stack
 
-- **STT:** Web Speech API (browser-native), planned. Fallback adapter for iOS Safari → Whisper via proxy.
+- **STT:** Web Speech API (browser-native), wired via `useSpeechInput`. Continuous + interim results with a silence-timer auto-commit (~1.2s). iOS Safari fallback (Whisper via proxy) deferred.
 - **LLM:** Claude Haiku 4.5 via Bedrock, called through `api/claude.ts` proxy that holds AWS creds. Browser never sees keys.
 - **TTS:** ElevenLabs REST endpoint (synthesis only, not their agent platform), via `api/tts.ts` proxy.
 - **State:** Conversation history in `useClaudeConversation`. Integrates with `BagContext` only at order parse boundary.

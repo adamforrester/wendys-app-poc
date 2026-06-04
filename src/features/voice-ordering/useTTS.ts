@@ -13,7 +13,7 @@
  *   tts.stop(); // explicit interrupt (e.g. when user starts typing)
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseTTSOptions {
   /** When false, speak() is a no-op. Lets the panel toggle mute without unmounting. */
@@ -32,6 +32,10 @@ export function useTTS(options: UseTTSOptions) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // Exposed so consumers (e.g. the panel's mic auto-loop) can wait until
+  // the assistant has finished speaking before opening the mic — otherwise
+  // the recognizer picks up our own TTS audio.
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const cleanup = useCallback(() => {
     // Stop playback.
@@ -50,6 +54,7 @@ export function useTTS(options: UseTTSOptions) {
       abortRef.current.abort();
       abortRef.current = null;
     }
+    setIsPlaying(false);
   }, []);
 
   const stop = useCallback(() => {
@@ -96,12 +101,19 @@ export function useTTS(options: UseTTSOptions) {
             URL.revokeObjectURL(url);
             objectUrlRef.current = null;
           }
-          if (audioRef.current === audio) audioRef.current = null;
+          if (audioRef.current === audio) {
+            audioRef.current = null;
+            setIsPlaying(false);
+          }
         };
 
-        await audio.play().catch(() => {
+        try {
+          await audio.play();
+          if (audioRef.current === audio) setIsPlaying(true);
+        } catch {
           // Browsers may block autoplay until first user gesture; ignore.
-        });
+          if (audioRef.current === audio) setIsPlaying(false);
+        }
       } catch {
         // AbortError (interrupted) or network error — both safe to ignore.
       } finally {
@@ -121,5 +133,5 @@ export function useTTS(options: UseTTSOptions) {
     if (!enabled) cleanup();
   }, [enabled, cleanup]);
 
-  return { speak, stop };
+  return { speak, stop, isPlaying };
 }

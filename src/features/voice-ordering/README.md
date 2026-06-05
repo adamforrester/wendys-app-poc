@@ -111,8 +111,14 @@ Both consumers should share a single haversine utility (probably `useNearestLoca
 
 ## Open questions
 
-- **Streaming items into the bag during the conversation** — currently the agent emits the order JSON only at close, so items animate in as a single batch. Streaming would need both the system prompt and the parser to support an "additive" mode that dedups across turns. Parked.
-- **Final FAB icon and placement.** Adam to provide.
+Bigger pieces, sequenced. Decisions in **bold** are already locked in with Adam.
+
+- **Order-type-first prompt + delivery routing.** When voice opens, agent asks pickup-or-delivery up front. Delivery → close voice + route to `/order/delivery` (the static page now exists). Pickup → continue with the location flow.
+- **Nearest-store lookup (`useNearestLocation` hook).** Use browser geolocation primary; haversine over `wendys-locations.json` to suggest the nearest store. **Decided: if geolocation is denied/unavailable, agent asks for ZIP and matches against the vendored data — no Mapbox geocoding for the POC.** Same hook should serve a future Order-tab integration that replaces `src/data/locations.json`.
+- **Voice location confirmation flow.** After pickup, confirm location, then confirm pickup method. **Decided: three method tiles (Drive Thru / Dine In / Carryout) render visibly AND tap is equivalent to speaking the option.** When voice picks the method, the corresponding tile flashes/highlights so visual + voice stay in sync.
+- **Build-as-you-go visual draft order.** The big one. Items appear visually as the agent confirms them and update in place as the user modifies (single → combo → size → drink). **Decided: voice-local draft state inside `VoiceOrderingScreen`; nothing hits `BagContext` until the user taps "Review in bag" (atomic transfer).** Combo visualization: three small image circles (entrée + side + drink) inside the tile. Modifications mutate the existing tile rather than appending a new one. Streaming the order JSON across turns (vs. emitting only at close) is one approach; a separate "current draft" tool/structure is another. To be designed.
+- **Read-back of location + pickup method at close.** Before "Review in bag", agent reads back "X items, [pickup method] at [store name]". System-prompt addition.
+- **Final FAB icon + placement.** Adam to provide.
 - **iOS Safari STT.** Web Speech API is unreliable; Whisper-via-proxy is the planned fallback.
 
 ## What does NOT belong here

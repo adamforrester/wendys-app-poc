@@ -203,9 +203,14 @@ If the sibling repo moves, edit `VOICE_REPO` in `scripts/refresh-voice-data.js`.
 | Markdown stripping | ✅ `cleanReplyForDisplay` removes bold/italic/code/link markers from replies before display + TTS so ElevenLabs doesn't read asterisks aloud. System prompt also asks Claude for plain prose. |
 | Status bar tint per screen | ✅ `StatusBarModeContext` — voice screen flips it to `dark` while mounted. |
 | Vercel deploy | ✅ Live. Requires `ANTHROPIC_API_KEY` + `ELEVENLABS_API_KEY` set in project env vars (Production scope) before the proxy works. |
-| Nearest-store lookup | ⏸ Deferred — vendored, not wired |
+| Nearest-store lookup (`useNearestLocation`) | ⏸ **Open.** Decided: browser geolocation primary; if denied/unavailable, agent asks for ZIP and matches against `wendys-locations.json` (no Mapbox geocoding for the POC). Should serve both the voice flow and a future Order tab integration that replaces `src/data/locations.json`. |
+| Order-type-first prompt + delivery routing | ⏸ **Open.** When the user opens voice, agent asks pickup-or-delivery up front. Delivery → close voice + route to `/order/delivery` (now built — see Delivery page row below). Pickup → continue with location confirmation. |
+| Voice location confirmation flow | ⏸ **Open.** After pickup is selected: confirm location (geo-detected nearest, with ZIP/city fallback for denied geo), then confirm pickup method. Three method tiles (Drive Thru / Dine In / Carryout) render visibly **and tap is equivalent to speaking the option** (decided). When voice picks the method, the corresponding tile flashes/highlights so visual + voice stay in sync. |
+| Build-as-you-go visual draft order | ⏸ **Open.** **The big one.** Items appear visually as the agent confirms them, and update in place as the user modifies (single → combo → size → drink). Decided: voice-local draft state inside `VoiceOrderingScreen` (NOT `BagContext`); atomic transfer to `BagContext` only when user taps "Review in bag". Combo visualization: three small image circles (entrée + side + drink) inside the tile. Size/drink modifications mutate the existing tile rather than appending a new one. |
+| Read-back of location + pickup method at close | ⏸ **Open.** Before "Review in bag" CTA, the agent reads back: "X items, [pickup method] at [store name]". System-prompt addition. |
 | FAB icon + final placement | ⏸ Adam to supply icon; placement TBD |
-| Streaming items into bag during conversation (vs. all at order close) | ⏸ Open — system prompt currently emits the order JSON only at close, so items animate in all at once. |
+| Delivery page (`/order/delivery`) | ✅ Built. Static screen ported from Figma — meal-deals hero, "It's a good day for delivery" headline, Get Started + Delivery FAQs buttons (intentionally inert for now), DoorDash credit + legalese. Reached via the Order root Pickup/Delivery toggle. |
+| iOS Safari STT | ⏸ Deferred — Web Speech API unreliable on iOS Safari; planned fallback is Whisper-via-proxy. |
 
 ### Stack
 
@@ -643,11 +648,12 @@ SearchBar, EmptyState, StatusBadge, LocationMap, OfferTile
 | Combos (all) | ✅ Populated layout | Component cards with Edit links, "Price in Bag", combo size selector. Close X with confirm dialog. 39 combos have defaultComponents data. Combo wizard not yet built. |
 | Kids Meals | ✅ Populated layout | Same combo pattern — 4 component cards (entrée + side + drink + toy) |
 
-### Screens Built (13)
+### Screens Built (14)
 - **Splash Screen** — cameo logo → Lottie animation → fade to app (configurable timing, swappable animation)
 - **Home Screen (auth)** — hero banner, offers section with real data, privacy policy link. Sticky TopAppBar.
 - **Offers Screen** — Offers tab (segmented control, promo code button, available/unavailable/redeemed sections) + Rewards tab (2-up card grid with 21 items sorted by points, View History button, Learn More section)
-- **Order Screen** — Mapbox map, BottomSheet with OrderLocationCards, Pickup/Delivery segmented control, search
+- **Order Screen** (`/order`) — Mapbox map, BottomSheet with OrderLocationCards, Pickup/Delivery segmented control (toggle now navigates: Pickup → this screen, Delivery → `/order/delivery`), search. Pickup methods on each location card are Drive Thru / Dine In / Carryout (Curbside removed; not an actual Wendy's option).
+- **Delivery Screen** (`/order/delivery`) — Static landing page reached when the user toggles to Delivery. Meal-deals hero, "It's a good day for delivery" headline, Get Started + Delivery FAQs buttons (inert until delivery flow is built), DoorDash credit + legalese.
 - **Menu Category Screen** (`/order/menu`) — daypart-aware category grid (14 all-day, 9 breakfast), quick action icons (Recents/Favorites/Rewards), pickup location + offer applied ListRows
 - **Menu Product List (PLP)** (`/order/menu/:slug`) — scrollable category tabs with swipe, 2-up MenuCard grid with price + calories, daypart-aware tab sets
 - **Single Product Page (SPP)** (`/order/menu/:slug/:productId`) — modular shell with Add to Bag → snackbar → location confirmation gate

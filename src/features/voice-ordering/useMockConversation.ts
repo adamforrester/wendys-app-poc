@@ -62,6 +62,17 @@ const SCRIPT: MockResponse[] = [
 \`\`\``,
   },
   {
+    // Synthetic nudge after the screen has set the resolved store.
+    // Confirm by name + ask for pickup method in one turn.
+    match: i => i.includes('[system: location_resolved]'),
+    reply: "Got it — picking up at your nearest Wendy's. Drive thru, dine in, or carryout?",
+  },
+  {
+    // ZIP didn't match anything in the dataset. Re-ask.
+    match: i => i.includes('[system: zip_not_found]'),
+    reply: "Hmm, I couldn't find a Wendy's near that ZIP. Want to try a different one?",
+  },
+  {
     match: i => i.includes("dave") && (i.includes("single") || i.includes("burger")),
     reply: "Got it — one Dave's Single. Would you like to make that a combo?",
   },

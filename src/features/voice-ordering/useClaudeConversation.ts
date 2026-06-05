@@ -12,7 +12,7 @@
  * Everything else is voice-internal.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import offersJson from '../../data/offers.json';
 import systemPromptRaw from './data/system_prompt.md?raw';
 import { useBag } from '../../context/BagContext';
@@ -26,7 +26,7 @@ import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
 import { extractHandoff, stripHandoffFence } from './handoffParser';
 import { extractLocationAction, stripLocationFence } from './locationActionParser';
-import { cleanReplyForDisplay } from './cleanReply';
+import { cleanReplyForDisplay, expandSpokenAbbreviations } from './cleanReply';
 import type {
   ConversationMessage,
   Handoff,
@@ -86,6 +86,11 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
   const [error, setError] = useState<string | null>(null);
   const [lastParsedOrder, setLastParsedOrder] = useState<ParsedOrder | null>(null);
   const [lastHandoff, setLastHandoff] = useState<Handoff | null>(null);
+  // Synthetic input queued from inside a turn (e.g. after a ZIP resolves)
+  // and fired after that turn's `pending` flag clears. State (not ref)
+  // so a useEffect downstream can react when it lands. See the
+  // resolve_zip branch in `send` for context.
+  const [pendingNudge, setPendingNudge] = useState<string | null>(null);
 
   // Cache the menu summary — it's static per build, expensive-ish to format.
   const menuSummaryRef = useRef<string | null>(null);
@@ -113,11 +118,17 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
    */
   const buildPickupContext = useCallback((): PickupContext => {
     const loc = locationState.selectedLocation;
+    // Expand abbreviations BEFORE handing to the agent — the agent reads
+    // the context verbatim, and ElevenLabs reads "Nw" letter-by-letter.
+    // Doing it here means cleanReply doesn't have to catch every shape
+    // the agent might surface in its reply.
     return {
       permission: locationState.locationPermission,
-      storeName: loc?.name ?? null,
+      storeName: loc?.name ? expandSpokenAbbreviations(loc.name) : null,
       storeAddress: loc
-        ? `${loc.address.street}, ${loc.address.city}, ${loc.address.state} ${loc.address.zip}`
+        ? expandSpokenAbbreviations(
+            `${loc.address.street}, ${loc.address.city}, ${loc.address.state} ${loc.address.zip}`,
+          )
         : null,
       storeId: loc?.id ?? null,
       fulfillmentMethod: locationState.fulfillmentMethod ?? null,
@@ -232,10 +243,25 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         // agent will see permission still denied/no store on the next
         // turn and can re-ask. Fire-and-forget — do not block this turn.
         if (locationAction?.action === 'resolve_zip') {
+          // Resolve, dispatch, then nudge a follow-up turn so the agent
+          // can confirm the store by name. Without the synthetic nudge
+          // the agent has no way to "speak" again — the conversation's
+          // only trigger is a user utterance. The nudge is queued in
+          // pendingNudgeRef and fired in the `finally` block below,
+          // after `pending` has reset (otherwise `send` would early-
+          // return on the pending guard).
+          //
+          // The sentinel string is documented in the system prompt so
+          // the model knows what to do when it sees it. It's not read
+          // aloud — only assistant messages drive TTS.
           void nearest.resolveByZip(locationAction.zip).then(loc => {
-            if (!loc) return;
+            if (!loc) {
+              setPendingNudge('[system: zip_not_found]');
+              return;
+            }
             locationDispatch({ type: 'SET_LOCATION', location: loc });
             locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
+            setPendingNudge('[system: location_resolved]');
           });
         }
 
@@ -282,11 +308,26 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
     [bagDispatch, composeSystemPrompt, flags.voiceOrdering, liveEndpoint, locationDispatch, messages, mock, nearest, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
   );
 
+  // Drain a queued nudge once the previous turn finishes. The send ref
+  // dance is just to satisfy the deps lint without re-firing the effect
+  // when send identity changes between renders (it does, every turn).
+  const sendRef = useRef(send);
+  useEffect(() => {
+    sendRef.current = send;
+  });
+  useEffect(() => {
+    if (!pendingNudge || pending) return;
+    const nudge = pendingNudge;
+    setPendingNudge(null);
+    void sendRef.current(nudge);
+  }, [pendingNudge, pending]);
+
   const reset = useCallback(() => {
     setMessages([]);
     setError(null);
     setLastParsedOrder(null);
     setLastHandoff(null);
+    setPendingNudge(null);
     mock.reset();
   }, [mock]);
 

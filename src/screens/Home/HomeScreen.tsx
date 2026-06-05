@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopAppBar } from '../../components/TopAppBar/TopAppBar';
 import { ContentCard } from '../../components/ContentCard/ContentCard';
@@ -11,8 +11,6 @@ import { useLocation as useLocationCtx } from '../../context/LocationContext';
 import { useOfferData } from '../../hooks/useOfferData';
 import { useMenuData } from '../../hooks/useMenuData';
 import { useNearestLocation } from '../../hooks/useNearestLocation';
-
-const SESSION_SNACKBAR_KEY = 'home-nearest-snackbar-shown';
 
 function formatExpiry(isoDate: string): string {
   const d = new Date(isoDate);
@@ -41,24 +39,27 @@ export function HomeScreen() {
   // source of truth.
   const nearest = useNearestLocation();
   const [showNearestSnackbar, setShowNearestSnackbar] = useState(false);
+  // Whether we've already auto-set a location during *this* mount of
+  // HomeScreen. Prevents the snackbar from re-firing on every render
+  // and prevents us from clobbering a manual location pick made later.
+  const autoSetThisMountRef = useRef(false);
 
   // When the hook lands on a granted result and we don't already have a
-  // selected location, push it into LocationContext + flash the snackbar
-  // (once per browser session). If the user is denied, mark the
-  // permission so other surfaces (voice) can ask for ZIP/city instead.
+  // selected location, push it into LocationContext + flash the snackbar.
+  // The snackbar fires once per HomeScreen mount where we auto-picked.
+  // If the user is denied, mark the permission so other surfaces (voice)
+  // can ask for ZIP/city instead.
   useEffect(() => {
-    if (nearest.status === 'granted' && nearest.nearest && !locationState.selectedLocation) {
+    if (
+      nearest.status === 'granted' &&
+      nearest.nearest &&
+      !locationState.selectedLocation &&
+      !autoSetThisMountRef.current
+    ) {
+      autoSetThisMountRef.current = true;
       locationDispatch({ type: 'SET_LOCATION', location: nearest.nearest });
       locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
-      try {
-        if (sessionStorage.getItem(SESSION_SNACKBAR_KEY) !== '1') {
-          sessionStorage.setItem(SESSION_SNACKBAR_KEY, '1');
-          setShowNearestSnackbar(true);
-        }
-      } catch {
-        // sessionStorage unavailable (private mode in some browsers) — show anyway, once per mount.
-        setShowNearestSnackbar(true);
-      }
+      setShowNearestSnackbar(true);
     } else if (nearest.status === 'denied') {
       locationDispatch({ type: 'SET_PERMISSION', permission: 'denied' });
     }
@@ -66,13 +67,11 @@ export function HomeScreen() {
 
   // Decide which HomeLocationCard variant to render. The card is purely
   // presentational — we compose state here based on what the user has
-  // and where the geo lookup is.
-  const cardState =
-    locationState.selectedLocation
-      ? 'granted'
-      : nearest.status === 'loading' || nearest.status === 'idle'
-        ? 'loading'
-        : 'default';
+  // and where the geo lookup is. The 'loading' transient is folded into
+  // 'default' so the user just sees "Find a Wendy's" until geo resolves
+  // (typically a few hundred ms — flashing a temporary "locating…" copy
+  // is more distracting than helpful).
+  const cardState = locationState.selectedLocation ? 'granted' : 'default';
   const cardAddress = locationState.selectedLocation
     ? `${locationState.selectedLocation.address.street}, ${locationState.selectedLocation.address.city}, ${locationState.selectedLocation.address.state} ${locationState.selectedLocation.address.zip}`
     : undefined;
@@ -83,7 +82,6 @@ export function HomeScreen() {
         titleMode="logo"
         showPoints={authState.isAuthenticated}
         points={authState.user?.rewardsPoints ?? 0}
-        showFind
         showBag
       />
 

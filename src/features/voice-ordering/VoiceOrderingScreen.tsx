@@ -19,7 +19,7 @@
  * still re-opens once per assistant turn after TTS finishes.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLottie } from 'lottie-react';

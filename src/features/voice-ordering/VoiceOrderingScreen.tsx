@@ -68,16 +68,21 @@ export function VoiceOrderingScreen() {
   });
 
   // Delivery handoff. The agent emitted a `handoff` fence when the user
-  // chose delivery up front. Wait long enough for the one-line read-back
-  // ("Got it — I'll send you over to delivery") to land, then route.
-  // `replace: true` so back-arrow from the delivery page returns to
-  // wherever the user came from, not back into /voice.
+  // chose delivery up front. We want to route to /order/delivery exactly
+  // when the spoken read-back finishes — not before (truncates the line)
+  // and not after a fixed delay (varies with reply length, voice speed,
+  // load latency).
   //
-  // tts/speech/navigate are kept in refs so re-renders don't cancel the
-  // pending timer — useTTS and useSpeechInput return new objects each
-  // render, and including them in the deps array would re-run this
-  // effect on every render, killing the timer before it fires.
+  // Strategy: watch tts.isPlaying transition true → false. Once we've
+  // seen it become true, the next time it's false the audio has ended.
+  // A safety timeout covers the cases where playback never starts (mock
+  // mode, missing creds, proxy 5xx) so the handoff can't get stuck.
+  //
+  // tts/speech/navigate are kept in refs so re-renders don't churn the
+  // safety timer — useTTS and useSpeechInput return new objects each
+  // render, and chasing those in deps would defeat the timer.
   const handoffNavTriggeredRef = useRef(false);
+  const handoffPlaybackSeenRef = useRef(false);
   const ttsRef = useRef(tts);
   const speechRef = useRef(speech);
   const navigateRef = useRef(navigate);
@@ -86,18 +91,38 @@ export function VoiceOrderingScreen() {
     speechRef.current = speech;
     navigateRef.current = navigate;
   });
-  useEffect(() => {
-    if (!lastHandoff) return;
-    if (lastHandoff.destination !== 'delivery') return;
+
+  const performHandoffNav = useCallback(() => {
     if (handoffNavTriggeredRef.current) return;
     handoffNavTriggeredRef.current = true;
-    const delay = mode === 'live' ? 2800 : 1200;
-    window.setTimeout(() => {
-      ttsRef.current.stop();
-      speechRef.current.stop();
-      navigateRef.current('/order/delivery', { replace: true });
-    }, delay);
-  }, [lastHandoff, mode]);
+    ttsRef.current.stop();
+    speechRef.current.stop();
+    navigateRef.current('/order/delivery', { replace: true });
+  }, []);
+
+  // Track playback transitions to fire navigation right when audio ends.
+  useEffect(() => {
+    if (!lastHandoff || lastHandoff.destination !== 'delivery') return;
+    if (handoffNavTriggeredRef.current) return;
+    if (tts.isPlaying) {
+      handoffPlaybackSeenRef.current = true;
+      return;
+    }
+    if (handoffPlaybackSeenRef.current) {
+      // isPlaying just flipped true → false: audio finished.
+      performHandoffNav();
+    }
+  }, [lastHandoff, tts.isPlaying, performHandoffNav]);
+
+  // Safety net: if playback never starts (mock mode, proxy failure),
+  // route after a bounded wait so the user isn't stranded.
+  useEffect(() => {
+    if (!lastHandoff || lastHandoff.destination !== 'delivery') return;
+    if (handoffNavTriggeredRef.current) return;
+    const ceiling = mode === 'live' ? 8000 : 1500;
+    const timer = window.setTimeout(performHandoffNav, ceiling);
+    return () => window.clearTimeout(timer);
+  }, [lastHandoff, mode, performHandoffNav]);
 
   // Greet on first mount.
   useEffect(() => {

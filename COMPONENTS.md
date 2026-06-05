@@ -605,15 +605,40 @@ const points = getRewardsPoints(); // 2450
 
 ## Voice Ordering (POC)
 
-Feature module under `src/features/voice-ordering/`. See `src/features/voice-ordering/README.md` for full architecture. Brief surface here:
+Feature module under `src/features/voice-ordering/`. See `src/features/voice-ordering/README.md` for full architecture and decisions. Brief surface here:
 
-### VoiceOrderingPanel
+### VoiceOrderingScreen — active full-screen UI
 
-Chat-style UI panel (740×390 fixed geometry, slides up from bottom). **Does not use the shared `BottomSheet` component** — its math + the project's flex parents disagreed about which containing block to use, leaving the input row clipped. Inline pixel layout keeps geometry predictable.
+Default voice experience at route `/voice` (registered outside `AppShell`, no tab bar). Cream background, dark status bar (via `useStatusBarMode('dark')`), back arrow top-left.
 
-Brand-secondary (teal) header with voice glyph (`/icons/voice.svg`), mode label (Mock / Live / Disabled), mute toggle (Live mode only — 🔊/🔇), and Reset/Close. Renders user/assistant message bubbles, a typing indicator, an animated "✓ N items added" pill on order completion, and an inline error banner on failures. TTS plays each new assistant message in Live mode unless muted.
+Layout, top → bottom:
+1. Large agent text (Wendys Fresh, 22/30, weight 800) with **active-word brand-red highlight** — the current word in `text-brand-primary`, past words in `text-primary`, future words dimmed at 0.45 opacity. Driven by `useSpokenHighlight` against the playing TTS audio's `currentTime`.
+2. Stack of `VoiceBagItemTile` pills that animate in as items are added to the bag from a parsed order.
+3. Central Lottie voice animation (`/animations/lottie/voice-animation.json`, 220×220) — plays only while the agent is speaking or the user is being listened to. **Push-to-talk:** hold the lottie button (pointerdown → mic opens; pointerup → transcript commits and sends). Pressing during TTS interrupts the assistant.
+4. Helper label below the lottie: `Hold to talk` / `Listening — release to send` / `Speaking…`.
+5. "Review in bag" CTA appears when `lastParsedOrder.fullyResolved` fires; navigates to `/order/bag`.
 
-**Use:** Mounted by `<VoiceOrderingLauncher />` — don't render directly.
+No chat scrollback, no text input, no header band, no mute toggle. Reuses `useClaudeConversation`, `useTTS`, `useSpeechInput`, `useSpokenHighlight`.
+
+```tsx
+<Route path="/voice" element={<VoiceOrderingScreen />} />
+```
+
+### VoiceBagItemTile
+
+Drive-thru-style pill: 44×44 circular product image (resolved via `useMenuData.getProductById` + `getProductImagePath`, falls back to the Wendy's wave) + product name + price. Wrapped in `motion.div` with a spring entrance (`y: 12 → 0`, `scale: 0.96 → 1`). Used inside `<AnimatePresence>` in the screen's stack.
+
+```tsx
+<AnimatePresence initial={false}>
+  {voiceItems.map(item => <VoiceBagItemTile key={item.id} item={item} />)}
+</AnimatePresence>
+```
+
+### VoiceOrderingPanel — legacy chat panel
+
+Slide-up bottom-sheet chat UI from the previous iteration. **Not wired to the FAB anymore** — kept in the codebase + Storybook for A/B comparison only. Uses auto-VAD STT, mic-replaces-Send-when-empty, mute toggle (🔊/🔇), live transcript mirroring, mic re-opens once after each assistant turn.
+
+Inline pixel layout (does not use shared `BottomSheet`).
 
 ```tsx
 <VoiceOrderingPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
@@ -621,7 +646,7 @@ Brand-secondary (teal) header with voice glyph (`/icons/voice.svg`), mode label 
 
 ### VoiceOrderingLauncher
 
-Mounts the floating action button + the panel. Returns `null` when `voiceOrdering` flag is `off`. **Single-line integration** in `App.tsx`.
+Mounts the floating action button. Tapping navigates to `/voice`. Returns `null` while on the voice screen or when `voiceOrdering` flag is `off`. **Single-line integration** in `App.tsx`.
 
 ```tsx
 <VoiceOrderingLauncher />
@@ -641,30 +666,73 @@ const options = getDisambiguationOptions('jalapeno_biscuit'); // [Bacon, Sausage
 
 ### useClaudeConversation()
 
-Orchestrates a turn-based conversation. Manages history, composes the system prompt with runtime context per turn, routes mock vs. live, parses ` ```order ` JSON, dispatches `ADD_ITEM` to `BagContext`.
+Orchestrates a turn-based conversation. Manages history, composes the system prompt with runtime context per turn, routes mock vs. live, parses ` ```order ` JSON, runs `cleanReplyForDisplay` to strip markdown markers, dispatches `ADD_ITEM` to `BagContext`.
 
 ```tsx
-const { messages, pending, error, send, reset, mode } = useClaudeConversation();
+const { messages, pending, error, send, reset, mode, lastParsedOrder } = useClaudeConversation();
 await send("I'd like a Dave's Single");
-// → assistant reply pushed to `messages`
+// → assistant reply pushed to `messages` (markdown-stripped)
 // → if reply contains an order block, items added to bag automatically
 ```
 
 Mode comes from `useFeatureFlags().flags.voiceOrdering`:
 - `mock` → uses `useMockConversation` (canned)
-- `live` → POSTs to `/api/claude` (Anthropic-direct or Bedrock proxy, whichever is configured)
+- `live` → **default.** POSTs to `/api/claude` (Anthropic-direct preferred, Bedrock fallback)
 - `off` → `send()` throws
 
-System prompt is sent as a two-block array with `cache_control: { type: 'ephemeral' }` on the static prefix (behavior spec + menu summary). Anthropic and Bedrock both honor it; subsequent turns within a session read cached at ~10% input cost.
+System prompt is sent as a two-block array with `cache_control: { type: 'ephemeral' }` on the static prefix (behavior spec + menu summary). Subsequent turns within a session read cached at ~10% input cost.
 
 ### useTTS()
 
-Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on each new call; silent-fails if proxy isn't configured (TTS is non-critical — chat keeps working without audio).
+Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on each new call; silent-fails if proxy isn't configured (TTS is non-critical — chat keeps working without audio). Exposes `isPlaying` and an `onPlaybackStart(audio, text)` callback that hands the audio element to consumers (used by `useSpokenHighlight`).
 
 ```tsx
-const tts = useTTS({ enabled: !muted && mode === 'live' });
+const tts = useTTS({
+  enabled: mode === 'live',
+  onPlaybackStart: highlight.attach,
+});
 tts.speak('Hi there.');  // fire-and-forget
 tts.stop();              // explicit interrupt
+```
+
+### useSpeechInput()
+
+Wraps the browser-native `SpeechRecognition` (Web Speech API). Two consumption modes:
+
+- **Auto-VAD (default)** — runs a silence timer (`silenceMs`, default 1200) and auto-commits when result events stop. Used by the legacy chat panel.
+- **Manual commit** (`manualCommit: true`) — disables the silence timer and skips the on-end auto-fire. Consumer calls `commit()` to capture the transcript and submit. Used by push-to-talk on the voice screen.
+
+```tsx
+const speech = useSpeechInput({
+  manualCommit: true,
+  onAutoSubmit: (transcript) => send(transcript),
+});
+// pointerdown → speech.start()
+// pointerup   → speech.commit()
+```
+
+`{ supported, listening, error, start, stop, commit }` — `supported` is false on browsers that lack the API (notably iOS Safari).
+
+### useSpokenHighlight()
+
+Drives a word-by-word `activeIndex` against an audio element. Tokenizes the text into `{ word, trailing }` pairs (Unicode-aware) and schedules each word's start as `(cumulativeWeight / totalWeight) * audio.duration`, weighted by word length and a small punctuation pause for sentence-ending characters.
+
+```tsx
+const { tokens, activeIndex, attach, reset } = useSpokenHighlight();
+const tts = useTTS({ enabled: true, onPlaybackStart: attach });
+// render: tokens[activeIndex] in brand-red, past words primary, future words dimmed
+```
+
+`attach(audio, text)` is meant to be passed straight into `useTTS({ onPlaybackStart })`. Production-grade word timing would switch to ElevenLabs' `with-timestamps` endpoint or websocket stream.
+
+### cleanReply
+
+Pure function. Strips markdown emphasis (`**bold**`, `*italic*`, `__under__`, `_italic_`), inline code (`` `code` ``), and link syntax (`[label](url)` → `label`) from assistant replies. Em-dashes, ellipses, and smart quotes are left alone — TTS handles those naturally. Runs at the message-write boundary in `useClaudeConversation` so display and spoken text stay identical and the highlight tokenizer sees the same text the user hears.
+
+```tsx
+import { cleanReplyForDisplay } from './cleanReply';
+cleanReplyForDisplay('So which one: **Tenders** or **Nuggets**?');
+// → 'So which one: Tenders or Nuggets?'
 ```
 
 ### orderParser
@@ -685,4 +753,12 @@ Pure functions that assemble the per-turn runtime context block:
 ```tsx
 const ctx = buildRuntimeContext({ menuSummary, bagItems, offers, rewards });
 const block = renderRuntimeContext(ctx); // markdown — appended to system_prompt.md body
+```
+
+### StatusBarModeContext (related, not in voice-ordering folder)
+
+Lives in `src/context/StatusBarModeContext.tsx`. Lets a screen flip the device-frame status bar tint (`light` / `dark`) for as long as it's mounted; restores the previous mode on unmount. The voice screen uses it because the cream background needs dark icons.
+
+```tsx
+useStatusBarMode('dark'); // for the lifetime of this component
 ```

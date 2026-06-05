@@ -155,14 +155,17 @@ AI-powered voice ordering, isolated under `src/features/voice-ordering/`. The on
 | `src/features/voice-ordering/contextBuilder.ts` | Pure function — builds and renders the per-turn runtime context block (menu summary + bag + offers + rewards) appended to the system prompt. |
 | `src/features/voice-ordering/orderParser.ts` | Parses ` ```order ` JSON fence from Claude responses, resolves names→IDs, returns `ParsedOrder` ready for the bag flow. |
 | `src/features/voice-ordering/useMockConversation.ts` | Canned-reply script for `voiceOrdering: 'mock'` mode. Demonstrates greeting → disambiguation → combo → close → order JSON. **Replaceable** with the live proxy. |
-| `src/features/voice-ordering/useClaudeConversation.ts` | Orchestration hook. Owns conversation history, composes the system prompt with prompt-cache markers, routes mock/live, parses orders, dispatches `ADD_ITEM` to `BagContext`. |
-| `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. Exposes `isPlaying` so the mic auto-loop waits until TTS finishes before re-opening. |
-| `src/features/voice-ordering/useSpeechInput.ts` | STT hook. Wraps the browser-native `SpeechRecognition` (Web Speech API) with continuous + interim results and a silence timer that auto-commits after ~1.2s of quiet. Returns `{ supported, listening, error, start, stop }`. iOS Safari fallback (Whisper via proxy) deferred. |
-| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | **Legacy chat panel.** Kept in place for A/B comparisons. The active entry point is `VoiceOrderingScreen` (full-screen, voice-first). Mic replaces Send when input is empty; live transcript mirrors into the input; the mic re-opens once after each assistant turn. |
-| `src/features/voice-ordering/VoiceOrderingScreen.tsx` | **Active full-screen voice UI** at `/voice`. Cream background, large agent text with active-word brand-red highlight, stacked `VoiceBagItemTile` cards that animate in as orders parse, central Lottie voice animation that plays only while the agent speaks or the user is listened to, "Review in bag" CTA on order complete. No chat scrollback, no text input, no header band, no mute toggle. |
-| `src/features/voice-ordering/VoiceBagItemTile.tsx` | Drive-thru-style item pill (image + name + price) used in the screen's animating stack. |
+| `src/features/voice-ordering/useClaudeConversation.ts` | Orchestration hook. Owns conversation history, composes the system prompt with prompt-cache markers, routes mock/live, parses orders, runs `cleanReplyForDisplay` to strip markdown, dispatches `ADD_ITEM` to `BagContext`. |
+| `src/features/voice-ordering/cleanReply.ts` | Strips markdown emphasis (`**bold**`, `*italic*`, backticks, links) from assistant replies before display + TTS. ElevenLabs reads markdown markers aloud literally; this keeps spoken and displayed text identical and word-highlighting aligned. |
+| `src/features/voice-ordering/useTTS.ts` | TTS hook. Calls `/api/tts`, plays returned MP3 via HTML5 Audio. Auto-interrupts on new turns; silent-fails when proxy unavailable. Exposes `isPlaying` and an `onPlaybackStart` callback that hands the audio element to consumers (used by `useSpokenHighlight`). |
+| `src/features/voice-ordering/useSpeechInput.ts` | STT hook over the browser-native `SpeechRecognition`. Two modes: **auto-VAD** (default) commits on ~1.2s of silence — used by the legacy chat panel; **manual-commit** (`manualCommit: true`) disables the silence timer and exposes `commit()` — used by push-to-talk on the voice screen. iOS Safari fallback (Whisper via proxy) deferred. |
 | `src/features/voice-ordering/useSpokenHighlight.ts` | Tokenizes the agent's reply and drives an `activeIndex` against the playing TTS audio's `currentTime`. Word timing estimated from `audio.duration` weighted by word length — no proxy changes needed. Production-grade timing would switch to ElevenLabs `with-timestamps`. |
+| `src/features/voice-ordering/VoiceOrderingScreen.tsx` | **Active full-screen voice UI** at `/voice`. Cream background, dark status bar (via `useStatusBarMode`), large agent text with active-word brand-red highlight (22/30), stacked `VoiceBagItemTile` cards that animate in as orders parse, central Lottie voice animation, **push-to-talk** on the lottie button (hold to listen, release to send), label states "Hold to talk" / "Listening — release to send" / "Speaking…", "Review in bag" CTA on order complete. No chat scrollback, no text input, no header band, no mute toggle. |
+| `src/features/voice-ordering/VoiceBagItemTile.tsx` | Drive-thru-style item pill (image + name + price) used in the screen's animating stack. Reads from `useMenuData` for the product image. |
+| `src/features/voice-ordering/VoiceOrderingPanel.tsx` | **Legacy chat panel.** Kept in place for A/B comparison; not the default entry. Uses auto-VAD STT, mic-replaces-Send-when-empty, live transcript mirroring, mic re-opens once after each assistant turn. |
 | `src/features/voice-ordering/VoiceOrderingLauncher.tsx` | Mounts the FAB. Navigates to `/voice` on tap; auto-hides while on the voice screen or when the flag is `off`. **Temporary placement** — final UX TBD with Adam. |
+| `src/animations/lottie/voice-animation.json` | Lottie animation for the voice screen — plays while the agent speaks or the user is being listened to; pauses otherwise. |
+| `src/context/StatusBarModeContext.tsx` | Tiny context that lets a screen flip the device-frame status bar tint (`light` / `dark`) for the duration it's mounted. Voice screen uses it because the cream background needs dark icons. |
 | `api/claude.ts` | **Active.** Dual-transport Claude proxy — Anthropic-direct (preferred) or Bedrock (fallback). Picks based on which env vars are set. |
 | `api/tts.ts` | **Active.** ElevenLabs TTS REST proxy. Plain `fetch`. Live when `ELEVENLABS_API_KEY` is set. |
 | `api/README.md` | Proxy deployment notes — env vars, transport selection, troubleshooting table. |
@@ -179,48 +182,54 @@ npm run refresh-voice-data
 
 If the sibling repo moves, edit `VOICE_REPO` in `scripts/refresh-voice-data.js`. The "don't run sync" warning in the sibling repo's CLAUDE.md is now obsolete — the LTOs that prompted it are upstream in the prototype as of 2026-06-04.
 
-### Status (2026-06-04)
+### Status (2026-06-05)
 
 | Layer | State |
 |---|---|
 | Data plumbing (v3, locations, system prompt) | ✅ Vendored + refresh script |
-| Feature flag + 3-mode toggle (`off` / `mock` / `live`) | ✅ Default `live` (uses `/api/claude` proxy) — flip to `mock` in Developer Tools when no API creds are available |
-| Hooks (useSemanticMenu, useClaudeConversation) | ✅ Built |
-| Context builder + order parser | ✅ Built |
-| UI (panel + FAB launcher) | ✅ Built (temporary placement; FAB icon is placeholder) |
-| Storybook stories | ✅ MockMode / Off / LiveMode |
-| Bedrock SDK installed (`@anthropic-ai/bedrock-sdk`) | ✅ Installed |
+| Feature flag + 3-mode toggle (`off` / `mock` / `live`) | ✅ **Default `live`** — calls `/api/claude` proxy. Flip to `mock` in Developer Tools when there are no API creds. |
+| Active entry point | ✅ Full-screen `VoiceOrderingScreen` at `/voice`. Legacy chat panel kept for A/B but not wired to the FAB. |
+| Hooks (useSemanticMenu, useClaudeConversation, useTTS, useSpeechInput, useSpokenHighlight) | ✅ Built |
+| Context builder + order parser + cleanReply | ✅ Built |
+| UI (full-screen voice screen + legacy panel + FAB launcher) | ✅ Built (FAB placement temporary; FAB icon is placeholder) |
+| Storybook stories (legacy panel) | ✅ MockMode / Off / LiveMode |
+| Bedrock SDK installed (`@anthropic-ai/bedrock-sdk`) | ✅ Installed (fallback transport only) |
 | Vite dev middleware for `/api/*` | ✅ `scripts/vite-api-middleware.ts` — `/api/claude` + `/api/tts` work in `npm run dev` |
-| Going live (Claude transport) | ✅ **Live with Anthropic-direct.** Confirmed working 2026-06-04. Bedrock available as fallback when AWS creds are provided. |
+| Going live (Claude transport) | ✅ **Anthropic-direct primary.** Bedrock fallback available when AWS creds are provided. |
 | Prompt caching | ✅ Static system prompt + menu summary cached as ephemeral block; ~5× cost reduction per turn |
-| Going live (TTS) | ✅ **Live with ElevenLabs.** TTS proxy + `useTTS` hook + mute toggle in panel header. Plays MP3 returned from `/api/tts` via HTML5 Audio. |
-| STT (mic input) | ✅ Wired — Web Speech API via `useSpeechInput`. Mic replaces Send when input empty, live transcript mirrors into input, ~1.2s silence auto-commits. Mic re-opens once per assistant turn after TTS finishes. iOS Safari fallback (Whisper via proxy) still deferred. |
-| TTS playback | ✅ Wired — auto-plays each new assistant message in Live mode. Mute toggle (🔊/🔇) in panel header. Browsers may block autoplay on first message until user gesture; chat itself still works. |
+| Going live (TTS) | ✅ **Live with ElevenLabs.** TTS proxy + `useTTS` hook. MP3 returned from `/api/tts` plays via HTML5 Audio. |
+| STT (mic input) | ✅ Wired — Web Speech API via `useSpeechInput`. **Push-to-talk** on the voice screen (hold to listen, release to send). Auto-VAD still available for the legacy chat panel. iOS Safari fallback (Whisper via proxy) deferred. |
+| Word-by-word highlight | ✅ `useSpokenHighlight` drives an `activeIndex` against the playing audio's `currentTime`. Estimated timing weighted by word length. Production-grade would switch to ElevenLabs `with-timestamps`. |
+| Markdown stripping | ✅ `cleanReplyForDisplay` removes bold/italic/code/link markers from replies before display + TTS so ElevenLabs doesn't read asterisks aloud. System prompt also asks Claude for plain prose. |
+| Status bar tint per screen | ✅ `StatusBarModeContext` — voice screen flips it to `dark` while mounted. |
+| Vercel deploy | ✅ Live. Requires `ANTHROPIC_API_KEY` + `ELEVENLABS_API_KEY` set in project env vars (Production scope) before the proxy works. |
 | Nearest-store lookup | ⏸ Deferred — vendored, not wired |
 | FAB icon + final placement | ⏸ Adam to supply icon; placement TBD |
+| Streaming items into bag during conversation (vs. all at order close) | ⏸ Open — system prompt currently emits the order JSON only at close, so items animate in all at once. |
 
 ### Stack
 
-- **STT:** Web Speech API (browser-native), wired via `useSpeechInput`. Continuous + interim results with a silence-timer auto-commit (~1.2s). iOS Safari fallback (Whisper via proxy) deferred.
-- **LLM:** Claude Haiku 4.5 via Bedrock, called through `api/claude.ts` proxy that holds AWS creds. Browser never sees keys.
+- **STT:** Web Speech API (browser-native), wired via `useSpeechInput`. Two consumption modes: **manual-commit** (push-to-talk, used by `/voice` screen) and **auto-VAD** (silence-timer commit, used by the legacy chat panel). iOS Safari fallback (Whisper via proxy) deferred.
+- **LLM:** Claude Haiku 4.5 via **Anthropic-direct** through `api/claude.ts`. Bedrock is the fallback transport, picked automatically when `AWS_REGION` + AWS creds are set instead of `ANTHROPIC_API_KEY`. Browser never sees keys either way.
 - **TTS:** ElevenLabs REST endpoint (synthesis only, not their agent platform), via `api/tts.ts` proxy.
+- **Word highlight:** `useSpokenHighlight` schedules a per-word `activeIndex` against the audio element's `currentTime` using length-weighted timing.
 - **State:** Conversation history in `useClaudeConversation`. Integrates with `BagContext` only at order parse boundary.
 
 ### Feature flag (3 modes)
 
 Set via Developer Tools → "Voice Ordering (POC)":
-- **off** — no FAB, no panel, no calls. Removes feature visually.
-- **mock** — canned conversation script. Default. Demos the full flow without a backend. Useful for designers.
-- **live** — calls `/api/claude`. Works locally as soon as `.env.local` has AWS + ElevenLabs creds and `npm run dev` is restarted (Vite dev middleware mounts the proxy — no Vercel deploy needed for local testing).
+- **off** — no FAB, no voice screen, no calls. Removes feature visually.
+- **mock** — canned conversation script. Demos the full flow without a backend. Useful when API creds aren't available.
+- **live** — **default.** Calls `/api/claude`. Works locally as soon as `.env.local` has `ANTHROPIC_API_KEY` + `ELEVENLABS_API_KEY` and `npm run dev` is restarted (Vite dev middleware mounts the proxy — no Vercel deploy needed for local testing).
 
-### Going live in 5 steps (no deploy required)
+### Going live locally (no deploy required)
 
 ```bash
 cp .env.example .env.local       # then edit .env.local — set ANTHROPIC_API_KEY
 npm run dev                      # restart so the dev middleware picks up env vars
 ```
 
-Then in the running app: Account → Developer Tools → Voice Ordering → **Live**. Open the panel, send a turn. Errors render as red banners in the panel; full stack traces print to the dev-server terminal under `[voice-ordering:dev-api]`. See `api/README.md` for the troubleshooting table.
+Then in the running app: tap the FAB to open `/voice` (or set the flag to **Live** in Account → Developer Tools if it isn't already). Hold the central animation to talk; release to send. Errors render as a red banner above the lottie; full stack traces print to the dev-server terminal under `[voice-ordering:dev-api]`. See `api/README.md` for the troubleshooting table.
 
 **Watch for stale dev server processes.** Vite picks the first available port — if a previous `npm run dev` is still running on `5173`, the new one boots on `5174`. Hitting the wrong port returns 401s because the stale server has the old (or no) env. Kill stale processes with `lsof -ti:5173 | xargs kill -9` before restarting.
 

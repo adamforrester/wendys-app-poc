@@ -42,10 +42,7 @@ export function VoiceOrderingScreen() {
   // this screen so we don't animate them in. Anything new is treated as a
   // voice add and gets the entrance animation.
   const preExistingIdsRef = useRef<Set<string>>(new Set());
-  const [voiceLoopPaused, setVoiceLoopPaused] = useState(false);
   const lastSpokenIdRef = useRef<string | null>(null);
-  const lastAutoListenIdRef = useRef<string | null>(null);
-  const userActivatedRef = useRef(false);
 
   const highlight = useSpokenHighlight();
 
@@ -54,7 +51,11 @@ export function VoiceOrderingScreen() {
     onPlaybackStart: highlight.attach,
   });
 
+  // Push-to-talk: the mic only listens while the user is holding the
+  // lottie button. No silence timer, no auto-loop after assistant turns —
+  // the user owns the moment they stop speaking.
   const speech = useSpeechInput({
+    manualCommit: true,
     onAutoSubmit: (transcript) => {
       const trimmed = transcript.trim();
       if (!trimmed) return;
@@ -93,7 +94,6 @@ export function VoiceOrderingScreen() {
     if (!lastAssistant) return;
     if (lastSpokenIdRef.current === lastAssistant.id) return;
     lastSpokenIdRef.current = lastAssistant.id;
-    setVoiceLoopPaused(false);
     if (mode === 'live') {
       void tts.speak(lastAssistant.content);
     } else {
@@ -101,21 +101,6 @@ export function VoiceOrderingScreen() {
       highlight.reset();
     }
   }, [lastAssistant, mode, tts, highlight]);
-
-  // Auto-listen loop — open the mic once per assistant turn, after TTS
-  // finishes. Same pattern as the panel; intentionally not extracted yet.
-  useEffect(() => {
-    if (mode === 'off') return;
-    if (!speech.supported) return;
-    if (!userActivatedRef.current) return;
-    if (pending || tts.isPlaying) return;
-    if (voiceLoopPaused) return;
-    if (speech.listening) return;
-    if (!lastAssistant) return;
-    if (lastAutoListenIdRef.current === lastAssistant.id) return;
-    lastAutoListenIdRef.current = lastAssistant.id;
-    speech.start();
-  }, [lastAssistant, mode, pending, tts.isPlaying, voiceLoopPaused, speech]);
 
   // Stop everything on unmount.
   useEffect(() => {
@@ -131,15 +116,19 @@ export function VoiceOrderingScreen() {
     navigate(-1);
   }, [navigate]);
 
-  const handleMicTap = useCallback(() => {
-    userActivatedRef.current = true;
-    if (speech.listening) {
-      speech.stop();
-      setVoiceLoopPaused(true);
-      return;
-    }
-    setVoiceLoopPaused(false);
+  // Push-to-talk handlers. We use pointer events so this works for both
+  // mouse and touch in one path. Pressing while the assistant is still
+  // speaking interrupts TTS — the user's input takes priority.
+  const handleMicHoldStart = useCallback(() => {
+    if (tts.isPlaying) tts.stop();
+    if (pending) return;
+    if (speech.listening) return;
     speech.start();
+  }, [pending, speech, tts]);
+
+  const handleMicHoldEnd = useCallback(() => {
+    if (!speech.listening) return;
+    speech.commit();
   }, [speech]);
 
   const handleReviewBag = useCallback(() => {
@@ -298,20 +287,25 @@ export function VoiceOrderingScreen() {
           <VoiceLottieButton
             active={tts.isPlaying || speech.listening}
             listening={speech.listening}
-            onClick={handleMicTap}
+            disabled={pending}
+            onHoldStart={handleMicHoldStart}
+            onHoldEnd={handleMicHoldEnd}
           />
-          {!tts.isPlaying && !speech.listening && (
-            <div
-              aria-hidden="true"
-              style={{
-                color: 'var(--color-text-secondary-default)',
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
-              Tap to talk
-            </div>
-          )}
+          <div
+            aria-hidden="true"
+            style={{
+              color: 'var(--color-text-secondary-default)',
+              fontSize: 12,
+              fontWeight: 600,
+              minHeight: 16,
+            }}
+          >
+            {speech.listening
+              ? 'Listening — release to send'
+              : tts.isPlaying
+                ? 'Speaking…'
+                : 'Hold to talk'}
+          </div>
         </div>
 
         {/* Review in bag CTA — surfaces when the order is complete */}
@@ -356,11 +350,15 @@ export function VoiceOrderingScreen() {
 function VoiceLottieButton({
   active,
   listening,
-  onClick,
+  disabled,
+  onHoldStart,
+  onHoldEnd,
 }: {
   active: boolean;
   listening: boolean;
-  onClick: () => void;
+  disabled: boolean;
+  onHoldStart: () => void;
+  onHoldEnd: () => void;
 }) {
   // useLottie returns the rendered <View> + an imperative API. We pause/
   // play it based on `active` so the animation only runs when the agent is
@@ -377,11 +375,35 @@ function VoiceLottieButton({
     else lottie.pause();
   }, [active, lottie]);
 
+  // Push-to-talk: pointerdown captures the pointer so we keep getting
+  // pointermove/up even if the finger drags off the button. pointerup,
+  // pointercancel, and pointerleave (as a safety net) all release.
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+    // Don't allow the press to start a text selection or scroll on touch.
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onHoldStart();
+  };
+
+  const handlePointerEnd = (e: React.PointerEvent<HTMLButtonElement>) => {
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      // Pointer may already be released by the browser.
+    }
+    onHoldEnd();
+  };
+
   return (
     <button
       type="button"
-      onClick={onClick}
-      aria-label={listening ? 'Stop listening' : 'Start voice input'}
+      disabled={disabled}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      onContextMenu={(e) => e.preventDefault()}
+      aria-label={listening ? 'Listening — release to send' : 'Hold to talk'}
       aria-pressed={listening}
       style={{
         width: 220,
@@ -389,8 +411,14 @@ function VoiceLottieButton({
         borderRadius: 9999,
         border: 'none',
         backgroundColor: 'transparent',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
         padding: 0,
+        // Block the native long-press menu on iOS Safari.
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+        touchAction: 'none',
+        opacity: disabled ? 0.6 : 1,
       }}
     >
       {lottie.View}
@@ -454,8 +482,8 @@ function AgentSpokenText({
       className="font-display"
       style={{
         fontWeight: 800,
-        fontSize: 28,
-        lineHeight: '36px',
+        fontSize: 22,
+        lineHeight: '30px',
         margin: 0,
       }}
       aria-live="polite"

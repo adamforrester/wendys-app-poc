@@ -1,21 +1,23 @@
 /**
  * Speech-to-text via the browser-native Web Speech API.
  *
- * The hook owns the SpeechRecognition lifecycle and emits live interim
- * transcripts so the panel can mirror what the user is saying inside the
- * input field. It also runs a small VAD (voice-activity-detection) timer:
- * once `result` events stop arriving for `silenceMs`, the current transcript
- * is auto-committed and listening stops. The panel uses that callback to
- * send the message and re-open the mic after the assistant replies.
+ * Two consumption modes:
+ *   1. **Auto-VAD (default)** — the hook runs a small silence timer and
+ *      auto-commits when result events stop for `silenceMs`. Used by the
+ *      legacy chat panel.
+ *   2. **Manual commit** (`manualCommit: true`) — silence timer is
+ *      disabled, `onend` does not auto-fire `onAutoSubmit`. The consumer
+ *      explicitly calls `commit()` to capture the transcript and submit.
+ *      Used by push-to-talk (hold-to-talk) on the voice screen.
  *
  * Caveats:
  *   - Web Speech API is well-supported in Chrome/Edge and macOS Safari
  *     (under `webkitSpeechRecognition`). iOS Safari support is historically
  *     spotty; if `supported` is false the panel should fall back to the
  *     text input. A Whisper-via-proxy fallback is planned but deferred.
- *   - `continuous: true` keeps the recognizer open across pauses so the
- *     idle timer (not the API's own end-of-speech detection) decides when
- *     a turn is done — that gave us much more reliable cadence in testing.
+ *   - `continuous: true` keeps the recognizer open across pauses so we
+ *     decide when a turn is done — not the API's own end-of-speech
+ *     detection.
  *   - `lang: 'en-US'`. If we ever go multilingual the menu/system prompt
  *     would need parallel work; not worth parameterising now.
  */
@@ -59,9 +61,15 @@ function getRecognitionCtor(): SpeechRecognitionCtor | null {
 }
 
 export interface UseSpeechInputOptions {
-  /** Auto-commit after this many ms of detected silence. Default 1200. */
+  /** Auto-commit after this many ms of detected silence. Default 1200. Ignored when `manualCommit` is true. */
   silenceMs?: number;
-  /** Called with the final transcript when silence triggers auto-send. */
+  /**
+   * When true, disable the silence timer and skip the on-end auto-fire.
+   * The consumer is responsible for calling `commit()` to capture the
+   * transcript. Used for push-to-talk.
+   */
+  manualCommit?: boolean;
+  /** Called with the final transcript when commit fires (auto or manual). */
   onAutoSubmit?: (transcript: string) => void;
   /** Called as the transcript updates (live mirroring into the input). */
   onTranscriptChange?: (transcript: string) => void;
@@ -78,10 +86,16 @@ export interface UseSpeechInputReturn {
   start: () => void;
   /** Close the mic. Cancels any pending auto-submit timer. */
   stop: () => void;
+  /**
+   * Capture the current transcript, fire `onAutoSubmit`, and stop
+   * listening. Use this in `manualCommit` mode (e.g. on pointerup for
+   * push-to-talk). No-op if there's no transcript yet.
+   */
+  commit: () => void;
 }
 
 export function useSpeechInput(options: UseSpeechInputOptions = {}): UseSpeechInputReturn {
-  const { silenceMs = 1200, onAutoSubmit, onTranscriptChange } = options;
+  const { silenceMs = 1200, manualCommit = false, onAutoSubmit, onTranscriptChange } = options;
 
   const [supported] = useState(() => getRecognitionCtor() != null);
   const [listening, setListening] = useState(false);
@@ -155,7 +169,11 @@ export function useSpeechInput(options: UseSpeechInputOptions = {}): UseSpeechIn
       transcriptRef.current = text;
       onTranscriptChangeRef.current?.(text);
 
-      // Reset the silence timer on every result event — final or interim.
+      // In manual-commit (push-to-talk) mode the consumer triggers commit
+      // explicitly on release — never on a silence timer.
+      if (manualCommit) return;
+
+      // Auto-VAD: reset the silence timer on every result event.
       clearSilenceTimer();
       silenceTimerRef.current = setTimeout(commit, silenceMs);
     };
@@ -170,13 +188,15 @@ export function useSpeechInput(options: UseSpeechInputOptions = {}): UseSpeechIn
 
     rec.onend = () => {
       // The browser ended the session on its own (timeout, no input, etc.).
-      // If the timer hasn't fired yet, commit what we have.
+      // In auto-VAD mode we treat this as a commit fallback. In manual mode
+      // we do NOT — the consumer owns the commit moment, and a stray onend
+      // (silent room, browser-side timeout) shouldn't fire onAutoSubmit.
       if (recognitionRef.current === rec) {
         clearSilenceTimer();
         const final = transcriptRef.current.trim();
         recognitionRef.current = null;
         setListening(false);
-        if (final.length > 0) onAutoSubmitRef.current?.(final);
+        if (!manualCommit && final.length > 0) onAutoSubmitRef.current?.(final);
         transcriptRef.current = '';
       }
     };
@@ -193,5 +213,5 @@ export function useSpeechInput(options: UseSpeechInputOptions = {}): UseSpeechIn
   // Tear down on unmount.
   useEffect(() => stop, [stop]);
 
-  return { supported, listening, error, start, stop };
+  return { supported, listening, error, start, stop, commit };
 }

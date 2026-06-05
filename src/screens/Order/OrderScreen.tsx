@@ -16,9 +16,8 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 function getPickupMethods(fulfillmentMethods: string[], isOpen: boolean): PickupMethod[] {
   const allMethods: { id: string; name: string; imageSrc: string }[] = [
     { id: 'drive-thru', name: 'Drive Thru', imageSrc: '/images/nurdles/Drive Thru.svg' },
-    { id: 'carry-out', name: 'Carryout', imageSrc: '/images/nurdles/Carryout-right.svg' },
-    { id: 'curbside', name: 'Curbside', imageSrc: '/images/nurdles/Curbside.svg' },
     { id: 'dine-in', name: 'Dine In', imageSrc: '/images/nurdles/Dine In.svg' },
+    { id: 'carry-out', name: 'Carryout', imageSrc: '/images/nurdles/Carryout-right.svg' },
   ];
 
   return allMethods

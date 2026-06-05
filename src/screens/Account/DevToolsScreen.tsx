@@ -282,8 +282,8 @@ export function DevToolsScreen() {
               options={[
                 { value: '', label: 'None' },
                 { value: 'drive-thru', label: 'Drive-Thru' },
+                { value: 'dine-in', label: 'Dine In' },
                 { value: 'carry-out', label: 'Carry-Out' },
-                { value: 'curbside', label: 'Curbside' },
               ]}
               onChange={(v) => {
                 if (v) locationDispatch({ type: 'SET_FULFILLMENT', method: v as FulfillmentMethod });

@@ -127,8 +127,8 @@ export const UseCases: Story = {
           <SegmentedControl
             segments={[
               { id: 'drive', label: 'Drive-Thru' },
+              { id: 'dine-in', label: 'Dine In' },
               { id: 'carry', label: 'Carry-Out' },
-              { id: 'curbside', label: 'Curbside' },
             ]}
             activeSegment={fulfillment}
             onSegmentChange={setFulfillment}

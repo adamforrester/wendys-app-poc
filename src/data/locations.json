@@ -20,7 +20,7 @@
         "breakfast": { "open": "06:30", "close": "10:30" },
         "regular": { "open": "10:30", "close": "01:00" }
       },
-      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "fulfillmentMethods": ["drive-thru", "dine-in", "carry-out"],
       "phoneNumber": "(614) 555-0101"
     },
     {
@@ -39,7 +39,7 @@
         "breakfast": { "open": "06:30", "close": "10:30" },
         "regular": { "open": "10:30", "close": "00:00" }
       },
-      "fulfillmentMethods": ["drive-thru", "carry-out"],
+      "fulfillmentMethods": ["drive-thru", "dine-in", "carry-out"],
       "phoneNumber": "(614) 555-0202"
     },
     {
@@ -58,7 +58,7 @@
         "breakfast": { "open": "06:30", "close": "10:30" },
         "regular": { "open": "10:30", "close": "01:00" }
       },
-      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "fulfillmentMethods": ["drive-thru", "dine-in", "carry-out"],
       "phoneNumber": "(614) 555-0303"
     },
     {
@@ -77,7 +77,7 @@
         "breakfast": { "open": "06:30", "close": "10:30" },
         "regular": { "open": "10:30", "close": "22:00" }
       },
-      "fulfillmentMethods": ["drive-thru", "carry-out"],
+      "fulfillmentMethods": ["drive-thru", "dine-in", "carry-out"],
       "phoneNumber": "(614) 555-0404"
     },
     {
@@ -96,7 +96,7 @@
         "breakfast": { "open": "06:30", "close": "10:30" },
         "regular": { "open": "10:30", "close": "01:00" }
       },
-      "fulfillmentMethods": ["drive-thru", "carry-out", "curbside"],
+      "fulfillmentMethods": ["drive-thru", "dine-in", "carry-out"],
       "phoneNumber": "(614) 555-0505"
     }
   ]

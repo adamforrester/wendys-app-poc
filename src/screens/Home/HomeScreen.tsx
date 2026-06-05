@@ -88,8 +88,11 @@ export function HomeScreen() {
       />
 
       {/* Pickup location card — granted (address) | loading (skeleton-ish) |
-          default ("Find a Wendy's") based on geo + selectedLocation. */}
-      <div className="px-wds-16 pt-wds-8">
+          default ("Find a Wendy's") based on geo + selectedLocation.
+          ListRow style="rounded" provides its own 16px horizontal padding,
+          so we only add the top spacer here. Wrapping in px-wds-16 would
+          double-pad and shrink the card from 358px to 326px. */}
+      <div className="pt-wds-8">
         <HomeLocationCard
           state={cardState}
           address={cardAddress}

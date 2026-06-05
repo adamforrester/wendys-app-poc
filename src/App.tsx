@@ -5,6 +5,7 @@ import { LocationProvider } from './context/LocationContext';
 import { BagProvider } from './context/BagContext';
 import { DaypartProvider } from './context/DaypartContext';
 import { FeatureFlagsProvider } from './context/FeatureFlagsContext';
+import { StatusBarModeProvider } from './context/StatusBarModeContext';
 import { DeviceFrame } from './components/DeviceFrame/DeviceFrame';
 import { AppShell } from './components/AppShell/AppShell';
 import { SplashScreen } from './components/SplashScreen/SplashScreen';
@@ -33,6 +34,7 @@ export default function App() {
           <BagProvider>
             <DaypartProvider>
               <BrowserRouter>
+                <StatusBarModeProvider>
                 <DeviceFrame>
                   {!splashComplete && (
                     <SplashScreen
@@ -62,6 +64,7 @@ export default function App() {
                   </Routes>
                   <VoiceOrderingLauncher />
                 </DeviceFrame>
+                </StatusBarModeProvider>
               </BrowserRouter>
             </DaypartProvider>
           </BagProvider>

@@ -1,13 +1,20 @@
 import type { ReactNode } from 'react';
 import { StatusBar } from './StatusBar';
+import { useStatusBarModeValue } from '../../context/StatusBarModeContext';
 
 export interface DeviceFrameProps {
   children: ReactNode;
-  /** Status bar text color — 'light' for dark/colored backgrounds, 'dark' for light backgrounds */
+  /**
+   * Status bar text color — 'light' for dark/colored backgrounds, 'dark'
+   * for light backgrounds. When omitted, reads from `StatusBarModeContext`
+   * so individual screens can flip the tint via `useStatusBarMode('dark')`.
+   */
   statusBarMode?: 'light' | 'dark';
 }
 
-export function DeviceFrame({ children, statusBarMode = 'light' }: DeviceFrameProps) {
+export function DeviceFrame({ children, statusBarMode }: DeviceFrameProps) {
+  const contextMode = useStatusBarModeValue();
+  const mode = statusBarMode ?? contextMode;
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#e5e5e5]">
       <div
@@ -21,7 +28,7 @@ export function DeviceFrame({ children, statusBarMode = 'light' }: DeviceFramePr
       >
         {/* Status bar overlay — renders on top of everything */}
         <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
-          <StatusBar mode={statusBarMode} />
+          <StatusBar mode={mode} />
         </div>
 
         {/* App content — full height, TopAppBar includes safe area padding */}

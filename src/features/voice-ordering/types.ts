@@ -162,6 +162,20 @@ export interface ParsedOrder {
   fullyResolved: boolean;
 }
 
+/* ── Handoff (output by Claude when voice should yield to another flow) ── */
+
+/**
+ * Emitted as a ```handoff JSON fence when the agent decides the rest of the
+ * order belongs in another part of the app. Today the only destination is
+ * `delivery` — voice asks pickup-or-delivery up front, and on delivery the
+ * screen routes to `/order/delivery` (the static landing page).
+ */
+export interface Handoff {
+  destination: 'delivery';
+  /** Optional human-readable reason; not displayed, useful for debugging. */
+  reason?: string;
+}
+
 /* ── Runtime context (sent to Claude each turn) ── */
 
 export interface OfferContext {

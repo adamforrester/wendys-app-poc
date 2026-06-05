@@ -22,9 +22,11 @@ import { useSemanticMenu } from './useSemanticMenu';
 import { useMockConversation } from './useMockConversation';
 import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
+import { extractHandoff, stripHandoffFence } from './handoffParser';
 import { cleanReplyForDisplay } from './cleanReply';
 import type {
   ConversationMessage,
+  Handoff,
   ParsedOrder,
   RewardsContext,
 } from './types';
@@ -75,6 +77,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastParsedOrder, setLastParsedOrder] = useState<ParsedOrder | null>(null);
+  const [lastHandoff, setLastHandoff] = useState<Handoff | null>(null);
 
   // Cache the menu summary — it's static per build, expensive-ish to format.
   const menuSummaryRef = useRef<string | null>(null);
@@ -165,9 +168,13 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           resolveByName: semanticMenu.resolveByName,
         });
 
-        const visibleText = cleanReplyForDisplay(
-          parsed ? stripOrderFence(assistantText) : assistantText,
-        );
+        // Try to parse a handoff block (e.g. delivery routing).
+        const handoff = extractHandoff(assistantText);
+
+        let cleanedSource = assistantText;
+        if (parsed) cleanedSource = stripOrderFence(cleanedSource);
+        if (handoff) cleanedSource = stripHandoffFence(cleanedSource);
+        const visibleText = cleanReplyForDisplay(cleanedSource);
         const resolutionNotes = parsed
           ? parsed.items.flatMap(i => (i.resolutionWarning ? [i.resolutionWarning] : []))
           : undefined;
@@ -181,6 +188,10 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           resolutionNotes,
         };
         setMessages(h => [...h, assistantMsg]);
+
+        if (handoff) {
+          setLastHandoff(handoff);
+        }
 
         // If we got a complete, fully-resolved order, push items to the bag.
         if (parsed) {
@@ -229,6 +240,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
     setMessages([]);
     setError(null);
     setLastParsedOrder(null);
+    setLastHandoff(null);
     mock.reset();
   }, [mock]);
 
@@ -238,12 +250,13 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
       pending,
       error,
       lastParsedOrder,
+      lastHandoff,
       send,
       reset,
       mode: flags.voiceOrdering,
       systemPrompt: SYSTEM_PROMPT_BODY,
     }),
-    [messages, pending, error, lastParsedOrder, send, reset, flags.voiceOrdering],
+    [messages, pending, error, lastParsedOrder, lastHandoff, send, reset, flags.voiceOrdering],
   );
 }
 

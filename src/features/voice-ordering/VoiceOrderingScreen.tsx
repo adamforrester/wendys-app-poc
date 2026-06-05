@@ -34,7 +34,7 @@ import { VoiceBagItemTile } from './VoiceBagItemTile';
 
 export function VoiceOrderingScreen() {
   const navigate = useNavigate();
-  const { messages, pending, error, send, mode, lastParsedOrder } = useClaudeConversation();
+  const { messages, pending, error, send, mode, lastParsedOrder, lastHandoff } = useClaudeConversation();
   const { state: bagState } = useBag();
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
@@ -69,6 +69,28 @@ export function VoiceOrderingScreen() {
     // intentionally no deps — only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Delivery handoff. The agent emitted a `handoff` fence when the user
+  // chose delivery up front. Wait long enough for the one-line read-back
+  // ("Got it — I'll send you over to delivery") to land — fixed delay,
+  // sized for typical TTS playback rather than chasing isPlaying which
+  // hasn't flipped true yet at the moment the handoff arrives.
+  // `replace: true` so back-arrow from the delivery page returns to
+  // wherever the user came from, not back into /voice.
+  const handoffNavTriggeredRef = useRef(false);
+  useEffect(() => {
+    if (!lastHandoff) return;
+    if (lastHandoff.destination !== 'delivery') return;
+    if (handoffNavTriggeredRef.current) return;
+    handoffNavTriggeredRef.current = true;
+    const delay = mode === 'live' ? 2800 : 1200;
+    const timer = window.setTimeout(() => {
+      tts.stop();
+      speech.stop();
+      navigate('/order/delivery', { replace: true });
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [lastHandoff, mode, tts, speech, navigate]);
 
   // Greet on first mount.
   useEffect(() => {

@@ -28,7 +28,19 @@ const SCRIPT: MockResponse[] = [
   {
     match: i => /^(hi|hello|hey|start|begin)/.test(i) || i === '',
     whenTurn: t => t === 0,
-    reply: "Hi! You can start placing your order whenever you're ready.",
+    reply: "Hi! Are you ordering for pickup or delivery?",
+  },
+  {
+    match: i => /\b(deliver(y|ed)?|bring it|drop off|doordash)\b/.test(i),
+    reply: `Got it — I'll send you over to delivery. One sec.
+
+\`\`\`handoff
+{ "destination": "delivery" }
+\`\`\``,
+  },
+  {
+    match: i => /\b(pick.?up|carry.?out|drive.?thru|dine.?in|in.?store)\b/.test(i),
+    reply: "Great — what can I get started for you?",
   },
   {
     match: i => i.includes("dave") && (i.includes("single") || i.includes("burger")),

@@ -201,10 +201,42 @@ export interface RewardsContext {
   nextTier: string;
 }
 
+/**
+ * Snapshot of the user's pickup location passed to the agent each turn.
+ *
+ * `permission` mirrors LocationContext.locationPermission so the agent
+ * can adapt its dialogue: granted with a store → confirm; denied → ask
+ * for ZIP; prompt → home hasn't resolved yet, agent should wait.
+ *
+ * `fulfillmentMethod` is the user's last-confirmed pickup method (if any)
+ * so the agent doesn't ask again on a return visit.
+ */
+export interface PickupContext {
+  permission: 'granted' | 'denied' | 'prompt';
+  storeName: string | null;
+  storeAddress: string | null;
+  storeId: string | null;
+  fulfillmentMethod: string | null;
+}
+
 export interface RuntimeContext {
   menuSummary: string;
   offers: OfferContext[];
   rewards: RewardsContext | null;
   bag: BagItemContext[];
   bagSubtotal: number;
+  pickup: PickupContext;
+}
+
+/* ── Location action fence (output by Claude when it needs a ZIP→store) ── */
+
+/**
+ * Emitted as a ```location JSON fence when the agent needs the app to
+ * resolve a customer-supplied ZIP into a real store. The screen handles
+ * the lookup and the next turn sees the resolved store in the runtime
+ * context — agent never touches the locations dataset directly.
+ */
+export interface LocationAction {
+  action: 'resolve_zip';
+  zip: string;
 }

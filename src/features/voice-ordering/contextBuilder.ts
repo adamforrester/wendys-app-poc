@@ -15,6 +15,7 @@ import type {
   OfferContext,
   BagItemContext,
   RewardsContext,
+  PickupContext,
 } from './types';
 
 interface BuildArgs {
@@ -23,6 +24,7 @@ interface BuildArgs {
   bagItems: BagItem[];
   offers: Offer[];
   rewards: RewardsContext | null;
+  pickup: PickupContext;
 }
 
 /** Relevant offers only — available + in-progress, never redeemed/unavailable. */
@@ -48,7 +50,7 @@ function bagToContext(items: BagItem[]): BagItemContext[] {
   }));
 }
 
-export function buildRuntimeContext({ menuSummary, bagItems, offers, rewards }: BuildArgs): RuntimeContext {
+export function buildRuntimeContext({ menuSummary, bagItems, offers, rewards, pickup }: BuildArgs): RuntimeContext {
   const bag = bagToContext(bagItems);
   const bagSubtotal = bag.reduce((s, i) => s + i.price * i.quantity, 0);
   return {
@@ -57,6 +59,7 @@ export function buildRuntimeContext({ menuSummary, bagItems, offers, rewards }: 
     rewards,
     bag,
     bagSubtotal,
+    pickup,
   };
 }
 
@@ -95,6 +98,22 @@ export function renderRuntimeContext(ctx: RuntimeContext): string {
     lines.push(
       `Points: ${ctx.rewards.points} | Tier: ${ctx.rewards.tier} | ${ctx.rewards.pointsToNextTier} points to ${ctx.rewards.nextTier}`,
     );
+  }
+  lines.push('');
+
+  lines.push('### PICKUP LOCATION');
+  if (ctx.pickup.permission === 'granted' && ctx.pickup.storeName) {
+    lines.push(`Selected: ${ctx.pickup.storeName}`);
+    if (ctx.pickup.storeAddress) lines.push(`Address: ${ctx.pickup.storeAddress}`);
+    lines.push(
+      ctx.pickup.fulfillmentMethod
+        ? `Pickup method confirmed: ${ctx.pickup.fulfillmentMethod}`
+        : 'Pickup method: not yet confirmed',
+    );
+  } else if (ctx.pickup.permission === 'denied') {
+    lines.push('User declined geolocation. Ask for ZIP code, then emit a `location` JSON fence to resolve it (see Output Format).');
+  } else {
+    lines.push('Location not yet resolved — wait one beat before asking; the home screen may still be loading.');
   }
   lines.push('');
 

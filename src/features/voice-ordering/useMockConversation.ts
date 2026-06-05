@@ -39,8 +39,27 @@ const SCRIPT: MockResponse[] = [
 \`\`\``,
   },
   {
-    match: i => /\b(pick.?up|carry.?out|drive.?thru|dine.?in|in.?store)\b/.test(i),
+    // Initial pickup pick (turn 1) — confirm location + ask for method.
+    // Mock can't read the runtime context, so we use a generic store name.
+    match: i => /\bpick.?up\b/.test(i),
+    whenTurn: t => t === 1,
+    reply: "Picking up at your nearest Wendy's — drive thru, dine in, or carryout?",
+  },
+  {
+    // User picked a method. Move on to the order ask.
+    match: i => /\b(drive.?thru|dine.?in|carry.?out|in.?store)\b/.test(i),
     reply: "Great — what can I get started for you?",
+  },
+  {
+    // ZIP path (denied geo branch). Mock uses a Columbus, OH ZIP since
+    // resolveByZip needs a real ZIP that exists in wendys-locations.json.
+    match: i => /\b\d{5}\b/.test(i),
+    whenTurn: t => t <= 2,
+    reply: `One sec — finding your nearest Wendy's.
+
+\`\`\`location
+{ "action": "resolve_zip", "zip": "43215" }
+\`\`\``,
   },
   {
     match: i => i.includes("dave") && (i.includes("single") || i.includes("burger")),

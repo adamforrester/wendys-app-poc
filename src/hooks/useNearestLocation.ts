@@ -195,9 +195,13 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
   const [state, setState] = useState<NearestLocationState>(INITIAL);
   const ranRef = useRef(false);
 
-  /** Resolve nearest from a known coordinate. Used by both geo + ZIP paths. */
+  /**
+   * Resolve nearest from a known coordinate. Used by both geo + ZIP paths.
+   * Returns the ranked top-5 so callers can dispatch the result immediately
+   * without waiting on a re-render to read it off `state`.
+   */
   const rankFromCoords = useCallback(
-    async (coords: { lat: number; lng: number }) => {
+    async (coords: { lat: number; lng: number }): Promise<Location[]> => {
       const stores = await loadStores();
       const top = rankNearest(coords, stores, 5);
       setState({
@@ -207,6 +211,7 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
         coords,
         errorMessage: null,
       });
+      return top;
     },
     [],
   );
@@ -222,7 +227,10 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
 
     try {
       const pos = await getCurrentPositionAsync();
-      await rankFromCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      await rankFromCoords({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      });
     } catch (err) {
       // PERMISSION_DENIED = 1 in the GeolocationPositionError spec.
       const code = (err as GeolocationPositionError | undefined)?.code;
@@ -238,12 +246,13 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
   /**
    * ZIP fallback. Looks up the centroid of the matching store's ZIP within
    * the dataset (we don't have a generic ZIP→coords table; first store in
-   * the ZIP is "good enough" for the prototype). Returns true on success.
+   * the ZIP is "good enough" for the prototype). Returns the resolved
+   * Location on success so the caller can dispatch immediately.
    */
   const resolveByZip = useCallback(
-    async (zip: string): Promise<boolean> => {
+    async (zip: string): Promise<Location | null> => {
       const cleaned = zip.trim().replace(/\D+/g, '').slice(0, 5);
-      if (cleaned.length !== 5) return false;
+      if (cleaned.length !== 5) return null;
       setState(s => ({ ...s, status: 'loading', errorMessage: null }));
       const stores = await loadStores();
       const match = stores.find(s => (s.address.zip || '').startsWith(cleaned));
@@ -253,10 +262,10 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
           status: 'error',
           errorMessage: `No Wendy's found near ${cleaned}.`,
         });
-        return false;
+        return null;
       }
-      await rankFromCoords({ lat: match.lat, lng: match.lng });
-      return true;
+      const ranked = await rankFromCoords({ lat: match.lat, lng: match.lng });
+      return ranked[0] ?? null;
     },
     [rankFromCoords],
   );

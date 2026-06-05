@@ -17,17 +17,21 @@ import offersJson from '../../data/offers.json';
 import systemPromptRaw from './data/system_prompt.md?raw';
 import { useBag } from '../../context/BagContext';
 import { useAuth } from '../../context/AuthContext';
+import { useLocation as useLocationCtx } from '../../context/LocationContext';
 import { useFeatureFlags } from '../../context/FeatureFlagsContext';
+import { useNearestLocation } from '../../hooks/useNearestLocation';
 import { useSemanticMenu } from './useSemanticMenu';
 import { useMockConversation } from './useMockConversation';
 import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
 import { extractHandoff, stripHandoffFence } from './handoffParser';
+import { extractLocationAction, stripLocationFence } from './locationActionParser';
 import { cleanReplyForDisplay } from './cleanReply';
 import type {
   ConversationMessage,
   Handoff,
   ParsedOrder,
+  PickupContext,
   RewardsContext,
 } from './types';
 import type { Offer } from '../../data/types';
@@ -70,6 +74,10 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
   const { flags } = useFeatureFlags();
   const { state: bagState, dispatch: bagDispatch } = useBag();
   const { state: authState } = useAuth();
+  const { state: locationState, dispatch: locationDispatch } = useLocationCtx();
+  // The voice flow does NOT auto-prompt — Home owns the geo prompt.
+  // We just want resolveByZip for the denied-geo branch.
+  const nearest = useNearestLocation({ autoRun: false });
   const semanticMenu = useSemanticMenu();
   const mock = useMockConversation();
 
@@ -98,6 +106,25 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
   }, [authState.isAuthenticated]);
 
   /**
+   * Build the pickup context fragment from LocationContext. The home
+   * screen sets this when geolocation resolves; the voice flow reads it
+   * to decide whether to confirm an existing store, ask for a ZIP, or
+   * wait for the home screen to finish loading.
+   */
+  const buildPickupContext = useCallback((): PickupContext => {
+    const loc = locationState.selectedLocation;
+    return {
+      permission: locationState.locationPermission,
+      storeName: loc?.name ?? null,
+      storeAddress: loc
+        ? `${loc.address.street}, ${loc.address.city}, ${loc.address.state} ${loc.address.zip}`
+        : null,
+      storeId: loc?.id ?? null,
+      fulfillmentMethod: locationState.fulfillmentMethod ?? null,
+    };
+  }, [locationState]);
+
+  /**
    * Compose the system prompt as a two-block array so the static prefix
    * (behavior spec + menu — ~6k tokens, never changes within a session) is
    * cacheable, and only the small dynamic block (bag/offers/rewards — a
@@ -116,6 +143,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
       bagItems: bagState.items,
       offers: allOffers,
       rewards: buildRewardsContext(),
+      pickup: buildPickupContext(),
     });
     return [
       {
@@ -130,7 +158,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         text: renderRuntimeContext({ ...ctx, menuSummary: '' }),
       },
     ];
-  }, [bagState.items, buildRewardsContext]);
+  }, [bagState.items, buildRewardsContext, buildPickupContext]);
 
   /** Send a user message, get a reply, route order JSON to the bag. */
   const send = useCallback(
@@ -171,9 +199,13 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         // Try to parse a handoff block (e.g. delivery routing).
         const handoff = extractHandoff(assistantText);
 
+        // Try to parse a location action (ZIP → resolve nearest store).
+        const locationAction = extractLocationAction(assistantText);
+
         let cleanedSource = assistantText;
         if (parsed) cleanedSource = stripOrderFence(cleanedSource);
         if (handoff) cleanedSource = stripHandoffFence(cleanedSource);
+        if (locationAction) cleanedSource = stripLocationFence(cleanedSource);
         const visibleText = cleanReplyForDisplay(cleanedSource);
         const resolutionNotes = parsed
           ? parsed.items.flatMap(i => (i.resolutionWarning ? [i.resolutionWarning] : []))
@@ -191,6 +223,20 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
 
         if (handoff) {
           setLastHandoff(handoff);
+        }
+
+        // Resolve a customer-supplied ZIP into a real store. The next
+        // turn's runtime context (built by contextBuilder.ts) will see
+        // the freshly-set selectedLocation so the agent can confirm by
+        // name without inventing one. Errors are silent here — the
+        // agent will see permission still denied/no store on the next
+        // turn and can re-ask. Fire-and-forget — do not block this turn.
+        if (locationAction?.action === 'resolve_zip') {
+          void nearest.resolveByZip(locationAction.zip).then(loc => {
+            if (!loc) return;
+            locationDispatch({ type: 'SET_LOCATION', location: loc });
+            locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
+          });
         }
 
         // If we got a complete, fully-resolved order, push items to the bag.
@@ -233,7 +279,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         setPending(false);
       }
     },
-    [bagDispatch, composeSystemPrompt, flags.voiceOrdering, liveEndpoint, messages, mock, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
+    [bagDispatch, composeSystemPrompt, flags.voiceOrdering, liveEndpoint, locationDispatch, messages, mock, nearest, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
   );
 
   const reset = useCallback(() => {

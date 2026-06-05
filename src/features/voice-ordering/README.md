@@ -36,6 +36,7 @@ src/features/voice-ordering/
 ├── contextBuilder.ts            ← per-turn runtime context (bag/offers/rewards)
 ├── orderParser.ts               ← parses ```order JSON; resolves names→IDs
 ├── handoffParser.ts             ← parses ```handoff JSON (delivery routing)
+├── locationActionParser.ts      ← parses ```location JSON (ZIP→store resolution)
 ├── cleanReply.ts                ← strips markdown markers (** _ ` []()) from replies
 ├── VoiceOrderingScreen.tsx      ← active full-screen UI at /voice
 ├── VoiceBagItemTile.tsx         ← drive-thru-style item pill used in the screen stack
@@ -115,8 +116,8 @@ Both consumers should share a single haversine utility (probably `useNearestLoca
 Bigger pieces, sequenced. Decisions in **bold** are already locked in with Adam.
 
 - ~~**Order-type-first prompt + delivery routing.**~~ ✅ **Shipped.** Greeting asks pickup-or-delivery up front. Delivery branch emits a ` ```handoff ` JSON fence (`handoffParser.ts`) which the screen consumes to navigate to `/order/delivery` (`replace: true`). System prompt + mock both updated. Pickup branch resumes the existing item-collection flow.
-- **Nearest-store lookup (`useNearestLocation` hook).** Use browser geolocation primary; haversine over `wendys-locations.json` to suggest the nearest store. **Decided: if geolocation is denied/unavailable, agent asks for ZIP and matches against the vendored data — no Mapbox geocoding for the POC.** Same hook should serve a future Order-tab integration that replaces `src/data/locations.json`.
-- **Voice location confirmation flow.** After pickup, confirm location, then confirm pickup method. **Decided: three method tiles (Drive Thru / Dine In / Carryout) render visibly AND tap is equivalent to speaking the option.** When voice picks the method, the corresponding tile flashes/highlights so visual + voice stay in sync.
+- ~~**Nearest-store lookup (`useNearestLocation` hook).**~~ ✅ **Shipped** at `src/hooks/useNearestLocation.ts`. The Home screen owns the geo prompt — voice never re-prompts (avoids the back-to-back geo-then-mic browser dialogs). Voice flow consumes the resulting `LocationContext.selectedLocation` via the per-turn runtime context. Denied path: agent asks ZIP, emits ` ```location ` fence, screen runs `resolveByZip` and dispatches the resolved store. The 5.4MB `wendys-locations.json` lazy-loads on first use (Vite splits it into its own chunk).
+- **Voice location confirmation flow.** Conversation-side logic shipped: agent confirms the user's pre-set store + asks pickup method in one turn (granted), or asks for ZIP and resolves via the location fence (denied). **Still pending: visual pickup-method tiles (Drive Thru / Dine In / Carryout) that render on screen AND are tap-equivalent-to-speaking, with voice→tile flash sync.**
 - **Build-as-you-go visual draft order.** The big one. Items appear visually as the agent confirms them and update in place as the user modifies (single → combo → size → drink). **Decided: voice-local draft state inside `VoiceOrderingScreen`; nothing hits `BagContext` until the user taps "Review in bag" (atomic transfer).** Combo visualization: three small image circles (entrée + side + drink) inside the tile. Modifications mutate the existing tile rather than appending a new one. Streaming the order JSON across turns (vs. emitting only at close) is one approach; a separate "current draft" tool/structure is another. To be designed.
 - **Read-back of location + pickup method at close.** Before "Review in bag", agent reads back "X items, [pickup method] at [store name]". System-prompt addition.
 - **Final FAB icon + placement.** Adam to provide.

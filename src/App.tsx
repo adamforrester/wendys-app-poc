@@ -12,6 +12,7 @@ import { SplashScreen } from './components/SplashScreen/SplashScreen';
 import { HomeScreen } from './screens/Home/HomeScreen';
 import { OffersScreen } from './screens/Offers/OffersScreen';
 import { OrderScreen } from './screens/Order/OrderScreen';
+import { DeliveryScreen } from './screens/Order/DeliveryScreen';
 import { EarnScreen } from './screens/Earn/EarnScreen';
 import { AccountScreen } from './screens/Account/AccountScreen';
 import { DevToolsScreen } from './screens/Account/DevToolsScreen';
@@ -47,6 +48,7 @@ export default function App() {
                       <Route path="/" element={<HomeScreen />} />
                       <Route path="/offers" element={<OffersScreen />} />
                       <Route path="/order" element={<OrderScreen />} />
+                      <Route path="/order/delivery" element={<DeliveryScreen />} />
                       <Route path="/order/menu" element={<MenuCategoryScreen />} />
                       <Route path="/order/menu/:slug" element={<MenuProductListScreen />} />
                       <Route path="/earn" element={<EarnScreen />} />

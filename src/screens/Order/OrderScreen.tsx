@@ -68,7 +68,13 @@ export function OrderScreen() {
   const locations = getAllLocations();
   const favoriteId = getFavoriteLocationId();
 
-  const [fulfillmentType, setFulfillmentType] = useState('pickup');
+  // The Pickup/Delivery toggle drives navigation rather than local state —
+  // Delivery has its own screen. We render this view for "pickup" and
+  // route to /order/delivery for "delivery".
+  const fulfillmentType = 'pickup';
+  const handleFulfillmentChange = (next: string) => {
+    if (next === 'delivery') navigate('/order/delivery');
+  };
   const [expandedLocationId, setExpandedLocationId] = useState<string | null>(locations[0]?.id || null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoriteId ? [favoriteId] : []));
   const [selectedPickupMethod, setSelectedPickupMethod] = useState<string | undefined>();
@@ -94,7 +100,7 @@ export function OrderScreen() {
               { id: 'delivery', label: 'Delivery' },
             ]}
             activeSegment={fulfillmentType}
-            onSegmentChange={setFulfillmentType}
+            onSegmentChange={handleFulfillmentChange}
             density="sm"
             colorScheme="onBrand"
           />

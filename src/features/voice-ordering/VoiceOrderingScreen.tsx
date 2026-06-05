@@ -283,8 +283,10 @@ export function VoiceOrderingScreen() {
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            gap: 8,
             paddingBottom: 16,
             flexShrink: 0,
           }}
@@ -294,6 +296,18 @@ export function VoiceOrderingScreen() {
             listening={speech.listening}
             onClick={handleMicTap}
           />
+          {!tts.isPlaying && !speech.listening && (
+            <div
+              aria-hidden="true"
+              style={{
+                color: 'var(--color-text-secondary-default)',
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              Tap to talk
+            </div>
+          )}
         </div>
 
         {/* Review in bag CTA — surfaces when the order is complete */}
@@ -373,27 +387,9 @@ function VoiceLottieButton({
         backgroundColor: 'transparent',
         cursor: 'pointer',
         padding: 0,
-        position: 'relative',
       }}
     >
       {lottie.View}
-      {!active && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--color-text-secondary-default)',
-            fontSize: 12,
-            fontWeight: 600,
-          }}
-        >
-          Tap to talk
-        </span>
-      )}
     </button>
   );
 }

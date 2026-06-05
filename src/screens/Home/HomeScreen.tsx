@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { TopAppBar } from '../../components/TopAppBar/TopAppBar';
 import { ContentCard } from '../../components/ContentCard/ContentCard';
 import { SectionHeader } from '../../components/SectionHeader/SectionHeader';
@@ -146,21 +147,15 @@ export function HomeScreen() {
       {/* Privacy policy link */}
       <ListRow headline="Our Privacy Policy" trailing="icon" showDivider={false} />
 
-      {/* "We've selected your nearest Wendy's location" — fires once per
-          browser session when geo auto-picks a store. Sits above the
-          bottom tab bar so it doesn't get clipped. */}
-      {showNearestSnackbar && (
-        <div
-          style={{
-            position: 'fixed',
-            left: 16,
-            right: 16,
-            bottom: 88, // above the 80px tab bar
-            zIndex: 50,
-            pointerEvents: 'none',
-          }}
-        >
-          <div style={{ pointerEvents: 'auto' }}>
+      {/* "We've selected your nearest Wendy's location" — fires every
+          time HomeScreen freshly auto-picks a store. position: absolute
+          (NOT fixed) is intentional: the app renders inside DeviceFrame,
+          which is the nearest positioned ancestor; fixed positions
+          relative to the desktop viewport and ends up off-screen below
+          the device. AnimatePresence drives the snackbar's spring entry. */}
+      <AnimatePresence>
+        {showNearestSnackbar && (
+          <div style={{ position: 'absolute', bottom: 100, left: 0, right: 0, zIndex: 30 }}>
             <Snackbar
               message="We've selected your nearest Wendy's location."
               showClose
@@ -168,8 +163,8 @@ export function HomeScreen() {
               duration={4000}
             />
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   );
 }

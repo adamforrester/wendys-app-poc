@@ -25,7 +25,7 @@ import { useMockConversation } from './useMockConversation';
 import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
 import { extractHandoff, stripHandoffFence } from './handoffParser';
-import { extractLocationAction, stripLocationFence } from './locationActionParser';
+import { extractLocationAction, hasLocationFence, stripLocationFence } from './locationActionParser';
 import { cleanReplyForDisplay, expandSpokenAbbreviations } from './cleanReply';
 import type {
   ConversationMessage,
@@ -211,12 +211,16 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         const handoff = extractHandoff(assistantText);
 
         // Try to parse a location action (ZIP → resolve nearest store).
+        // We track fence presence separately from action validity: if a
+        // fence exists but the JSON is malformed, we still want to strip
+        // it from the visible reply (otherwise the user sees raw JSON).
         const locationAction = extractLocationAction(assistantText);
+        const locationFenceLeaked = hasLocationFence(assistantText) && !locationAction;
 
         let cleanedSource = assistantText;
         if (parsed) cleanedSource = stripOrderFence(cleanedSource);
         if (handoff) cleanedSource = stripHandoffFence(cleanedSource);
-        if (locationAction) cleanedSource = stripLocationFence(cleanedSource);
+        if (locationAction || locationFenceLeaked) cleanedSource = stripLocationFence(cleanedSource);
         const visibleText = cleanReplyForDisplay(cleanedSource);
         const resolutionNotes = parsed
           ? parsed.items.flatMap(i => (i.resolutionWarning ? [i.resolutionWarning] : []))
@@ -263,6 +267,11 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
             locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
             setPendingNudge('[system: location_resolved]');
           });
+        } else if (locationFenceLeaked) {
+          // Malformed fence (e.g. agent guessed at a "city" field). Tell
+          // the agent to recover with a real ZIP — same nudge path as a
+          // genuinely missed lookup.
+          setPendingNudge('[system: zip_not_found]');
         }
 
         // If we got a complete, fully-resolved order, push items to the bag.

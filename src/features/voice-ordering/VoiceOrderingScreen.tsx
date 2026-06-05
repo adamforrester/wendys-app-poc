@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLottie } from 'lottie-react';
 import voiceAnimation from '../../animations/lottie/voice-animation.json';
 import { useBag } from '../../context/BagContext';
+import { useStatusBarMode } from '../../context/StatusBarModeContext';
 import { useClaudeConversation } from './useClaudeConversation';
 import { useSpeechInput } from './useSpeechInput';
 import { useTTS } from './useTTS';
@@ -35,6 +36,8 @@ export function VoiceOrderingScreen() {
   const navigate = useNavigate();
   const { messages, pending, error, send, mode, lastParsedOrder } = useClaudeConversation();
   const { state: bagState } = useBag();
+  // Cream background → dark status bar tint while this screen is mounted.
+  useStatusBarMode('dark');
   // Tracks the bag-item ids that already existed before the user opened
   // this screen so we don't animate them in. Anything new is treated as a
   // voice add and gets the entrance animation.
@@ -166,13 +169,14 @@ export function VoiceOrderingScreen() {
       role="region"
       aria-label="Voice ordering"
     >
-      {/* Top bar — back arrow only. Status bar overlays this region. */}
+      {/* Top bar — back arrow only. Status bar overlays this region.
+          16px gap between the arrow and the agent text below. */}
       <div
         style={{
           paddingTop: 54, // status bar safe area
           paddingLeft: 16,
           paddingRight: 16,
-          paddingBottom: 8,
+          paddingBottom: 16,
           flexShrink: 0,
         }}
       >
@@ -414,8 +418,8 @@ function AgentSpokenText({
         style={{
           color: 'var(--color-text-secondary-default)',
           fontWeight: 700,
-          fontSize: 28,
-          lineHeight: '36px',
+          fontSize: 22,
+          lineHeight: '30px',
           opacity: 0.6,
         }}
       >
@@ -435,8 +439,8 @@ function AgentSpokenText({
         style={{
           color: 'var(--color-text-primary-default)',
           fontWeight: 800,
-          fontSize: 28,
-          lineHeight: '36px',
+          fontSize: 22,
+          lineHeight: '30px',
           margin: 0,
         }}
       >

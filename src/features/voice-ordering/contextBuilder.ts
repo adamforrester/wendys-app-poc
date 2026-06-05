@@ -111,7 +111,11 @@ export function renderRuntimeContext(ctx: RuntimeContext): string {
         : 'Pickup method: not yet confirmed',
     );
   } else if (ctx.pickup.permission === 'denied') {
-    lines.push('User declined geolocation. Ask for ZIP code, then emit a `location` JSON fence to resolve it (see Output Format).');
+    // Two-step instruction: ask first, emit fence ONLY after a ZIP is
+    // received. Compressing these caused the agent to say "finding your
+    // nearest Wendy's" on the same turn it asked for the ZIP — leaving
+    // the user stuck waiting for a fence the agent never emitted.
+    lines.push('User declined geolocation. STEP 1: ask for a 5-digit ZIP this turn (do NOT emit any fence yet, do NOT say you are finding their store). STEP 2 (next turn, after they say a ZIP): emit the `location` fence with that ZIP per the Output Format.');
   } else {
     lines.push('Location not yet resolved — wait one beat before asking; the home screen may still be loading.');
   }

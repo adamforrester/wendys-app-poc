@@ -19,7 +19,7 @@
  * still re-opens once per assistant turn after TTS finishes.
  */
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLottie } from 'lottie-react';
@@ -39,9 +39,13 @@ export function VoiceOrderingScreen() {
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
   // Tracks the bag-item ids that already existed before the user opened
-  // this screen so we don't animate them in. Anything new is treated as a
-  // voice add and gets the entrance animation.
-  const preExistingIdsRef = useRef<Set<string>>(new Set());
+  // this screen so we don't show them as voice adds. Lazy-initialized
+  // useState (not a ref written from useEffect) so the first render of
+  // voiceItems already excludes pre-existing ids. Otherwise items left
+  // over from a prior session show up in the voice stack on mount.
+  const [preExistingIds] = useState<Set<string>>(
+    () => new Set(bagState.items.map(i => i.id)),
+  );
   const lastSpokenIdRef = useRef<string | null>(null);
 
   const highlight = useSpokenHighlight();
@@ -63,34 +67,37 @@ export function VoiceOrderingScreen() {
     },
   });
 
-  // Capture pre-existing bag ids exactly once, on mount.
-  useEffect(() => {
-    preExistingIdsRef.current = new Set(bagState.items.map(i => i.id));
-    // intentionally no deps — only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Delivery handoff. The agent emitted a `handoff` fence when the user
   // chose delivery up front. Wait long enough for the one-line read-back
-  // ("Got it — I'll send you over to delivery") to land — fixed delay,
-  // sized for typical TTS playback rather than chasing isPlaying which
-  // hasn't flipped true yet at the moment the handoff arrives.
+  // ("Got it — I'll send you over to delivery") to land, then route.
   // `replace: true` so back-arrow from the delivery page returns to
   // wherever the user came from, not back into /voice.
+  //
+  // tts/speech/navigate are kept in refs so re-renders don't cancel the
+  // pending timer — useTTS and useSpeechInput return new objects each
+  // render, and including them in the deps array would re-run this
+  // effect on every render, killing the timer before it fires.
   const handoffNavTriggeredRef = useRef(false);
+  const ttsRef = useRef(tts);
+  const speechRef = useRef(speech);
+  const navigateRef = useRef(navigate);
+  useEffect(() => {
+    ttsRef.current = tts;
+    speechRef.current = speech;
+    navigateRef.current = navigate;
+  });
   useEffect(() => {
     if (!lastHandoff) return;
     if (lastHandoff.destination !== 'delivery') return;
     if (handoffNavTriggeredRef.current) return;
     handoffNavTriggeredRef.current = true;
     const delay = mode === 'live' ? 2800 : 1200;
-    const timer = window.setTimeout(() => {
-      tts.stop();
-      speech.stop();
-      navigate('/order/delivery', { replace: true });
+    window.setTimeout(() => {
+      ttsRef.current.stop();
+      speechRef.current.stop();
+      navigateRef.current('/order/delivery', { replace: true });
     }, delay);
-    return () => window.clearTimeout(timer);
-  }, [lastHandoff, mode, tts, speech, navigate]);
+  }, [lastHandoff, mode]);
 
   // Greet on first mount.
   useEffect(() => {
@@ -160,10 +167,10 @@ export function VoiceOrderingScreen() {
   // Items added during this voice session — newest first so the most
   // recent item appears at the top of the stack (closest to the agent
   // text, like a receipt unfurling toward the camera).
-  const voiceItems = useMemo(() => {
-    const pre = preExistingIdsRef.current;
-    return bagState.items.filter(i => !pre.has(i.id)).slice().reverse();
-  }, [bagState.items]);
+  const voiceItems = useMemo(
+    () => bagState.items.filter(i => !preExistingIds.has(i.id)).slice().reverse(),
+    [bagState.items, preExistingIds],
+  );
 
   const orderComplete = !!lastParsedOrder?.fullyResolved;
 

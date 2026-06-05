@@ -184,7 +184,7 @@ If the sibling repo moves, edit `VOICE_REPO` in `scripts/refresh-voice-data.js`.
 | Layer | State |
 |---|---|
 | Data plumbing (v3, locations, system prompt) | ✅ Vendored + refresh script |
-| Feature flag + 3-mode toggle (`off` / `mock` / `live`) | ✅ Default `mock` |
+| Feature flag + 3-mode toggle (`off` / `mock` / `live`) | ✅ Default `live` (uses `/api/claude` proxy) — flip to `mock` in Developer Tools when no API creds are available |
 | Hooks (useSemanticMenu, useClaudeConversation) | ✅ Built |
 | Context builder + order parser | ✅ Built |
 | UI (panel + FAB launcher) | ✅ Built (temporary placement; FAB icon is placeholder) |

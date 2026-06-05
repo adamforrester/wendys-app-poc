@@ -49,7 +49,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   postOrderSurprise: 'none',
   darkMode: 'off',
   loadingScenario: 'none',
-  voiceOrdering: 'mock',
+  voiceOrdering: 'live',
 };
 
 /* ── Flag Metadata (drives admin UI auto-generation) ── */

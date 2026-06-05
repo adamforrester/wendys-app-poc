@@ -22,6 +22,7 @@ import { useSemanticMenu } from './useSemanticMenu';
 import { useMockConversation } from './useMockConversation';
 import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
+import { cleanReplyForDisplay } from './cleanReply';
 import type {
   ConversationMessage,
   ParsedOrder,
@@ -164,7 +165,9 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           resolveByName: semanticMenu.resolveByName,
         });
 
-        const visibleText = parsed ? stripOrderFence(assistantText) : assistantText;
+        const visibleText = cleanReplyForDisplay(
+          parsed ? stripOrderFence(assistantText) : assistantText,
+        );
         const resolutionNotes = parsed
           ? parsed.items.flatMap(i => (i.resolutionWarning ? [i.resolutionWarning] : []))
           : undefined;

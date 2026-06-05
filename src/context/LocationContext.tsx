@@ -1,18 +1,13 @@
 import { createContext, useContext, useReducer, type ReactNode } from 'react';
+import type { Location } from '../data/types';
 
 export type FulfillmentMethod = 'drive-thru' | 'carry-out' | 'dine-in';
 export type LocationPermission = 'granted' | 'denied' | 'prompt';
 
-export interface Location {
-  id: string;
-  name: string;
-  address: { street: string; city: string; state: string; zip: string };
-  distance: number;
-  isOpen: boolean;
-  hours: { open: string; close: string };
-  fulfillmentMethods: FulfillmentMethod[];
-  coordinates: { lat: number; lng: number };
-}
+// Re-export so existing imports of `Location` from this module keep working.
+// The canonical definition lives in src/data/types.ts (matches the JSON shape:
+// hours.breakfast/regular, phoneNumber, fulfillmentMethods as string[]).
+export type { Location };
 
 interface LocationState {
   selectedLocation: Location | null;

@@ -244,10 +244,24 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
   }, [rankFromCoords]);
 
   /**
-   * ZIP fallback. Looks up the centroid of the matching store's ZIP within
-   * the dataset (we don't have a generic ZIP→coords table; first store in
-   * the ZIP is "good enough" for the prototype). Returns the resolved
-   * Location on success so the caller can dispatch immediately.
+   * ZIP fallback. The customer's ZIP may not be a Wendy's-store ZIP
+   * (e.g. 64153 has no Wendy's, but one sits 0.5mi away in 64154).
+   * Resolution strategy: narrow the search prefix from 5 → 4 → 3 digits
+   * until at least one store matches, then use the centroid of the
+   * matching set as the customer's coords and rank ALL stores by
+   * distance from there.
+   *
+   *   - 5-digit match: customer's ZIP itself hosts a Wendy's; centroid
+   *     == that store's coords (exact answer).
+   *   - 4-digit match: same ZIP cluster (e.g. 6415x: 64151, 64154, 64155
+   *     are all northern KC). Geographically tight; nearest ranking is
+   *     still accurate.
+   *   - 3-digit match: same SCF — same metro area, looser but always
+   *     produces the regionally-correct store.
+   *
+   * Earlier versions used a naïve `startsWith(cleaned)` find — which
+   * failed entirely for any customer ZIP that didn't happen to host a
+   * store, even when one was a few blocks away.
    */
   const resolveByZip = useCallback(
     async (zip: string): Promise<Location | null> => {
@@ -255,8 +269,19 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
       if (cleaned.length !== 5) return null;
       setState(s => ({ ...s, status: 'loading', errorMessage: null }));
       const stores = await loadStores();
-      const match = stores.find(s => (s.address.zip || '').startsWith(cleaned));
-      if (!match) {
+
+      let coords: { lat: number; lng: number } | null = null;
+      for (const len of [5, 4, 3]) {
+        const prefix = cleaned.slice(0, len);
+        const matches = stores.filter(s => (s.address.zip || '').startsWith(prefix));
+        if (matches.length === 0) continue;
+        const sumLat = matches.reduce((s, x) => s + x.lat, 0);
+        const sumLng = matches.reduce((s, x) => s + x.lng, 0);
+        coords = { lat: sumLat / matches.length, lng: sumLng / matches.length };
+        break;
+      }
+
+      if (!coords) {
         setState({
           ...INITIAL,
           status: 'error',
@@ -264,7 +289,8 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
         });
         return null;
       }
-      const ranked = await rankFromCoords({ lat: match.lat, lng: match.lng });
+
+      const ranked = await rankFromCoords(coords);
       return ranked[0] ?? null;
     },
     [rankFromCoords],

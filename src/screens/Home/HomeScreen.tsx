@@ -155,7 +155,10 @@ export function HomeScreen() {
           the device. AnimatePresence drives the snackbar's spring entry. */}
       <AnimatePresence>
         {showNearestSnackbar && (
-          <div style={{ position: 'absolute', bottom: 100, left: 0, right: 0, zIndex: 30 }}>
+          // bottom: 174 clears the voice FAB (sits at bottom:110, h:56)
+          // with an 8px gap above its top edge. If/when the FAB moves or
+          // is removed, drop this back to ~100.
+          <div style={{ position: 'absolute', bottom: 174, left: 0, right: 0, zIndex: 30 }}>
             <Snackbar
               message="We've selected your nearest Wendy's location."
               showClose

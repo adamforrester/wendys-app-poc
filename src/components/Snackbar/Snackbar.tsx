@@ -123,7 +123,12 @@ export function Snackbar({
     );
   }
 
-  // Single-line layout (horizontal: text + actions on same row)
+  // Single-line layout (horizontal: text + actions on same row).
+  // Vertical padding (14px) gives the text balanced breathing room
+  // when it wraps to a second line — without it, minHeight:48 kept the
+  // container at single-line height and the wrapped line crowded the
+  // bottom edge. Single-line behavior is unchanged because text fits
+  // within the existing minHeight.
   return (
     <motion.div
       className="flex items-center mx-auto"
@@ -132,7 +137,7 @@ export function Snackbar({
         minHeight: 48,
         backgroundColor: 'var(--color-bg-primary-inverse-default)',
         borderRadius: 4,
-        padding: '0 8px 0 16px',
+        padding: '14px 8px 14px 16px',
         gap: 4,
       }}
       variants={snackbarAnimation}

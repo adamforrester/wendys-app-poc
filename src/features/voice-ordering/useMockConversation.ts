@@ -151,7 +151,7 @@ const SCRIPT: MockResponse[] = [
     match: i => /\b(no|nope|that'?s it|done|finish|all set|nothing)\b/.test(i),
     reply: `By the way — you've got 2,450 points. You may be able to redeem at checkout.
 
-Your order is ready — you'll see it in your bag.
+2 items for pickup — you'll see it in your bag.
 
 \`\`\`order
 {

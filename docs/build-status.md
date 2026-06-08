@@ -93,7 +93,7 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 
 Next-up items in priority order:
 
-- **Read-back of location + pickup method at order close** — system-prompt addition. Before the "Review in bag" CTA, agent says "X items, [pickup method] at [store name]".
+- ~~**Read-back of location + pickup method at order close**~~ ✅ Shipped. Closing turn now reads "X items for [pickup method] at [store name] — you'll see it in your bag." Method id is mapped to natural speech (`drive-thru` → "drive thru" etc.); store name comes from runtime context. Falls back to "X items for pickup" when method/store are missing.
 - **Build-as-you-go visual draft order** (the big one). Voice-local draft state, atomic transfer to `BagContext` on Review, combo viz with three image circles, in-place modifications.
 - **Replace the 5 mock locations** in `src/data/locations.json` so the rest of the app sees the real picked store everywhere (Order tab Mapbox map, Confirm Location screen).
 - **FAB icon + final placement** — Adam to provide the icon.

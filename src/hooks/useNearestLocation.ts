@@ -264,9 +264,9 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
    * store, even when one was a few blocks away.
    */
   const resolveByZip = useCallback(
-    async (zip: string): Promise<Location | null> => {
+    async (zip: string): Promise<{ nearest: Location | null; candidates: Location[] }> => {
       const cleaned = zip.trim().replace(/\D+/g, '').slice(0, 5);
-      if (cleaned.length !== 5) return null;
+      if (cleaned.length !== 5) return { nearest: null, candidates: [] };
       setState(s => ({ ...s, status: 'loading', errorMessage: null }));
       const stores = await loadStores();
 
@@ -287,11 +287,11 @@ export function useNearestLocation(options: UseNearestLocationOptions = {}) {
           status: 'error',
           errorMessage: `No Wendy's found near ${cleaned}.`,
         });
-        return null;
+        return { nearest: null, candidates: [] };
       }
 
       const ranked = await rankFromCoords(coords);
-      return ranked[0] ?? null;
+      return { nearest: ranked[0] ?? null, candidates: ranked };
     },
     [rankFromCoords],
   );

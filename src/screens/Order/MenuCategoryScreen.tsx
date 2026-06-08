@@ -5,6 +5,7 @@ import { SectionHeader } from '../../components/SectionHeader/SectionHeader';
 import { IconButton } from '../../components/IconButton/IconButton';
 import { CategoryCard } from '../../components/CategoryCard/CategoryCard';
 import { useLocationData } from '../../hooks/useLocationData';
+import { useResolvedLocations } from '../../hooks/useResolvedLocations';
 import { useUserData } from '../../hooks/useUserData';
 import { useDaypart } from '../../context/DaypartContext';
 
@@ -49,14 +50,19 @@ const breakfastCategories: CategoryDef[] = [
 export function MenuCategoryScreen() {
   const navigate = useNavigate();
   const { getLocationById, getFormattedAddress } = useLocationData();
+  const { primary: resolvedPrimary } = useResolvedLocations();
   const { getFavoriteLocationId } = useUserData();
   const { state: daypartState } = useDaypart();
 
   const isBreakfast = daypartState.daypart === 'breakfast';
   const categories = isBreakfast ? breakfastCategories : allDayCategories;
 
+  // Pickup Location header — prefer the user's resolved store; fall
+  // back to the favorite mock when geo hasn't run; final fallback is
+  // a stub address for empty-state demos.
   const favoriteId = getFavoriteLocationId();
-  const selectedLocation = getLocationById(favoriteId);
+  const favoriteFallback = getLocationById(favoriteId);
+  const selectedLocation = resolvedPrimary ?? favoriteFallback;
   const locationAddress = selectedLocation ? getFormattedAddress(selectedLocation) : '1234 Liberty Way';
 
   return (

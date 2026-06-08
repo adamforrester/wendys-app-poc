@@ -94,7 +94,8 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 Next-up items in priority order:
 
 - ~~**Read-back of location + pickup method at order close**~~ ✅ Shipped. Closing turn now reads "X items for [pickup method] at [store name] — you'll see it in your bag." Method id is mapped to natural speech (`drive-thru` → "drive thru" etc.); store name comes from runtime context. Falls back to "X items for pickup" when method/store are missing.
-- **Build-as-you-go visual draft order** (the big one). Voice-local draft state, atomic transfer to `BagContext` on Review, combo viz with three image circles, in-place modifications.
+- **Build-as-you-go visual draft order** (the big one).
+- ~~**Replace the 5 mock locations** in `src/data/locations.json` so Order tab + Confirm Location reflect the real picked store everywhere.~~ ✅ Shipped. Order tab, Location Confirmation, Bag pickup row, and the menu Pickup Location header now bind to a new `useResolvedLocations()` hook that prefers `LocationContext.selectedLocation` + the new `LocationContext.candidates` (top-5 ranked nearby) and falls back to the 5 mocks pre-geo. Home dispatches the candidate list when geo grants; voice's ZIP fence dispatches it after `resolveByZip`. DevTools picker still binds to the mocks (it's a dev override knob). Voice-local draft state, atomic transfer to `BagContext` on Review, combo viz with three image circles, in-place modifications.
 - **Replace the 5 mock locations** in `src/data/locations.json` so the rest of the app sees the real picked store everywhere (Order tab Mapbox map, Confirm Location screen).
 - **FAB icon + final placement** — Adam to provide the icon.
 - **Bag-items-from-prior-session labeling on `/voice`** — should we tell the user "you have items from before"?

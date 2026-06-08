@@ -12,6 +12,7 @@ import { OrderSummary, type OrderSummaryLine } from '../../components/OrderSumma
 import { useBag } from '../../context/BagContext';
 import { useLocation } from '../../context/LocationContext';
 import { useLocationData } from '../../hooks/useLocationData';
+import { useResolvedLocations } from '../../hooks/useResolvedLocations';
 import { useMenuData } from '../../hooks/useMenuData';
 
 /* ── Cross-sell/upsell items for "Complete your meal" ── */
@@ -44,7 +45,8 @@ export function BagScreen() {
   const navigate = useNavigate();
   const { state: bagState, dispatch: bagDispatch } = useBag();
   const { state: locationState } = useLocation();
-  const { getAllLocations, getFormattedAddress } = useLocationData();
+  const { getFormattedAddress } = useLocationData();
+  const { primary: location } = useResolvedLocations();
   const { getProductById, getProductImagePath } = useMenuData();
 
   const [donationChecked, setDonationChecked] = useState(true);
@@ -52,9 +54,10 @@ export function BagScreen() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Location data
-  const allLocations = getAllLocations();
-  const location = allLocations.length > 0 ? allLocations[0] : null;
+  // Pickup row binds to the user's resolved store. `location` comes
+  // from useResolvedLocations above, which prefers
+  // LocationContext.selectedLocation and falls back to the mocks for
+  // pre-geo demos.
   const fulfillmentMethod = locationState.fulfillmentMethod || 'drive-thru';
   const isCarryout = fulfillmentMethod === 'carry-out';
 

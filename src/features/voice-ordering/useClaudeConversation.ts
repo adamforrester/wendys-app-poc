@@ -266,13 +266,16 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           // The sentinel string is documented in the system prompt so
           // the model knows what to do when it sees it. It's not read
           // aloud — only assistant messages drive TTS.
-          void nearest.resolveByZip(locationAction.zip).then(loc => {
+          void nearest.resolveByZip(locationAction.zip).then(({ nearest: loc, candidates }) => {
             if (!loc) {
               setPendingNudge('[system: zip_not_found]');
               return;
             }
             locationDispatch({ type: 'SET_LOCATION', location: loc });
             locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
+            // Persist the candidate set so order-flow screens can render
+            // nearby stores after a ZIP-only resolution (no geo grant).
+            locationDispatch({ type: 'SET_CANDIDATES', candidates });
             setPendingNudge('[system: location_resolved]');
           });
         } else if (locationFenceLeaked) {

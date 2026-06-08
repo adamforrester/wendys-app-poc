@@ -112,7 +112,7 @@ Toggle at runtime in Account → Developer Tools → "Voice Ordering (POC)".
 
 ## Locations data
 
-`wendys-locations.json` (5,629 real stores) is now actively consumed by `useNearestLocation` in `src/hooks/`. Lazy-imported into its own Vite chunk (~3.3MB) so the main bundle stays small. Home runs the hook on mount; voice reads the resulting `LocationContext.selectedLocation` and uses `resolveByZip` for the denied-geo path. The 5 mock locations in `src/data/locations.json` still power the existing `/order` Mapbox map + the location picker — replacing those with real data based on the picked nearest store is the next phase of the location work.
+`wendys-locations.json` (5,629 real stores) is now actively consumed by `useNearestLocation` in `src/hooks/`. Lazy-imported into its own Vite chunk (~3.3MB) so the main bundle stays small. Home runs the hook on mount; voice reads the resulting `LocationContext.selectedLocation` and uses `resolveByZip` for the denied-geo path. Order tab map, Location Confirmation, Bag pickup row, and the menu Pickup Location header all bind to `useResolvedLocations()` (in `src/hooks/`) — which prefers `LocationContext.selectedLocation` + the new `LocationContext.candidates` (top-5 ranked nearby) and falls back to the 5 mocks in `src/data/locations.json` only pre-geo. Home dispatches `SET_CANDIDATES` when geo grants; voice's ZIP fence dispatches it after `resolveByZip`. The 5 mocks remain in the file as a fallback and as the DevTools override picker.
 
 ## Open questions
 

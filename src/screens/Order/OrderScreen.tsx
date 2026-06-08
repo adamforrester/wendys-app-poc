@@ -8,6 +8,7 @@ import { BottomSheet } from '../../components/BottomSheet/BottomSheet';
 import { TextField } from '../../components/TextField/TextField';
 import { OrderLocationCard } from '../../components/OrderLocationCard/OrderLocationCard';
 import { useLocationData } from '../../hooks/useLocationData';
+import { useResolvedLocations } from '../../hooks/useResolvedLocations';
 import { useUserData } from '../../hooks/useUserData';
 import type { PickupMethod } from '../../components/OrderLocationCard/OrderLocationCard';
 
@@ -63,9 +64,12 @@ function LocationPin({ number, isSelected, isOpen }: { number: number; isSelecte
 
 export function OrderScreen() {
   const navigate = useNavigate();
-  const { getAllLocations, getFormattedAddress } = useLocationData();
+  const { getFormattedAddress } = useLocationData();
+  // Resolved set: selected store + ranked nearby candidates if Home has
+  // run, else the mock 5 as fallback. The map and bottom-sheet card list
+  // share the same source so pins and cards stay in lock-step.
+  const { list: locations, primary: primaryLocation } = useResolvedLocations();
   const { getFavoriteLocationId } = useUserData();
-  const locations = getAllLocations();
   const favoriteId = getFavoriteLocationId();
 
   // The Pickup/Delivery toggle drives navigation rather than local state —
@@ -75,7 +79,11 @@ export function OrderScreen() {
   const handleFulfillmentChange = (next: string) => {
     if (next === 'delivery') navigate('/order/delivery');
   };
-  const [expandedLocationId, setExpandedLocationId] = useState<string | null>(locations[0]?.id || null);
+  // Default-expand the user's actual store (primary) so the Order tab
+  // opens on what they care about, not whatever happened to be first.
+  const [expandedLocationId, setExpandedLocationId] = useState<string | null>(
+    primaryLocation?.id ?? locations[0]?.id ?? null,
+  );
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoriteId ? [favoriteId] : []));
   const [selectedPickupMethod, setSelectedPickupMethod] = useState<string | undefined>();
 

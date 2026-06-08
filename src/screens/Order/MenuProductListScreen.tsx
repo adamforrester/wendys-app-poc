@@ -7,6 +7,7 @@ import { Tabs } from '../../components/Tabs/Tabs';
 import { MenuCard } from '../../components/MenuCard/MenuCard';
 import { useMenuData } from '../../hooks/useMenuData';
 import { useLocationData } from '../../hooks/useLocationData';
+import { useResolvedLocations } from '../../hooks/useResolvedLocations';
 import { useUserData } from '../../hooks/useUserData';
 import { useDaypart } from '../../context/DaypartContext';
 
@@ -152,6 +153,7 @@ export function MenuProductListScreen() {
   const { slug } = useParams<{ slug: string }>();
   const { getProductsByCategory, getProductImagePath } = useMenuData();
   const { getLocationById, getFormattedAddress } = useLocationData();
+  const { primary: resolvedPrimary } = useResolvedLocations();
   const { getFavoriteLocationId } = useUserData();
   const { state: daypartState } = useDaypart();
 
@@ -174,8 +176,11 @@ export function MenuProductListScreen() {
     }
   }, [activeIndex, categoryTabs]);
 
+  // Pickup Location header — prefer the user's resolved real store,
+  // fall back to the favorite mock when geo hasn't resolved yet.
   const favoriteId = getFavoriteLocationId();
-  const selectedLocation = getLocationById(favoriteId);
+  const favoriteFallback = getLocationById(favoriteId);
+  const selectedLocation = resolvedPrimary ?? favoriteFallback;
   const locationAddress = selectedLocation ? getFormattedAddress(selectedLocation) : '1234 Liberty Way';
 
   const goToTab = useCallback((index: number) => {

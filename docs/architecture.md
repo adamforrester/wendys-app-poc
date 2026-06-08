@@ -7,7 +7,7 @@ App-level architecture: contexts, routing, layout. Component-level conventions l
 | Context | Purpose |
 |---|---|
 | `AuthContext` | Auth state, user profile, rewards points. **Defaults to authenticated** with mock user from `user.json` (Alex Johnson, 2,450 points, Gold tier). |
-| `LocationContext` | Selected restaurant, fulfillment method, GPS permission state. Type re-exported from `src/data/types.ts` (canonical shape). |
+| `LocationContext` | Selected restaurant, fulfillment method, GPS permission state, and ranked nearby `candidates` (top 5 from the geo lookup, persisted so order-flow screens can render real nearby stores without re-prompting). Type re-exported from `src/data/types.ts` (canonical shape). |
 | `BagContext` | Cart items, promo code, location confirmation gate |
 | `DaypartContext` | Breakfast/Lunch/Dinner/Late Night |
 | `FeatureFlagsContext` | Runtime A/B flag toggles from `src/config/featureFlags.ts` |
@@ -34,10 +34,11 @@ Data hooks (read-only access to JSON):
 | Hook | Source | Key Methods |
 |---|---|---|
 | `useMenuData()` | `menu.json` | `getAllCategories`, `getProductById`, `getProductBySlug`, `getIngredientsForProduct`, `getAddOnGroupsForProduct`, `getProductImagePath` |
-| `useLocationData()` | `locations.json` | `getAllLocations`, `getLocationById`, `getOpenLocations`, `getNearestLocations`, `getFormattedAddress` |
+| `useLocationData()` | `locations.json` (5 mocks) | `getAllLocations`, `getLocationById`, `getOpenLocations`, `getNearestLocations`, `getFormattedAddress` |
+| `useResolvedLocations()` | `LocationContext` + `locations.json` fallback | `primary`, `list`, `isReal` — what the order-flow screens (Order tab map, Confirm Location, Bag pickup row, menu Pickup Location header) should display. Prefers the user's actual store from context; falls back to the 5 mocks pre-geo. Does NOT trigger a geo prompt. |
 | `useOfferData()` | `offers.json` | `getAllOffers`, `getAvailableOffers`, `getProgressOffers`, `getActiveOffers` |
 | `useUserData()` | `user.json` | `getUser`, `getRewardsPoints`, `getRewardsTier`, `getRecentOrders`, `getDefaultPayment` |
-| `useNearestLocation()` | `wendys-locations.json` (lazy import) | `request`, `resolveByZip`, returns nearest store + state machine |
+| `useNearestLocation()` | `wendys-locations.json` (lazy import) | `request`, `resolveByZip` (returns `{ nearest, candidates }`), state machine — Home owns the geo prompt; voice uses `resolveByZip` only. |
 
 State contexts (mutable runtime state) are listed above. Keep them separate.
 

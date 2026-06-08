@@ -11,18 +11,29 @@ export type { Location };
 
 interface LocationState {
   selectedLocation: Location | null;
+  /**
+   * Other nearby stores ranked by distance from the user — populated by
+   * whichever screen runs `useNearestLocation` (Home on geo grant, voice
+   * on ZIP resolve). Shared here so the Order tab's map and any other
+   * "browse nearby Wendy's" surfaces don't have to re-run the ranking
+   * (5,629-row scan) or, worse, re-prompt for geolocation. Includes the
+   * primary `selectedLocation` as the first entry by convention.
+   */
+  candidates: Location[];
   fulfillmentMethod: FulfillmentMethod | null;
   locationPermission: LocationPermission;
 }
 
 type LocationAction =
   | { type: 'SET_LOCATION'; location: Location }
+  | { type: 'SET_CANDIDATES'; candidates: Location[] }
   | { type: 'SET_FULFILLMENT'; method: FulfillmentMethod }
   | { type: 'SET_PERMISSION'; permission: LocationPermission }
   | { type: 'CLEAR_LOCATION' };
 
 const initialState: LocationState = {
   selectedLocation: null,
+  candidates: [],
   fulfillmentMethod: null,
   locationPermission: 'prompt',
 };
@@ -31,12 +42,14 @@ function locationReducer(state: LocationState, action: LocationAction): Location
   switch (action.type) {
     case 'SET_LOCATION':
       return { ...state, selectedLocation: action.location };
+    case 'SET_CANDIDATES':
+      return { ...state, candidates: action.candidates };
     case 'SET_FULFILLMENT':
       return { ...state, fulfillmentMethod: action.method };
     case 'SET_PERMISSION':
       return { ...state, locationPermission: action.permission };
     case 'CLEAR_LOCATION':
-      return { ...state, selectedLocation: null, fulfillmentMethod: null };
+      return { ...state, selectedLocation: null, fulfillmentMethod: null, candidates: [] };
     default:
       return state;
   }

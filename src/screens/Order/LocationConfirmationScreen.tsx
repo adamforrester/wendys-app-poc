@@ -7,6 +7,7 @@ import { Button } from '../../components/Button/Button';
 import { useBag } from '../../context/BagContext';
 import { useLocation } from '../../context/LocationContext';
 import { useLocationData } from '../../hooks/useLocationData';
+import { useResolvedLocations } from '../../hooks/useResolvedLocations';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -55,11 +56,8 @@ export function LocationConfirmationScreen() {
   const navigate = useNavigate();
   const { dispatch: bagDispatch } = useBag();
   const { state: locationState } = useLocation();
-  const { getFormattedAddress, getAllLocations } = useLocationData();
-
-  // Use first location from data as the mock selected location
-  const allLocations = getAllLocations();
-  const location = allLocations.length > 0 ? allLocations[0] : null;
+  const { getFormattedAddress } = useLocationData();
+  const { primary: location } = useResolvedLocations();
 
   // Default to first available fulfillment option
   const [selectedFulfillment, setSelectedFulfillment] = useState(

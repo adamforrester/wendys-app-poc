@@ -60,11 +60,15 @@ export function HomeScreen() {
       autoSetThisMountRef.current = true;
       locationDispatch({ type: 'SET_LOCATION', location: nearest.nearest });
       locationDispatch({ type: 'SET_PERMISSION', permission: 'granted' });
+      // Persist the candidate set so other screens (Order tab map,
+      // Bag pickup row) can render real nearby stores without
+      // re-running geo or re-ranking the 5,629-store dataset.
+      locationDispatch({ type: 'SET_CANDIDATES', candidates: nearest.candidates });
       setShowNearestSnackbar(true);
     } else if (nearest.status === 'denied') {
       locationDispatch({ type: 'SET_PERMISSION', permission: 'denied' });
     }
-  }, [nearest.status, nearest.nearest, locationState.selectedLocation, locationDispatch]);
+  }, [nearest.status, nearest.nearest, nearest.candidates, locationState.selectedLocation, locationDispatch]);
 
   // Decide which HomeLocationCard variant to render. The card is purely
   // presentational — we compose state here based on what the user has

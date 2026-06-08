@@ -216,10 +216,25 @@ export function VoiceOrderingScreen() {
     }
   }, [locationState.fulfillmentMethod]);
 
+  // Only show the tiles when the agent is actually asking which pickup
+  // method — i.e. the latest assistant message contains all three method
+  // names. Hides during the earlier "pickup or delivery?" ask, hides
+  // after the order ask moves on. We always also render during the
+  // 600ms flash window so the tap/voice confirmation is visible even
+  // though the agent has moved on by then.
+  const isMethodAsk =
+    !!lastAssistant
+    && /drive.?thru/i.test(lastAssistant.content)
+    && /dine.?in/i.test(lastAssistant.content)
+    && /carry.?out|carryout/i.test(lastAssistant.content);
+
   const showPickupTiles =
     locationState.locationPermission === 'granted'
     && locationState.selectedLocation !== null
-    && (locationState.fulfillmentMethod === null || flashedMethod !== null);
+    && (
+      (locationState.fulfillmentMethod === null && isMethodAsk)
+      || flashedMethod !== null
+    );
 
   const handlePickupTileTap = useCallback(
     (method: FulfillmentMethod) => {

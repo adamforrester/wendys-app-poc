@@ -102,14 +102,17 @@ Toggle at runtime in Account → Developer Tools → "Voice Ordering (POC)".
 
 **Why Web Speech API?** Browser-native, no key management. Caveat: Safari iOS support is historically weak. `useSpeechInput.ts` is built with the option to swap in a Whisper-via-proxy fallback later if iOS demos become a priority.
 
-## Locations data — deferred
+**Why does Home own the geolocation prompt, not voice?** When voice opens it already needs mic permission. If voice also asked for geo, the user would see two browser permission dialogs back-to-back — bad UX in a web app pretending to be native. Home runs `useNearestLocation` on mount and writes the result to `LocationContext`; voice reads that context via the per-turn runtime block. Voice only asks the user for a ZIP when geo was already denied on Home.
 
-`wendys-locations.json` is vendored but no UI consumes it yet. When wired up:
+**Why a synthetic `[system: ...]` nudge?** When the agent emits the `location` fence, the screen runs the lookup and dispatches into `LocationContext`. But the conversation only advances when something hits `send()` — and there's no real user utterance at that moment. We queue a synthetic message (`[system: location_resolved]` or `[system: zip_not_found]`) that fires once the previous turn's `pending` state clears, prompting the agent to take the next turn (confirm by store name, or apologize and re-ask). The system prompt teaches the model that these sentinels are event signals, not customer speech — never read aloud. Same pattern would extend cleanly to other "wait, then continue" handoffs.
 
-1. Voice POC: nearest-store lookup via haversine when voice opens (so the agent can say "your nearest Wendy's is on State Street, want to order pickup?")
-2. Order tab (future): replace the 5 mock locations in `src/data/locations.json` with real-data lookup based on geolocation
+**Why the strict 5→4→3 ZIP prefix walk in `resolveByZip`?** The dataset has ~5,629 store ZIPs against the ~42k US ZIPs in existence. Most customer ZIPs don't host a Wendy's. A naïve "find a store whose ZIP starts with the customer's ZIP" check fails completely for any "between stores" ZIP, even when one is half a mile away. Walking 5→4→3 finds the tightest matching cluster and uses its centroid as the customer's coords for nationwide ranking — for 64153 (no store), the 4-digit "6415" cluster lands in northern KC and Barry Road shows as the closest result.
 
-Both consumers should share a single haversine utility (probably `useNearestLocation.ts`).
+**Why expand abbreviations both at the runtime-context boundary AND in the cleanReply pass?** The agent reads the runtime context verbatim, so expanding "Nw" → "Northwest" before the agent sees it means the model never has a chance to read it letter-by-letter. The cleanReply pass is defensive — catches any abbreviation the agent emits in its own reply (menu items, addresses dropped in conversationally).
+
+## Locations data
+
+`wendys-locations.json` (5,629 real stores) is now actively consumed by `useNearestLocation` in `src/hooks/`. Lazy-imported into its own Vite chunk (~3.3MB) so the main bundle stays small. Home runs the hook on mount; voice reads the resulting `LocationContext.selectedLocation` and uses `resolveByZip` for the denied-geo path. The 5 mock locations in `src/data/locations.json` still power the existing `/order` Mapbox map + the location picker — replacing those with real data based on the picked nearest store is the next phase of the location work.
 
 ## Open questions
 

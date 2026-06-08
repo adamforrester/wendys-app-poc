@@ -89,16 +89,9 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 
 ## Next Session
 
-**Visual pickup-method tiles on `/voice`.** Locked decisions from the planning conversation:
+~~**Visual pickup-method tiles on `/voice`.**~~ ✅ Shipped. Three `ItemSelector`s render between the agent text and the lottie button when `permission === 'granted'` and no fulfillment method is confirmed yet. Tap dispatches `SET_FULFILLMENT` + queues a synthetic `[system: pickup_method_selected: <id>]` nudge through the conversation hook's existing nudge drain — same path the agent's location fence uses, so voice and tap stay in lock-step. Voice→tile sync runs via a new `set_fulfillment` action on the existing `location` fence. The matching tile pulses + flashes its checkmark for 600ms on null→set transition (whether tap- or voice-driven), then the row fades out via AnimatePresence.
 
-1. Tiles render below the agent text, above the Lottie button (same vertical region the bag-tile stack uses today).
-2. Show whenever `pickup.permission === 'granted'` AND `LocationContext.fulfillmentMethod` is null.
-3. Tap a tile → dispatch `SET_FULFILLMENT` + send a synthetic `[system: pickup_method_selected: <id>]` so the agent moves on.
-4. **Reuse `ItemSelector`** (the existing 72px image-circle tile from `OrderLocationCard`). Three of them in a row: Drive Thru / Dine In / Carryout, with the existing nurdle artwork at `/images/nurdles/`.
-5. Voice→tile flash sync: when the agent confirms a method, pulse + checkmark on matching tile for 600ms before fade-out. Detect via `fulfillmentMethod` transition from null to set.
-6. To make voice→tile sync reliable, the agent emits a new fulfillment fence (or extends the existing `location` fence with a `set_fulfillment` action) when it hears a method choice — so the screen knows unambiguously which tile to flash. Update system prompt + mock conversation accordingly.
-
-After tiles ship, next-up items in priority order:
+Next-up items in priority order:
 
 - **Read-back of location + pickup method at order close** — system-prompt addition. Before the "Review in bag" CTA, agent says "X items, [pickup method] at [store name]".
 - **Build-as-you-go visual draft order** (the big one). Voice-local draft state, atomic transfer to `BagContext` on Review, combo viz with three image circles, in-place modifications.

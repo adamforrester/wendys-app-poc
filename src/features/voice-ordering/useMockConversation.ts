@@ -14,7 +14,19 @@ interface MockResponse {
   match: (input: string) => boolean;
   /** Optional state predicate — only fire if turn matches. */
   whenTurn?: (turnIndex: number) => boolean;
-  reply: string;
+  /** Static reply OR a builder that derives the reply from the input
+   * (used by dynamic cases like emitting the spoken pickup method into
+   * the set_fulfillment fence). */
+  reply: string | ((input: string) => string);
+}
+
+/** Map a freeform pickup-method utterance to the canonical id used by
+ * LocationContext + the location fence. Returns null if no match. */
+function detectFulfillmentMethod(i: string): 'drive-thru' | 'dine-in' | 'carry-out' | null {
+  if (/\bdrive.?thru\b/.test(i)) return 'drive-thru';
+  if (/\bdine.?in\b|\bin.?store\b/.test(i)) return 'dine-in';
+  if (/\bcarry.?out\b|\bto.?go\b/.test(i)) return 'carry-out';
+  return null;
 }
 
 /**
@@ -46,8 +58,27 @@ const SCRIPT: MockResponse[] = [
     reply: "Picking up at your nearest Wendy's — drive thru, dine in, or carryout?",
   },
   {
-    // User picked a method. Move on to the order ask.
-    match: i => /\b(drive.?thru|dine.?in|carry.?out|in.?store)\b/.test(i),
+    // User picked a method (spoken). Emit the set_fulfillment fence so
+    // the screen flips fulfillmentMethod, then wait for the
+    // [system: pickup_method_selected: ...] nudge to advance.
+    match: i => detectFulfillmentMethod(i) !== null,
+    reply: (input) => {
+      const method = detectFulfillmentMethod(input)!;
+      const phrase =
+        method === 'drive-thru' ? 'Drive thru'
+        : method === 'dine-in' ? 'Dine in'
+        : 'Carryout';
+      return `${phrase} it is — one moment.
+
+\`\`\`location
+{ "action": "set_fulfillment", "method": "${method}" }
+\`\`\``;
+    },
+  },
+  {
+    // After the screen flashes the chosen tile, the synthetic nudge
+    // arrives — move to the order ask.
+    match: i => i.includes('[system: pickup_method_selected:'),
     reply: "Great — what can I get started for you?",
   },
   {
@@ -166,7 +197,8 @@ export function useMockConversation() {
     await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
 
     const match = SCRIPT.find(s => s.match(i) && (!s.whenTurn || s.whenTurn(turn)));
-    return match?.reply ?? FALLBACK_REPLY;
+    if (!match) return FALLBACK_REPLY;
+    return typeof match.reply === 'function' ? match.reply(i) : match.reply;
   }, []);
 
   const reset = useCallback(() => {

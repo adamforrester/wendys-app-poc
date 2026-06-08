@@ -228,15 +228,29 @@ export interface RuntimeContext {
   pickup: PickupContext;
 }
 
-/* ── Location action fence (output by Claude when it needs a ZIP→store) ── */
+/* ── Location action fence (output by Claude when location/fulfillment changes) ── */
 
 /**
- * Emitted as a ```location JSON fence when the agent needs the app to
- * resolve a customer-supplied ZIP into a real store. The screen handles
- * the lookup and the next turn sees the resolved store in the runtime
- * context — agent never touches the locations dataset directly.
+ * `FulfillmentMethod` is owned by `LocationContext` (the canonical reducer
+ * lives there). We re-import it here so the voice-internal types/parser
+ * speak the same string union without redefining.
  */
-export interface LocationAction {
-  action: 'resolve_zip';
-  zip: string;
-}
+import type { FulfillmentMethod } from '../../context/LocationContext';
+
+/**
+ * Emitted as a ```location JSON fence whenever the agent needs the app to
+ * mutate location-or-fulfillment state mid-conversation. Two flavors today:
+ *
+ * - `resolve_zip` — customer just said a 5-digit ZIP; the screen runs
+ *   `useNearestLocation.resolveByZip()` and dispatches the result.
+ * - `set_fulfillment` — customer just chose drive-thru / dine-in / carryout;
+ *   the screen dispatches `SET_FULFILLMENT` so the visible tile state and
+ *   the conversation context agree (and any tap-equivalent UI flashes the
+ *   matching tile).
+ *
+ * Both kinds are followed by a synthetic `[system: ...]` nudge that gives
+ * the agent a turn to take next.
+ */
+export type LocationAction =
+  | { action: 'resolve_zip'; zip: string }
+  | { action: 'set_fulfillment'; method: FulfillmentMethod };

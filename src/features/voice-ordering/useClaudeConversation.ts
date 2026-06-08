@@ -240,6 +240,14 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           setLastHandoff(handoff);
         }
 
+        // Apply a fulfillment-method choice the agent heard. Mirrors the
+        // tap-tile path on screen — same dispatch, same nudge — so voice
+        // and tap stay in sync. Tile flash is driven off the resulting
+        // null→set transition in fulfillmentMethod, not from here.
+        if (locationAction?.action === 'set_fulfillment') {
+          locationDispatch({ type: 'SET_FULFILLMENT', method: locationAction.method });
+          setPendingNudge(`[system: pickup_method_selected: ${locationAction.method}]`);
+        }
         // Resolve a customer-supplied ZIP into a real store. The next
         // turn's runtime context (built by contextBuilder.ts) will see
         // the freshly-set selectedLocation so the agent can confirm by
@@ -340,6 +348,19 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
     mock.reset();
   }, [mock]);
 
+  /**
+   * Queue a synthetic `[system: ...]` nudge from outside the turn loop —
+   * e.g. when the user taps a UI control whose effect should look the
+   * same to the agent as a customer utterance the parser would have
+   * intercepted (pickup-method tiles).
+   *
+   * Goes through the same drain queue as fence-driven nudges so it
+   * waits politely if a reply is mid-flight.
+   */
+  const queueNudge = useCallback((nudge: string) => {
+    setPendingNudge(nudge);
+  }, []);
+
   return useMemo(
     () => ({
       messages,
@@ -348,11 +369,12 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
       lastParsedOrder,
       lastHandoff,
       send,
+      queueNudge,
       reset,
       mode: flags.voiceOrdering,
       systemPrompt: SYSTEM_PROMPT_BODY,
     }),
-    [messages, pending, error, lastParsedOrder, lastHandoff, send, reset, flags.voiceOrdering],
+    [messages, pending, error, lastParsedOrder, lastHandoff, send, queueNudge, reset, flags.voiceOrdering],
   );
 }
 

@@ -25,7 +25,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLottie } from 'lottie-react';
 import voiceAnimation from '../../animations/lottie/voice-animation.json';
 import { useBag } from '../../context/BagContext';
+import { useLocation, type FulfillmentMethod } from '../../context/LocationContext';
 import { useStatusBarMode } from '../../context/StatusBarModeContext';
+import { ItemSelector } from '../../components/ItemSelector/ItemSelector';
 import { useClaudeConversation } from './useClaudeConversation';
 import { useSpeechInput } from './useSpeechInput';
 import { useTTS } from './useTTS';
@@ -34,8 +36,9 @@ import { VoiceBagItemTile } from './VoiceBagItemTile';
 
 export function VoiceOrderingScreen() {
   const navigate = useNavigate();
-  const { messages, pending, error, send, mode, lastParsedOrder, lastHandoff } = useClaudeConversation();
+  const { messages, pending, error, send, queueNudge, mode, lastParsedOrder, lastHandoff } = useClaudeConversation();
   const { state: bagState } = useBag();
+  const { state: locationState, dispatch: locationDispatch } = useLocation();
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
   // Tracks the bag-item ids that already existed before the user opened
@@ -189,6 +192,50 @@ export function VoiceOrderingScreen() {
     navigate('/order/bag');
   }, [navigate]);
 
+  // Pickup-method tiles. Visible whenever we have a real store but haven't
+  // confirmed how the user is picking up. Voice and tap are equivalent —
+  // tapping a tile dispatches SET_FULFILLMENT and queues the same synthetic
+  // `[system: pickup_method_selected: ...]` nudge the agent's location
+  // fence path produces, so the conversation moves on either way.
+  //
+  // When fulfillmentMethod transitions null → set (from tap OR from voice
+  // via the location fence), we keep the tiles mounted for a 600ms beat,
+  // pulse + checkmark the matching tile, then let AnimatePresence fade
+  // the row out. Detection is a single ref that watches the value across
+  // renders — no double-pulse on subsequent re-renders.
+  const prevFulfillmentRef = useRef<FulfillmentMethod | null>(locationState.fulfillmentMethod);
+  const [flashedMethod, setFlashedMethod] = useState<FulfillmentMethod | null>(null);
+  useEffect(() => {
+    const prev = prevFulfillmentRef.current;
+    const next = locationState.fulfillmentMethod;
+    prevFulfillmentRef.current = next;
+    if (prev === null && next !== null) {
+      setFlashedMethod(next);
+      const t = window.setTimeout(() => setFlashedMethod(null), 600);
+      return () => window.clearTimeout(t);
+    }
+  }, [locationState.fulfillmentMethod]);
+
+  const showPickupTiles =
+    locationState.locationPermission === 'granted'
+    && locationState.selectedLocation !== null
+    && (locationState.fulfillmentMethod === null || flashedMethod !== null);
+
+  const handlePickupTileTap = useCallback(
+    (method: FulfillmentMethod) => {
+      // No-op if voice already confirmed this exact method (tile is mid-fade).
+      if (locationState.fulfillmentMethod === method) return;
+      // Interrupt TTS so the tap feels like the user is taking the floor —
+      // matches push-to-talk semantics elsewhere on this screen.
+      if (tts.isPlaying) tts.stop();
+      locationDispatch({ type: 'SET_FULFILLMENT', method });
+      // queueNudge (not send) so the message is held until any in-flight
+      // turn finishes, mirroring the fence-driven path.
+      queueNudge(`[system: pickup_method_selected: ${method}]`);
+    },
+    [locationDispatch, locationState.fulfillmentMethod, queueNudge, tts],
+  );
+
   // Items added during this voice session — newest first so the most
   // recent item appears at the top of the stack (closest to the agent
   // text, like a receipt unfurling toward the camera).
@@ -288,6 +335,40 @@ export function VoiceOrderingScreen() {
             useHighlight={mode === 'live' && tts.isPlaying}
             pending={pending}
           />
+
+          {/* Pickup-method tiles. Lives in the same vertical region as
+              the bag-tile stack — when the order hasn't started yet
+              (no fulfillment chosen), it occupies that space; when the
+              user picks a method, it fades and the bag-tile stack takes
+              over as items get added. */}
+          <AnimatePresence>
+            {showPickupTiles && (
+              <motion.div
+                key="pickup-method-row"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                style={{
+                  marginTop: 24,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 23,
+                }}
+                aria-label="Pickup method"
+              >
+                {PICKUP_METHODS.map(m => (
+                  <PickupMethodTile
+                    key={m.id}
+                    method={m}
+                    selected={locationState.fulfillmentMethod === m.id}
+                    flashing={flashedMethod === m.id}
+                    onTap={handlePickupTileTap}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Stacked bag tiles. AnimatePresence triggers the entrance
               animation when a new item arrives via the parsed order. */}
@@ -396,6 +477,60 @@ export function VoiceOrderingScreen() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+/* ── Pickup method tiles ── */
+
+interface PickupMethodOption {
+  id: FulfillmentMethod;
+  label: string;
+  imageSrc: string;
+}
+
+// Same nurdle artwork the Order tab + Location Confirmation screen use,
+// so the tile imagery is consistent app-wide.
+const PICKUP_METHODS: PickupMethodOption[] = [
+  { id: 'drive-thru', label: 'Drive Thru', imageSrc: '/images/nurdles/Drive Thru.svg' },
+  { id: 'dine-in',    label: 'Dine In',    imageSrc: '/images/nurdles/Dine In.svg' },
+  { id: 'carry-out',  label: 'Carryout',   imageSrc: '/images/nurdles/Carryout-right.svg' },
+];
+
+/**
+ * Wraps ItemSelector with the 600ms pulse-and-check used for the
+ * voice→tile sync flash. The wrapper does the scaling motion; ItemSelector
+ * already draws the brand-secondary border and the badge check when
+ * `selected` is true, so the visual confirmation is "free" once we set
+ * selected during the flash window.
+ */
+function PickupMethodTile({
+  method,
+  selected,
+  flashing,
+  onTap,
+}: {
+  method: PickupMethodOption;
+  selected: boolean;
+  flashing: boolean;
+  onTap: (method: FulfillmentMethod) => void;
+}) {
+  return (
+    <motion.div
+      animate={
+        flashing
+          ? { scale: [1, 1.08, 1] }
+          : { scale: 1 }
+      }
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+    >
+      <ItemSelector
+        title={method.label}
+        imageSrc={method.imageSrc}
+        size="small"
+        selected={selected || flashing}
+        onPress={() => onTap(method.id)}
+      />
+    </motion.div>
   );
 }
 

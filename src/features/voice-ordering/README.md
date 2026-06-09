@@ -34,12 +34,18 @@ src/features/voice-ordering/
 ├── useSpeechInput.ts            ← Web Speech API; auto-VAD or push-to-talk
 ├── useSpokenHighlight.ts        ← word-by-word activeIndex against audio.currentTime
 ├── contextBuilder.ts            ← per-turn runtime context (bag/offers/rewards)
-├── orderParser.ts               ← parses ```order JSON; resolves names→IDs
+├── orderParser.ts               ← parses ```order JSON (close signal); resolves names→IDs
+├── draftParser.ts               ← parses ```draft JSON (per-turn snapshot); resolves
+│                                  entrée + combo drink/side via semantic menu
 ├── handoffParser.ts             ← parses ```handoff JSON (delivery routing)
-├── locationActionParser.ts      ← parses ```location JSON (ZIP→store resolution)
+├── locationActionParser.ts      ← parses ```location JSON (ZIP→store resolution; set_fulfillment)
 ├── cleanReply.ts                ← strips markdown markers (** _ ` []()) from replies
 ├── VoiceOrderingScreen.tsx      ← active full-screen UI at /voice
-├── VoiceBagItemTile.tsx         ← drive-thru-style item pill used in the screen stack
+├── VoiceDraftItemTile.tsx       ← single/combo build-as-you-go tile (replaces
+│                                  VoiceBagItemTile in /voice; key=draftId for
+│                                  in-place layout morph across mutations)
+├── VoiceBagItemTile.tsx         ← drive-thru-style item pill (no longer used in
+│                                  /voice; kept for the legacy chat panel)
 ├── VoiceOrderingLauncher.tsx    ← FAB → /voice
 ├── VoiceOrderingPanel.tsx       ← legacy chat panel (kept for A/B)
 └── VoiceOrderingPanel.stories.tsx
@@ -121,7 +127,7 @@ Bigger pieces, sequenced. Decisions in **bold** are already locked in with Adam.
 - ~~**Order-type-first prompt + delivery routing.**~~ ✅ **Shipped.** Greeting asks pickup-or-delivery up front. Delivery branch emits a ` ```handoff ` JSON fence (`handoffParser.ts`) which the screen consumes to navigate to `/order/delivery` (`replace: true`). System prompt + mock both updated. Pickup branch resumes the existing item-collection flow.
 - ~~**Nearest-store lookup (`useNearestLocation` hook).**~~ ✅ **Shipped** at `src/hooks/useNearestLocation.ts`. The Home screen owns the geo prompt — voice never re-prompts (avoids the back-to-back geo-then-mic browser dialogs). Voice flow consumes the resulting `LocationContext.selectedLocation` via the per-turn runtime context. Denied path: agent asks ZIP, emits ` ```location ` fence, screen runs `resolveByZip` and dispatches the resolved store. The 5.4MB `wendys-locations.json` lazy-loads on first use (Vite splits it into its own chunk).
 - ~~**Voice location confirmation flow.**~~ ✅ **Shipped end-to-end.** Conversation logic asks pickup method after location is confirmed (granted) or after the ZIP resolves (denied). Visual tiles render on `/voice` between the agent text and the lottie button when `permission === 'granted'` and no method is confirmed. Tap or voice are equivalent — both go through `SET_FULFILLMENT` + a `[system: pickup_method_selected: <id>]` nudge. Voice→tile sync rides on a `set_fulfillment` action on the existing `location` fence (so the agent emits one fence with `{ "action": "set_fulfillment", "method": "drive-thru" }` when it hears a method). Matching tile pulses + checkmarks for 600ms on null→set transition, then the row fades out.
-- **Build-as-you-go visual draft order.** The big one. Items appear visually as the agent confirms them and update in place as the user modifies (single → combo → size → drink). **Decided: voice-local draft state inside `VoiceOrderingScreen`; nothing hits `BagContext` until the user taps "Review in bag" (atomic transfer).** Combo visualization: three small image circles (entrée + side + drink) inside the tile. Modifications mutate the existing tile rather than appending a new one. Streaming the order JSON across turns (vs. emitting only at close) is one approach; a separate "current draft" tool/structure is another. To be designed.
+- ~~**Build-as-you-go visual draft order.**~~ ✅ **Shipped.** New `\`\`\`draft` fence emitted on every order-mutating turn carries the FULL current state of the order (not a delta), with a stable `draft_id` per item that survives mutations. `useClaudeConversation` parses + resolves it into a `lastDraft: ParsedDraft | null`; `VoiceOrderingScreen` renders one `VoiceDraftItemTile` per item, keyed on `draftId` so Framer Motion's `layout` animation morphs the tile in place when the same item changes shape (single → combo → drink picked → size upgraded). Combos render as three image circles (entrée + side + drink) — drink/side strings resolve via `resolveByName` against the semantic menu, with a generic Coca-Cola Freestyle / French Fries illustration as the fallback. Atomic transfer to `BagContext` happens on the Review tap (`handleReviewBag` walks the draft and dispatches `ADD_ITEM` for each resolved item, then `clearDraft()`); navigating away discards the draft entirely. The `\`\`\`order` fence remains the close signal — surfaces the Review CTA — and the agent stops emitting drafts once it emits an order.
 - ~~**Read-back of location + pickup method at close.**~~ ✅ **Shipped.** System prompt's Closing section now templates "[N] items for [method] at [store name] — you'll see it in your bag." with explicit mapping for the hyphenated method ids and a graceful fallback when method/store aren't in context.
 - **Final FAB icon + placement.** Adam to provide.
 - **iOS Safari STT.** Web Speech API is unreliable; Whisper-via-proxy is the planned fallback.

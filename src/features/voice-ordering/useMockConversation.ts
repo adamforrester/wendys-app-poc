@@ -105,11 +105,49 @@ const SCRIPT: MockResponse[] = [
   },
   {
     match: i => i.includes("dave") && (i.includes("single") || i.includes("burger")),
-    reply: "Got it — one Dave's Single. Would you like to make that a combo?",
+    reply: `Got it — one Dave's Single. Would you like to make that a combo?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": false,
+      "combo_drink": null,
+      "combo_size": null,
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => i.includes("dave") && i.includes("double"),
-    reply: "Got it — one Dave's Double. Would you like to make that a combo?",
+    reply: `Got it — one Dave's Double. Would you like to make that a combo?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2388",
+      "name": "Dave's Double",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": false,
+      "combo_drink": null,
+      "combo_size": null,
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => i.includes("dave"),
@@ -129,23 +167,129 @@ const SCRIPT: MockResponse[] = [
   },
   {
     match: i => /\b(yes|yeah|yep|sure|combo|please|combo it)\b/.test(i),
-    reply: "Nice. We have a strawberry lemonade — want that as your drink?",
+    reply: `Nice. We have a strawberry lemonade — want that as your drink?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": true,
+      "combo_drink": null,
+      "combo_size": "medium",
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => i.includes("strawberry") || i.includes("lemonade"),
-    reply: "Would you like to make it Medium or Large?",
+    reply: `Would you like to make it Medium or Large?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": true,
+      "combo_drink": "Strawberry Lemonade",
+      "combo_size": "medium",
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => /\b(medium|med)\b/.test(i),
-    reply: "Medium it is. Quick heads up — you've got a free 6-piece Nuggets offer available. Want to add them? Otherwise, anything else?",
+    reply: `Medium it is. Quick heads up — you've got a free 6-piece Nuggets offer available. Want to add them? Otherwise, anything else?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": true,
+      "combo_drink": "Strawberry Lemonade",
+      "combo_size": "medium",
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => /\b(large|lg)\b/.test(i),
-    reply: "Large it is. Quick heads up — you've got a free 6-piece Nuggets offer available. Want to add them? Otherwise, anything else?",
+    reply: `Large it is. Quick heads up — you've got a free 6-piece Nuggets offer available. Want to add them? Otherwise, anything else?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": true,
+      "combo_drink": "Strawberry Lemonade",
+      "combo_size": "large",
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => /\b(nugg|6.?pc|six piece)\b/.test(i) && /\b(yes|yeah|sure|add)\b/.test(i),
-    reply: "Nuggets added. Anything else?",
+    reply: `Nuggets added. Anything else?
+
+\`\`\`draft
+{
+  "items": [
+    {
+      "draft_id": "i-1",
+      "id": "2387",
+      "name": "Dave's Single",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": true,
+      "combo_drink": "Strawberry Lemonade",
+      "combo_size": "medium",
+      "combo_side": null
+    },
+    {
+      "draft_id": "i-2",
+      "id": "726",
+      "name": "6 PC. Chicken Nuggets",
+      "quantity": 1,
+      "modifiers": [],
+      "is_combo": false,
+      "combo_drink": null,
+      "combo_size": null,
+      "combo_side": null
+    }
+  ],
+  "notes": ""
+}
+\`\`\``,
   },
   {
     match: i => /\b(no|nope|that'?s it|done|finish|all set|nothing)\b/.test(i),

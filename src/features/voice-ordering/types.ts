@@ -162,6 +162,52 @@ export interface ParsedOrder {
   fullyResolved: boolean;
 }
 
+/* ── Draft order (build-as-you-go, output every order-mutating turn) ── */
+
+/**
+ * The agent emits a ```draft fence after every turn that adds, modifies,
+ * or removes an item. Identical shape to OrderJsonItem plus a stable
+ * `draft_id` string the agent picks (e.g. "i-1", "i-2") so the screen
+ * can morph the existing tile in place rather than blink it out and
+ * back in for size/combo/drink mutations.
+ *
+ * The draft is voice-local — it never touches BagContext until the
+ * user taps "Review in bag" (atomic transfer). The existing ```order
+ * fence remains the close signal; the agent emits it ONCE the user
+ * is done and stops emitting drafts after that.
+ */
+export interface DraftJsonItem extends OrderJsonItem {
+  /** Stable id chosen by the agent to identify this tile across turns. */
+  draft_id: string;
+  /** Optional combo side override (default: medium fries). */
+  combo_side?: string | null;
+}
+
+export interface DraftJson {
+  items: DraftJsonItem[];
+  notes?: string;
+}
+
+export interface ResolvedDraftItem {
+  /** Stable identity for tile-level animation continuity. */
+  draftId: string;
+  /** The raw item from the agent's draft JSON. */
+  source: DraftJsonItem;
+  /** Resolved entrée / standalone item from the semantic menu. */
+  resolved: SemanticItem | null;
+  /** Resolved combo drink, if a combo and the drink string mapped to a real item. */
+  comboDrink: SemanticItem | null;
+  /** Resolved combo side, if a combo and the side string mapped to a real item. */
+  comboSide: SemanticItem | null;
+  /** Why we couldn't resolve the entrée, if applicable. */
+  resolutionWarning?: string;
+}
+
+export interface ParsedDraft {
+  items: ResolvedDraftItem[];
+  notes: string;
+}
+
 /* ── Handoff (output by Claude when voice should yield to another flow) ── */
 
 /**

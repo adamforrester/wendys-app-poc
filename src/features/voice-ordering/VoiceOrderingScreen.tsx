@@ -4,19 +4,25 @@
  * Layout (top → bottom):
  *   1. Status-bar safe area + back arrow (top-left)
  *   2. Large agent text with active-word highlighting
- *   3. Stack of bag-item tiles that animate in as the agent confirms items
+ *   3. Voice-local DRAFT order tile stack — builds as the agent confirms
+ *      items, mutates in place when the user changes things (single →
+ *      combo → size). Atomic transfer to BagContext on "Review in bag".
  *   4. Lottie voice animation that plays while the agent is speaking
  *   5. "Review in bag" CTA when an order is fully resolved
  *
  * Design intent:
  *   - Voice-first: no chat scrollback, no text input, no header band
- *   - Drive-thru feel: items appear visibly as they're added so the user
- *     sees their order build up in real time
+ *   - Drive-thru feel: items appear visibly as they're confirmed so the
+ *     user sees their order build up in real time
  *   - Cream background, dark text, brand-red emphasis on the active word
  *
  * Reuses the same hooks as the chat panel — useClaudeConversation drives
  * the conversation, useTTS speaks, useSpeechInput listens. The mic loop
  * still re-opens once per assistant turn after TTS finishes.
+ *
+ * Draft vs bag: the draft is voice-local. Nothing is dispatched into
+ * BagContext until the user taps "Review in bag" (atomic transfer).
+ * Navigating away discards the draft.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,23 +38,26 @@ import { useClaudeConversation } from './useClaudeConversation';
 import { useSpeechInput } from './useSpeechInput';
 import { useTTS } from './useTTS';
 import { useSpokenHighlight, type SpokenToken } from './useSpokenHighlight';
-import { VoiceBagItemTile } from './VoiceBagItemTile';
+import { VoiceDraftItemTile } from './VoiceDraftItemTile';
 
 export function VoiceOrderingScreen() {
   const navigate = useNavigate();
-  const { messages, pending, error, send, queueNudge, mode, lastParsedOrder, lastHandoff } = useClaudeConversation();
-  const { state: bagState } = useBag();
+  const {
+    messages,
+    pending,
+    error,
+    send,
+    queueNudge,
+    mode,
+    lastParsedOrder,
+    lastDraft,
+    lastHandoff,
+    clearDraft,
+  } = useClaudeConversation();
+  const { dispatch: bagDispatch } = useBag();
   const { state: locationState, dispatch: locationDispatch } = useLocation();
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
-  // Tracks the bag-item ids that already existed before the user opened
-  // this screen so we don't show them as voice adds. Lazy-initialized
-  // useState (not a ref written from useEffect) so the first render of
-  // voiceItems already excludes pre-existing ids. Otherwise items left
-  // over from a prior session show up in the voice stack on mount.
-  const [preExistingIds] = useState<Set<string>>(
-    () => new Set(bagState.items.map(i => i.id)),
-  );
   const lastSpokenIdRef = useRef<string | null>(null);
 
   const highlight = useSpokenHighlight();
@@ -188,9 +197,59 @@ export function VoiceOrderingScreen() {
     speech.commit();
   }, [speech]);
 
+  // Atomic transfer of the voice-local draft into BagContext.
+  //
+  // Why atomic, not streaming: the user may modify items mid-flow ("make
+  // that a combo", "actually large"). Streaming would mean the bag fills
+  // with intermediate states the user never confirmed. Holding the draft
+  // until Review means the bag only ever sees the final, accepted order.
+  //
+  // We dispatch one ADD_ITEM per draft item, generating a fresh runtime
+  // bag id (same convention the previous auto-add used). Combo selections
+  // are best-effort — the production bag flow has its own combo wizard;
+  // for the voice POC we mark sizeUpgrade=true on a "large" combo and use
+  // the resolved drink/side names. Then we clear the draft so a return to
+  // /voice in the same session starts clean.
   const handleReviewBag = useCallback(() => {
+    if (!lastDraft) {
+      navigate('/order/bag');
+      return;
+    }
+    for (const item of lastDraft.items) {
+      if (!item.resolved) continue;
+      bagDispatch({
+        type: 'ADD_ITEM',
+        item: {
+          id: `${item.resolved.id}-voice-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          menuItemId: item.resolved.id,
+          name: item.resolved.name,
+          quantity: item.source.quantity || 1,
+          price: item.resolved.base_price ?? 0,
+          customizations: {
+            removed:
+              item.source.modifiers
+                ?.filter(m => m.type === 'remove' || m.type === 'no')
+                .map(m => m.ingredient) ?? [],
+          },
+          comboSelections: item.source.is_combo
+            ? {
+                side: {
+                  id: item.comboSide?.id ?? 'fries-medium',
+                  name: item.comboSide?.name ?? 'French Fries (Medium)',
+                },
+                drink: {
+                  id: item.comboDrink?.id ?? 'voice-drink',
+                  name: item.comboDrink?.name ?? item.source.combo_drink ?? 'Drink',
+                },
+                sizeUpgrade: item.source.combo_size === 'large',
+              }
+            : null,
+        },
+      });
+    }
+    clearDraft();
     navigate('/order/bag');
-  }, [navigate]);
+  }, [bagDispatch, clearDraft, lastDraft, navigate]);
 
   // Pickup-method tiles. Visible whenever we have a real store but haven't
   // confirmed how the user is picking up. Voice and tap are equivalent —
@@ -251,12 +310,14 @@ export function VoiceOrderingScreen() {
     [locationDispatch, locationState.fulfillmentMethod, queueNudge, tts],
   );
 
-  // Items added during this voice session — newest first so the most
-  // recent item appears at the top of the stack (closest to the agent
-  // text, like a receipt unfurling toward the camera).
-  const voiceItems = useMemo(
-    () => bagState.items.filter(i => !preExistingIds.has(i.id)).slice().reverse(),
-    [bagState.items, preExistingIds],
+  // Voice-local draft tiles. Newest first so the most recent item
+  // appears at the top of the stack (closest to the agent text,
+  // like a receipt unfurling toward the camera). Each tile keys on
+  // draftId so Framer Motion's layout animation morphs in place
+  // when the same item changes shape (single → combo → size).
+  const draftItems = useMemo(
+    () => (lastDraft?.items ?? []).slice().reverse(),
+    [lastDraft],
   );
 
   const orderComplete = !!lastParsedOrder?.fullyResolved;
@@ -385,9 +446,11 @@ export function VoiceOrderingScreen() {
             )}
           </AnimatePresence>
 
-          {/* Stacked bag tiles. AnimatePresence triggers the entrance
-              animation when a new item arrives via the parsed order. */}
-          {voiceItems.length > 0 && (
+          {/* Voice-local draft tile stack. Tiles key on draftId so
+              Framer Motion can morph them in place when the agent
+              mutates an existing item across turns (single → combo →
+              size). AnimatePresence handles whole-item add/remove. */}
+          {draftItems.length > 0 && (
             <div
               style={{
                 marginTop: 24,
@@ -398,8 +461,8 @@ export function VoiceOrderingScreen() {
               aria-label="Items in your order"
             >
               <AnimatePresence initial={false}>
-                {voiceItems.map(item => (
-                  <VoiceBagItemTile key={item.id} item={item} />
+                {draftItems.map(item => (
+                  <VoiceDraftItemTile key={item.draftId} item={item} />
                 ))}
               </AnimatePresence>
             </div>

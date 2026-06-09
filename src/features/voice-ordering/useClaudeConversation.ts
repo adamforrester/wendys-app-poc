@@ -24,12 +24,14 @@ import { useSemanticMenu } from './useSemanticMenu';
 import { useMockConversation } from './useMockConversation';
 import { buildRuntimeContext, renderRuntimeContext } from './contextBuilder';
 import { parseAndResolveOrder, stripOrderFence } from './orderParser';
+import { parseAndResolveDraft, stripDraftFence } from './draftParser';
 import { extractHandoff, stripHandoffFence } from './handoffParser';
 import { extractLocationAction, hasLocationFence, stripLocationFence } from './locationActionParser';
 import { cleanReplyForDisplay, expandSpokenAbbreviations } from './cleanReply';
 import type {
   ConversationMessage,
   Handoff,
+  ParsedDraft,
   ParsedOrder,
   PickupContext,
   RewardsContext,
@@ -72,7 +74,7 @@ export interface UseClaudeConversationOptions {
 export function useClaudeConversation(options: UseClaudeConversationOptions = {}) {
   const { liveEndpoint = '/api/claude' } = options;
   const { flags } = useFeatureFlags();
-  const { state: bagState, dispatch: bagDispatch } = useBag();
+  const { state: bagState } = useBag();
   const { state: authState } = useAuth();
   const { state: locationState, dispatch: locationDispatch } = useLocationCtx();
   // The voice flow does NOT auto-prompt — Home owns the geo prompt.
@@ -85,6 +87,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastParsedOrder, setLastParsedOrder] = useState<ParsedOrder | null>(null);
+  const [lastDraft, setLastDraft] = useState<ParsedDraft | null>(null);
   const [lastHandoff, setLastHandoff] = useState<Handoff | null>(null);
   // Synthetic input queued from inside a turn (e.g. after a ZIP resolves)
   // and fired after that turn's `pending` flag clears. State (not ref)
@@ -207,6 +210,15 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           resolveByName: semanticMenu.resolveByName,
         });
 
+        // Try to parse a draft block — the per-turn snapshot of the
+        // current order as the user is building it. The screen renders
+        // tiles from this; nothing about it touches BagContext (atomic
+        // transfer happens in the screen's Review handler).
+        const parsedDraft = parseAndResolveDraft(assistantText, {
+          getItemById: semanticMenu.getItemById,
+          resolveByName: semanticMenu.resolveByName,
+        });
+
         // Try to parse a handoff block (e.g. delivery routing).
         const handoff = extractHandoff(assistantText);
 
@@ -219,6 +231,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
 
         let cleanedSource = assistantText;
         if (parsed) cleanedSource = stripOrderFence(cleanedSource);
+        if (parsedDraft) cleanedSource = stripDraftFence(cleanedSource);
         if (handoff) cleanedSource = stripHandoffFence(cleanedSource);
         if (locationAction || locationFenceLeaked) cleanedSource = stripLocationFence(cleanedSource);
         const visibleText = cleanReplyForDisplay(cleanedSource);
@@ -285,38 +298,17 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
           setPendingNudge('[system: zip_not_found]');
         }
 
-        // If we got a complete, fully-resolved order, push items to the bag.
+        // Draft and order are independent signals:
+        //   - draft = "this is the order right now"  (every mutating turn)
+        //   - order = "the customer is done; surface Review" (close turn only)
+        // Atomic transfer to BagContext happens in the screen's Review
+        // handler, NOT here. Voice-local drafts can be discarded by
+        // simply navigating away.
+        if (parsedDraft) {
+          setLastDraft(parsedDraft);
+        }
         if (parsed) {
           setLastParsedOrder(parsed);
-          for (const item of parsed.items) {
-            if (!item.resolved) continue;
-            bagDispatch({
-              type: 'ADD_ITEM',
-              item: {
-                id: `${item.resolved.id}-voice-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-                menuItemId: item.resolved.id,
-                name: item.resolved.name,
-                quantity: item.source.quantity || 1,
-                price: item.resolved.base_price ?? 0,
-                customizations: {
-                  removed:
-                    item.source.modifiers
-                      ?.filter(m => m.type === 'remove' || m.type === 'no')
-                      .map(m => m.ingredient) ?? [],
-                },
-                comboSelections: item.source.is_combo
-                  ? {
-                      side: { id: 'fries-medium', name: 'French Fries (Medium)' },
-                      drink: {
-                        id: 'voice-drink',
-                        name: item.source.combo_drink ?? 'Drink',
-                      },
-                      sizeUpgrade: item.source.combo_size === 'large',
-                    }
-                  : null,
-              },
-            });
-          }
         }
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Unknown error contacting the assistant.';
@@ -325,7 +317,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         setPending(false);
       }
     },
-    [bagDispatch, composeSystemPrompt, flags.voiceOrdering, liveEndpoint, locationDispatch, messages, mock, nearest, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
+    [composeSystemPrompt, flags.voiceOrdering, liveEndpoint, locationDispatch, messages, mock, nearest, pending, semanticMenu.getItemById, semanticMenu.resolveByName],
   );
 
   // Drain a queued nudge once the previous turn finishes. The send ref
@@ -346,10 +338,20 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
     setMessages([]);
     setError(null);
     setLastParsedOrder(null);
+    setLastDraft(null);
     setLastHandoff(null);
     setPendingNudge(null);
     mock.reset();
   }, [mock]);
+
+  /**
+   * Clear the voice-local draft. Called by the screen after the atomic
+   * transfer to BagContext completes (Review tap), so the tile stack
+   * unmounts cleanly and a future return to /voice starts fresh.
+   */
+  const clearDraft = useCallback(() => {
+    setLastDraft(null);
+  }, []);
 
   /**
    * Queue a synthetic `[system: ...]` nudge from outside the turn loop —
@@ -370,14 +372,16 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
       pending,
       error,
       lastParsedOrder,
+      lastDraft,
       lastHandoff,
       send,
       queueNudge,
       reset,
+      clearDraft,
       mode: flags.voiceOrdering,
       systemPrompt: SYSTEM_PROMPT_BODY,
     }),
-    [messages, pending, error, lastParsedOrder, lastHandoff, send, queueNudge, reset, flags.voiceOrdering],
+    [messages, pending, error, lastParsedOrder, lastDraft, lastHandoff, send, queueNudge, reset, clearDraft, flags.voiceOrdering],
   );
 }
 

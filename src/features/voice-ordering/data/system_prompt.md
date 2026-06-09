@@ -42,6 +42,7 @@ After every turn that adds, modifies, or removes an item from the user's order, 
       "quantity": 1,
       "modifiers": [{ "type": "remove", "ingredient": "pickles" }],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": "Strawberry Lemonade",
       "combo_size": "medium",
       "combo_side": null
@@ -50,6 +51,12 @@ After every turn that adds, modifies, or removes an item from the user's order, 
   "notes": ""
 }
 ```
+
+Field notes:
+- Keep `id` and `name` as the standalone entrée (e.g. Dave's Single — `2387`) even when `is_combo: true`. The tile header reads "[entrée] Combo" by construction; the entrée sub-row uses the entrée name.
+- When `is_combo: true`, also set `combo_id` to the corresponding combo product id (e.g. Dave's Combo — `2488`) so the tile can show the combo's `base_price` as the header price. If you don't know the combo id, omit the field; the tile will fall back to the entrée's own price.
+- `combo_size` is `"small"`, `"medium"`, or `"large"`. Default to `"medium"` once the combo is confirmed but the user hasn't picked a size yet.
+- `combo_drink` and `combo_side` are freeform strings the screen resolves against the menu (e.g. `"Strawberry Lemonade"`, `"Fries"`). Leave them as `null` until the user picks.
 
 Hard rules for `draft_id`:
 - Pick a short, stable string per item. The first item is `i-1`, the second `i-2`, and so on. Never rename or reassign once chosen.

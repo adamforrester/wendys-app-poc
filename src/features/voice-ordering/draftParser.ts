@@ -98,10 +98,20 @@ function resolveDraftItem(source: DraftJsonItem, resolver: ResolverArgs): Resolv
   const comboDrink = source.is_combo ? resolveAccompaniment(source.combo_drink, resolver) : null;
   const comboSide = source.is_combo ? resolveAccompaniment(source.combo_side, resolver) : null;
 
+  // Combo product — the menu entry that carries the combo `base_price`
+  // (e.g. "Dave's Combo" id 2488 for a Dave's Single combo). Used for
+  // the tile header price; the entrée sub-row stays driven by the
+  // standalone `resolved` so it reads "Dave's Single", not "Dave's".
+  // When the agent doesn't supply combo_id, we fall back to the
+  // standalone's own price for the header.
+  const comboProduct =
+    source.is_combo && source.combo_id ? (resolver.getItemById(source.combo_id) ?? null) : null;
+
   return {
     draftId: source.draft_id,
     source,
     resolved,
+    comboProduct,
     comboDrink,
     comboSide,
     resolutionWarning,

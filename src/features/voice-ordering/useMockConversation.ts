@@ -179,6 +179,7 @@ const SCRIPT: MockResponse[] = [
       "quantity": 1,
       "modifiers": [],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": null,
       "combo_size": "medium",
       "combo_side": null
@@ -202,6 +203,7 @@ const SCRIPT: MockResponse[] = [
       "quantity": 1,
       "modifiers": [],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": "Strawberry Lemonade",
       "combo_size": "medium",
       "combo_side": null
@@ -225,6 +227,7 @@ const SCRIPT: MockResponse[] = [
       "quantity": 1,
       "modifiers": [],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": "Strawberry Lemonade",
       "combo_size": "medium",
       "combo_side": null
@@ -248,6 +251,7 @@ const SCRIPT: MockResponse[] = [
       "quantity": 1,
       "modifiers": [],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": "Strawberry Lemonade",
       "combo_size": "large",
       "combo_side": null
@@ -271,6 +275,7 @@ const SCRIPT: MockResponse[] = [
       "quantity": 1,
       "modifiers": [],
       "is_combo": true,
+      "combo_id": "2488",
       "combo_drink": "Strawberry Lemonade",
       "combo_size": "medium",
       "combo_side": null

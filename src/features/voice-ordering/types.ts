@@ -181,6 +181,14 @@ export interface DraftJsonItem extends OrderJsonItem {
   draft_id: string;
   /** Optional combo side override (default: medium fries). */
   combo_side?: string | null;
+  /**
+   * Optional combo product id (e.g. "2488" for Dave's Combo) when the
+   * item is a combo. The tile uses this to fetch the combo's combo
+   * `base_price` for the header price line, while the entrée sub-row
+   * keeps showing the entrée's own image + name. Falls back to the
+   * standalone item's price when not provided.
+   */
+  combo_id?: string | null;
 }
 
 export interface DraftJson {
@@ -195,6 +203,12 @@ export interface ResolvedDraftItem {
   source: DraftJsonItem;
   /** Resolved entrée / standalone item from the semantic menu. */
   resolved: SemanticItem | null;
+  /**
+   * Resolved combo product (the menu item that carries the combo
+   * `base_price` like "Dave's Combo"). Tile uses this for the header
+   * price; the entrée sub-row stays driven by `resolved`.
+   */
+  comboProduct: SemanticItem | null;
   /** Resolved combo drink, if a combo and the drink string mapped to a real item. */
   comboDrink: SemanticItem | null;
   /** Resolved combo side, if a combo and the side string mapped to a real item. */

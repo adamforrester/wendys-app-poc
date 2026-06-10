@@ -122,10 +122,15 @@ function ComboTile({ item }: { item: ResolvedDraftItem }) {
   const entreePrice = null as string | null; // Don't double-charge — header carries the combo price.
   const entreeImage = imageForItem(item.resolved) ?? FALLBACK_IMAGE;
 
-  // Side + drink: real semantic item if resolved, else a placeholder
-  // row. We always show them on a combo so the user sees the order
-  // taking shape — empty placeholder rows fill in as the agent confirms.
-  const sideRow = buildAccompanimentRow(item.comboSide, GENERIC_SIDE_IMAGE, 'Fries', size);
+  // Side: defaults to fries — that's how Wendy's combos work, and the
+  // user only needs to interact with it if they want something else.
+  // Render as confirmed (not pending) regardless of whether the agent
+  // emitted `combo_side`, unless the agent picked a different side.
+  // Drink: stays pending until the user picks; renders as a faded
+  // "Medium Drink" placeholder so the order's shape is visible.
+  const sideRow = item.comboSide
+    ? buildAccompanimentRow(item.comboSide, GENERIC_SIDE_IMAGE, 'Fries', size)
+    : { image: GENERIC_SIDE_IMAGE, name: `${size} Fries`, price: null, pending: false };
   const drinkRow = buildAccompanimentRow(item.comboDrink, GENERIC_DRINK_IMAGE, 'Drink', size);
 
   // Surface remove/no modifiers as red pills under the entrée sub-row,

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { BagButton } from './BagButton';
 import { useBag } from '../../context/BagContext';
+import { useCompactViewport } from '../../hooks/useCompactViewport';
 
 export type TitleMode = 'logo' | 'title';
 export type TitlePlacement = 'center' | 'left';
@@ -64,6 +65,7 @@ export function TopAppBar({
   const navigate = useNavigate();
   const { state: bagState } = useBag();
   const bagCount = bagState.items.reduce((sum, item) => sum + item.quantity, 0);
+  const compact = useCompactViewport();
 
   const handleBack = () => {
     if (onBack) {
@@ -87,8 +89,15 @@ export function TopAppBar({
 
   return (
     <header className="w-full bg-[var(--color-bg-brand-primary-default)] flex-shrink-0 sticky top-0 z-10">
-      {/* Safe area padding — pushes content below the status bar/notch */}
-      <div className="h-[54px]" />
+      {/* Safe area padding — pushes content below the status bar/notch.
+          Compact viewport: real OS draws the status bar, so honor the device's
+          safe-area inset (notch in standalone PWA, 0 in mobile Safari). Framed
+          viewport: clear the fake 54px StatusBar overlay drawn by DeviceFrame. */}
+      <div
+        style={{
+          height: compact ? 'env(safe-area-inset-top)' : 54,
+        }}
+      />
       <div className="relative flex items-center px-wds-16 py-wds-4 h-[56px]">
 
         {/* Center title — absolutely positioned for true center alignment */}

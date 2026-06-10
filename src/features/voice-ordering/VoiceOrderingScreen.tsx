@@ -33,6 +33,7 @@ import voiceAnimation from '../../animations/lottie/voice-animation.json';
 import { useBag } from '../../context/BagContext';
 import { useLocation, type FulfillmentMethod } from '../../context/LocationContext';
 import { useStatusBarMode } from '../../context/StatusBarModeContext';
+import { useCompactViewport } from '../../hooks/useCompactViewport';
 import { ItemSelector } from '../../components/ItemSelector/ItemSelector';
 import { useClaudeConversation } from './useClaudeConversation';
 import { useSpeechInput } from './useSpeechInput';
@@ -58,6 +59,7 @@ export function VoiceOrderingScreen() {
   const { state: locationState, dispatch: locationDispatch } = useLocation();
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
+  const compact = useCompactViewport();
   const lastSpokenIdRef = useRef<string | null>(null);
 
   const highlight = useSpokenHighlight();
@@ -339,7 +341,7 @@ export function VoiceOrderingScreen() {
           16px gap between the arrow and the agent text below. */}
       <div
         style={{
-          paddingTop: 54, // status bar safe area
+          paddingTop: compact ? 'env(safe-area-inset-top)' : 54, // status bar safe area
           paddingLeft: 16,
           paddingRight: 16,
           paddingBottom: 16,

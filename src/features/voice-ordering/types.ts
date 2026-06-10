@@ -262,6 +262,15 @@ export interface RewardsContext {
 }
 
 /**
+ * Snapshot of the signed-in user passed to the agent each turn so the
+ * greeting and conversational asides can address them by name. Null when
+ * the user is a guest — the agent falls back to the unnamed greeting.
+ */
+export interface UserContext {
+  firstName: string;
+}
+
+/**
  * Snapshot of the user's pickup location passed to the agent each turn.
  *
  * `permission` mirrors LocationContext.locationPermission so the agent
@@ -283,6 +292,7 @@ export interface RuntimeContext {
   menuSummary: string;
   offers: OfferContext[];
   rewards: RewardsContext | null;
+  user: UserContext | null;
   bag: BagItemContext[];
   bagSubtotal: number;
   pickup: PickupContext;

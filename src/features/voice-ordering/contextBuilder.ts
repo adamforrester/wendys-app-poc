@@ -15,6 +15,7 @@ import type {
   OfferContext,
   BagItemContext,
   RewardsContext,
+  UserContext,
   PickupContext,
 } from './types';
 
@@ -24,6 +25,7 @@ interface BuildArgs {
   bagItems: BagItem[];
   offers: Offer[];
   rewards: RewardsContext | null;
+  user: UserContext | null;
   pickup: PickupContext;
 }
 
@@ -50,13 +52,14 @@ function bagToContext(items: BagItem[]): BagItemContext[] {
   }));
 }
 
-export function buildRuntimeContext({ menuSummary, bagItems, offers, rewards, pickup }: BuildArgs): RuntimeContext {
+export function buildRuntimeContext({ menuSummary, bagItems, offers, rewards, user, pickup }: BuildArgs): RuntimeContext {
   const bag = bagToContext(bagItems);
   const bagSubtotal = bag.reduce((s, i) => s + i.price * i.quantity, 0);
   return {
     menuSummary,
     offers: selectRelevantOffers(offers),
     rewards,
+    user,
     bag,
     bagSubtotal,
     pickup,
@@ -88,6 +91,15 @@ export function renderRuntimeContext(ctx: RuntimeContext): string {
       lines.push(`- ${o.id} [${o.state}]: ${o.title}${remain}${deliv}`);
       lines.push(`  ${o.description}`);
     }
+  }
+  lines.push('');
+
+  lines.push('### USER');
+  if (!ctx.user) {
+    lines.push('(guest — no signed-in profile; use the unnamed greeting)');
+  } else {
+    lines.push(`First name: ${ctx.user.firstName}`);
+    lines.push('Address them by first name in the greeting and any natural conversational asides. Do not over-use it (no need to repeat it every turn).');
   }
   lines.push('');
 

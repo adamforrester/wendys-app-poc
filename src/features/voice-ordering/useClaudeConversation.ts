@@ -35,6 +35,7 @@ import type {
   ParsedOrder,
   PickupContext,
   RewardsContext,
+  UserContext,
 } from './types';
 import type { Offer } from '../../data/types';
 import userJson from '../../data/user.json';
@@ -42,6 +43,7 @@ import userJson from '../../data/user.json';
 const allOffers = (offersJson as { offers: Offer[] }).offers;
 const userData = userJson as unknown as {
   authenticatedUser: {
+    firstName: string;
     rewardsProfile: {
       points: number;
       tier: string;
@@ -113,6 +115,12 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
     };
   }, [authState.isAuthenticated]);
 
+  /** Build the user-identity context fragment, or null for guests. */
+  const buildUserContext = useCallback((): UserContext | null => {
+    if (!authState.isAuthenticated || !userData.authenticatedUser) return null;
+    return { firstName: userData.authenticatedUser.firstName };
+  }, [authState.isAuthenticated]);
+
   /**
    * Build the pickup context fragment from LocationContext. The home
    * screen sets this when geolocation resolves; the voice flow reads it
@@ -157,6 +165,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
       bagItems: bagState.items,
       offers: allOffers,
       rewards: buildRewardsContext(),
+      user: buildUserContext(),
       pickup: buildPickupContext(),
     });
     return [
@@ -172,7 +181,7 @@ export function useClaudeConversation(options: UseClaudeConversationOptions = {}
         text: renderRuntimeContext({ ...ctx, menuSummary: '' }),
       },
     ];
-  }, [bagState.items, buildRewardsContext, buildPickupContext]);
+  }, [bagState.items, buildRewardsContext, buildUserContext, buildPickupContext]);
 
   /** Send a user message, get a reply, route order JSON to the bag. */
   const send = useCallback(

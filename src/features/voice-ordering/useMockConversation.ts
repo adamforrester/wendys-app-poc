@@ -8,6 +8,13 @@
  */
 
 import { useCallback, useRef } from 'react';
+import userJson from '../../data/user.json';
+
+// Mock conversation has no live access to AuthContext or runtime context,
+// so it reads the user's first name straight from the same source the live
+// runtime context does. Demo only — there's no guest path here.
+const MOCK_FIRST_NAME = (userJson as { authenticatedUser?: { firstName?: string } })
+  .authenticatedUser?.firstName ?? '';
 
 interface MockResponse {
   /** Substrings (lowercase) that route to this response. */
@@ -40,7 +47,9 @@ const SCRIPT: MockResponse[] = [
   {
     match: i => /^(hi|hello|hey|start|begin)/.test(i) || i === '',
     whenTurn: t => t === 0,
-    reply: "Hi! Are you ordering for pickup or delivery?",
+    reply: MOCK_FIRST_NAME
+      ? `Hey ${MOCK_FIRST_NAME}! Pickup or delivery?`
+      : "Hi! Are you ordering for pickup or delivery?",
   },
   {
     match: i => /\b(deliver(y|ed)?|bring it|drop off|doordash)\b/.test(i),

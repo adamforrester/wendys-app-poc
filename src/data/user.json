@@ -5,9 +5,9 @@
   },
   "authenticatedUser": {
     "id": "user_001",
-    "firstName": "Alex",
-    "lastName": "Johnson",
-    "email": "alex.johnson@email.com",
+    "firstName": "Olivia",
+    "lastName": "Jones",
+    "email": "olivia.jones@email.com",
     "phone": "(614) 555-1234",
     "rewardsProfile": {
       "memberId": "WEN-9847362",

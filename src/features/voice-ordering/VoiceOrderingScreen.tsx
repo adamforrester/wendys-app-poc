@@ -33,6 +33,7 @@ import voiceAnimation from '../../animations/lottie/voice-animation.json';
 import { useBag } from '../../context/BagContext';
 import { useLocation, type FulfillmentMethod } from '../../context/LocationContext';
 import { useStatusBarMode } from '../../context/StatusBarModeContext';
+import { useFeatureFlags } from '../../context/FeatureFlagsContext';
 import { useCompactViewport } from '../../hooks/useCompactViewport';
 import { ItemSelector } from '../../components/ItemSelector/ItemSelector';
 import { useClaudeConversation } from './useClaudeConversation';
@@ -60,6 +61,11 @@ export function VoiceOrderingScreen() {
   // Cream background → dark status bar tint while this screen is mounted.
   useStatusBarMode('dark');
   const compact = useCompactViewport();
+  const { flags } = useFeatureFlags();
+  const handsFree = flags.voiceInputMode === 'hands-free';
+  // Hands-free only: user can mute the always-on mic with a tap on the
+  // lottie. Push-to-talk has no mute concept (the press IS the toggle).
+  const [muted, setMuted] = useState(false);
   const lastSpokenIdRef = useRef<string | null>(null);
 
   const highlight = useSpokenHighlight();
@@ -69,11 +75,14 @@ export function VoiceOrderingScreen() {
     onPlaybackStart: highlight.attach,
   });
 
-  // Push-to-talk: the mic only listens while the user is holding the
-  // lottie button. No silence timer, no auto-loop after assistant turns —
-  // the user owns the moment they stop speaking.
+  // Mic input mode is flag-driven:
+  //   - 'push-to-talk': mic only opens while the user holds the lottie;
+  //     manualCommit ensures the silence timer and onend never auto-fire.
+  //   - 'hands-free': mic auto-opens on screen entry, silence-based commit
+  //     sends after a natural pause, and an auto-resume effect re-opens
+  //     the mic once the agent finishes speaking. Tap the lottie to mute.
   const speech = useSpeechInput({
-    manualCommit: true,
+    manualCommit: !handsFree,
     onAutoSubmit: (transcript) => {
       const trimmed = transcript.trim();
       if (!trimmed) return;
@@ -198,6 +207,37 @@ export function VoiceOrderingScreen() {
     if (!speech.listening) return;
     speech.commit();
   }, [speech]);
+
+  // Hands-free: tapping the lottie toggles a soft mute. When muted, the
+  // mic stops listening AND the auto-resume effect below stays a no-op
+  // until the user un-mutes. We don't try to rip TTS audio if the agent
+  // is mid-reply — only the user's input is gated.
+  const handleMuteToggle = useCallback(() => {
+    setMuted(prev => {
+      const next = !prev;
+      if (next) speech.stop();
+      return next;
+    });
+  }, [speech]);
+
+  // Hands-free auto-resume. Reopens the mic any time the conditions allow:
+  // not muted, no LLM turn in flight, TTS not playing, not already
+  // listening. Covers both initial mount (after the greet's TTS clears)
+  // and the transition after each agent reply.
+  //
+  // `start()` is idempotent in useSpeechInput, so the speech object's
+  // per-render identity churn is harmless — but we still gate explicitly
+  // on the values (not the object) to keep the firing surface narrow.
+  const { listening: speechListening, supported: speechSupported, start: speechStart } = speech;
+  useEffect(() => {
+    if (!handsFree) return;
+    if (muted) return;
+    if (pending) return;
+    if (tts.isPlaying) return;
+    if (speechListening) return;
+    if (!speechSupported) return;
+    speechStart();
+  }, [handsFree, muted, pending, tts.isPlaying, speechListening, speechSupported, speechStart]);
 
   // Atomic transfer of the voice-local draft into BagContext.
   //
@@ -500,11 +540,14 @@ export function VoiceOrderingScreen() {
           }}
         >
           <VoiceLottieButton
+            mode={handsFree ? 'hands-free' : 'push-to-talk'}
             active={tts.isPlaying || speech.listening}
             listening={speech.listening}
+            muted={muted}
             disabled={pending}
             onHoldStart={handleMicHoldStart}
             onHoldEnd={handleMicHoldEnd}
+            onTapToggle={handleMuteToggle}
           />
           <div
             aria-hidden="true"
@@ -515,11 +558,19 @@ export function VoiceOrderingScreen() {
               minHeight: 16,
             }}
           >
-            {speech.listening
-              ? 'Listening — release to send'
-              : tts.isPlaying
-                ? 'Speaking…'
-                : 'Hold to talk'}
+            {handsFree
+              ? muted
+                ? 'Muted — tap to unmute'
+                : speech.listening
+                  ? 'Listening…'
+                  : tts.isPlaying
+                    ? 'Speaking…'
+                    : 'Tap to mute'
+              : speech.listening
+                ? 'Listening — release to send'
+                : tts.isPlaying
+                  ? 'Speaking…'
+                  : 'Hold to talk'}
           </div>
         </div>
 
@@ -617,17 +668,23 @@ function PickupMethodTile({
 /* ── Subcomponents ── */
 
 function VoiceLottieButton({
+  mode,
   active,
   listening,
+  muted,
   disabled,
   onHoldStart,
   onHoldEnd,
+  onTapToggle,
 }: {
+  mode: 'push-to-talk' | 'hands-free';
   active: boolean;
   listening: boolean;
+  muted: boolean;
   disabled: boolean;
   onHoldStart: () => void;
   onHoldEnd: () => void;
+  onTapToggle: () => void;
 }) {
   // useLottie returns the rendered <View> + an imperative API. We pause/
   // play it based on `active` so the animation only runs when the agent is
@@ -664,16 +721,44 @@ function VoiceLottieButton({
     onHoldEnd();
   };
 
+  // Hands-free: a single tap toggles mute. Stop propagation isn't needed
+  // since the button is the leaf node here.
+  const handleClick = () => {
+    if (disabled) return;
+    onTapToggle();
+  };
+
+  // The PTT and hands-free affordances are mutually exclusive — wiring the
+  // pointer-capture handlers in hands-free would make a tap both fire
+  // onHoldStart/End AND onClick, briefly opening the mic before the mute
+  // toggle stopped it again.
+  const pttHandlers = mode === 'push-to-talk'
+    ? {
+        onPointerDown: handlePointerDown,
+        onPointerUp: handlePointerEnd,
+        onPointerCancel: handlePointerEnd,
+      }
+    : {
+        onClick: handleClick,
+      };
+
+  const ariaLabel =
+    mode === 'hands-free'
+      ? muted
+        ? 'Muted — tap to unmute'
+        : 'Listening — tap to mute'
+      : listening
+        ? 'Listening — release to send'
+        : 'Hold to talk';
+
   return (
     <button
       type="button"
       disabled={disabled}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerEnd}
-      onPointerCancel={handlePointerEnd}
+      {...pttHandlers}
       onContextMenu={(e) => e.preventDefault()}
-      aria-label={listening ? 'Listening — release to send' : 'Hold to talk'}
-      aria-pressed={listening}
+      aria-label={ariaLabel}
+      aria-pressed={mode === 'hands-free' ? !muted : listening}
       style={{
         width: 220,
         height: 220,
@@ -686,8 +771,8 @@ function VoiceLottieButton({
         WebkitTouchCallout: 'none',
         WebkitUserSelect: 'none',
         userSelect: 'none',
-        touchAction: 'none',
-        opacity: disabled ? 0.6 : 1,
+        touchAction: mode === 'push-to-talk' ? 'none' : 'manipulation',
+        opacity: disabled ? 0.6 : muted ? 0.55 : 1,
       }}
     >
       {lottie.View}

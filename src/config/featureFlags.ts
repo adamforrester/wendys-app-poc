@@ -15,6 +15,7 @@ export type PostOrderSurprise = 'none' | 'confetti' | 'animation';
 export type DarkMode = 'off' | 'on';
 export type LoadingScenario = 'none' | 'slow-network' | 'error-state';
 export type VoiceOrdering = 'off' | 'mock' | 'live';
+export type VoiceInputMode = 'push-to-talk' | 'hands-free';
 
 export interface FeatureFlags {
   addToBagTransition: AddToBagTransition;
@@ -32,6 +33,7 @@ export interface FeatureFlags {
   darkMode: DarkMode;
   loadingScenario: LoadingScenario;
   voiceOrdering: VoiceOrdering;
+  voiceInputMode: VoiceInputMode;
 }
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -50,6 +52,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   darkMode: 'off',
   loadingScenario: 'none',
   voiceOrdering: 'live',
+  voiceInputMode: 'push-to-talk',
 };
 
 /* ── Flag Metadata (drives admin UI auto-generation) ── */
@@ -184,6 +187,14 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'off', label: 'Off' },
       { value: 'mock', label: 'Mock (no API)' },
       { value: 'live', label: 'Live (Claude proxy)' },
+    ],
+  },
+  voiceInputMode: {
+    label: 'Voice Input Mode',
+    description: 'Hold-to-talk = press and hold the lottie button to speak. Hands-free = mic auto-opens, silence sends, mic auto-resumes after the agent replies; tap the lottie to mute.',
+    options: [
+      { value: 'push-to-talk', label: 'Hold to talk' },
+      { value: 'hands-free', label: 'Hands-free' },
     ],
   },
 };

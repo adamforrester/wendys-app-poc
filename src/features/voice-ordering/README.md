@@ -6,7 +6,7 @@ This module is **isolated** — its only shared boundary with the rest of the ap
 
 ## Status
 
-Live end-to-end. Default flag is `live`. Push-to-talk shipped. Word-by-word highlight active. Build-as-you-go draft tiles render in real time as the user names items and mutates them across turns; the order only hits `BagContext` when the user taps "Review in bag" (atomic transfer). Visual pickup-method tiles tap-equivalent-to-voice. Closing turn reads back "[N] items for [method] at [store name]". Order tab, Location Confirmation, Bag pickup row, and the menu Pickup Location header all reflect the user's actual resolved store via `useResolvedLocations()`.
+Live end-to-end. Default flag is `live`. Mic mode is selectable via `voiceInputMode` (push-to-talk default; hands-free is auto-VAD with auto-resume + tap-to-mute). Word-by-word highlight active. Build-as-you-go draft tiles render in real time as the user names items and mutates them across turns; the order only hits `BagContext` when the user taps "Review in bag" (atomic transfer). Visual pickup-method tiles tap-equivalent-to-voice. Closing turn reads back "[N] items for [method] at [store name]". Order tab, Location Confirmation, Bag pickup row, and the menu Pickup Location header all reflect the user's actual resolved store via `useResolvedLocations()`.
 
 ## Active surfaces
 
@@ -94,7 +94,7 @@ Toggle at runtime in Account → Developer Tools → "Voice Ordering (POC)".
 
 **Why a dedicated full-screen route, not a panel?** The voice experience is the primary interaction once the user enters it; a chat panel sharing space with the rest of the app underweighted the feature. The panel still exists as a fallback layout we may revisit.
 
-**Why push-to-talk?** Auto-VAD (silence-timer commit) was unpredictable in noisy demos and gave the user no clear sense of when the mic was open. Push-to-talk makes the contract obvious: while you hold, you're heard; release sends. Pressing during TTS interrupts the assistant — user input takes priority.
+**Why push-to-talk (with hands-free as an option)?** Auto-VAD (silence-timer commit) was unpredictable in noisy demos and gave the user no clear sense of when the mic was open, so push-to-talk is still the default — while you hold, you're heard; release sends. Pressing during TTS interrupts the assistant. The `voiceInputMode` flag now also exposes a hands-free mode for "open conversation" demos: mic auto-opens, silence sends, mic auto-resumes after each TTS reply, and a single tap on the lottie mutes/unmutes. Same `useSpeechInput` hook in both cases — the flag flips `manualCommit` and the screen adds an auto-resume effect gated on `!muted && !pending && !tts.isPlaying && !speech.listening`.
 
 **Why estimate word timing instead of streaming timestamps?** ElevenLabs' default REST endpoint returns an MP3 with no per-word timing. We split the reply into tokens and schedule each word's start as `(cumulativeWeight / totalWeight) * audio.duration`, weighting by word length. It feels right for a demo. Production-grade timing would switch to ElevenLabs' `with-timestamps` endpoint or websocket stream — both add proxy work; not yet justified.
 

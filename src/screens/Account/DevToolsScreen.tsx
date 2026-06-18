@@ -53,11 +53,12 @@ function ControlRow({ label, description, children }: { label: string; descripti
   );
 }
 
-function Select({ value, options, onChange }: { value: string; options: { value: string; label: string }[]; onChange: (v: string) => void }) {
+function Select({ value, options, onChange, disabled = false }: { value: string; options: { value: string; label: string }[]; onChange: (v: string) => void; disabled?: boolean }) {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
       className="font-body text-[13px]"
       style={{
         padding: '6px 8px',
@@ -67,6 +68,7 @@ function Select({ value, options, onChange }: { value: string; options: { value:
         color: 'var(--color-text-primary-default)',
         minWidth: 130,
         appearance: 'auto' as const,
+        cursor: disabled ? 'not-allowed' : 'pointer',
       }}
     >
       {options.map((opt) => (
@@ -76,15 +78,17 @@ function Select({ value, options, onChange }: { value: string; options: { value:
   );
 }
 
-function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+function ToggleSwitch({ checked, onChange, disabled = false }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
   return (
     <button
-      onClick={() => onChange(!checked)}
+      onClick={() => { if (!disabled) onChange(!checked); }}
+      disabled={disabled}
       className="relative border-none p-0"
       style={{
         width: 48, height: 28, borderRadius: 14,
         backgroundColor: checked ? 'var(--color-bg-brand-secondary-default)' : 'var(--color-bg-disabled-default)',
         transition: 'background-color 0.2s',
+        cursor: disabled ? 'not-allowed' : 'pointer',
       }}
       role="switch"
       aria-checked={checked}
@@ -194,32 +198,53 @@ export function DevToolsScreen() {
             const meta = flagMeta[key];
             const currentValue = flags[key];
             const isDefault = currentValue === defaultFeatureFlags[key];
+            const isStub = meta.stub === true;
 
             return (
-              <ControlRow key={key} label={meta.label} description={meta.description}>
-                <div className="flex items-center gap-wds-8">
-                  {!isDefault && (
-                    <span
-                      className="font-body text-[11px] font-bold"
-                      style={{ color: 'var(--color-text-brand-secondary-default)', letterSpacing: '0.5px' }}
-                    >
-                      MODIFIED
-                    </span>
-                  )}
-                  {meta.options.length === 2 && meta.options.some(o => o.value === 'off') ? (
-                    <ToggleSwitch
-                      checked={currentValue !== 'off'}
-                      onChange={(on) => handleFlagChange(key, on ? meta.options.find(o => o.value !== 'off')!.value : 'off')}
-                    />
-                  ) : (
-                    <Select
-                      value={currentValue}
-                      options={meta.options}
-                      onChange={(v) => handleFlagChange(key, v)}
-                    />
-                  )}
-                </div>
-              </ControlRow>
+              <div key={key} style={{ opacity: isStub ? 0.45 : 1 }}>
+                <ControlRow label={meta.label} description={meta.description}>
+                  <div className="flex items-center gap-wds-8">
+                    {isStub && (
+                      <span
+                        className="font-body text-[10px] font-bold"
+                        style={{
+                          color: 'var(--color-text-secondary-default)',
+                          letterSpacing: '0.5px',
+                          padding: '2px 6px',
+                          borderRadius: 4,
+                          backgroundColor: 'var(--color-bg-secondary-default)',
+                          border: '1px solid var(--color-border-tertiary-default)',
+                        }}
+                        title="Defined in flagMeta but no consuming code reads it yet."
+                      >
+                        NOT WIRED
+                      </span>
+                    )}
+                    {!isStub && !isDefault && (
+                      <span
+                        className="font-body text-[11px] font-bold"
+                        style={{ color: 'var(--color-text-brand-secondary-default)', letterSpacing: '0.5px' }}
+                      >
+                        MODIFIED
+                      </span>
+                    )}
+                    {meta.options.length === 2 && meta.options.some(o => o.value === 'off') ? (
+                      <ToggleSwitch
+                        checked={currentValue !== 'off'}
+                        onChange={(on) => handleFlagChange(key, on ? meta.options.find(o => o.value !== 'off')!.value : 'off')}
+                        disabled={isStub}
+                      />
+                    ) : (
+                      <Select
+                        value={currentValue}
+                        options={meta.options}
+                        onChange={(v) => handleFlagChange(key, v)}
+                        disabled={isStub}
+                      />
+                    )}
+                  </div>
+                </ControlRow>
+              </div>
             );
           })}
           <div style={{ paddingTop: 12 }}>

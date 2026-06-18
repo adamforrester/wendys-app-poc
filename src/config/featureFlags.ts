@@ -61,6 +61,13 @@ export interface FlagMeta {
   label: string;
   description: string;
   options: { value: string; label: string }[];
+  /**
+   * True when the flag is defined but no consuming code reads it yet.
+   * Dev tools renders these dimmed + disabled with a "NOT WIRED" badge so
+   * the team can see what's planned without thinking the toggle does
+   * something today. Drop the flag entirely once a consumer ships.
+   */
+  stub?: boolean;
 }
 
 export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
@@ -72,6 +79,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'slide-to-bag', label: 'Slide to Bag' },
       { value: 'full-screen-confirmation', label: 'Full Screen' },
     ],
+    stub: true,
   },
   comboBuilderStyle: {
     label: 'Combo Builder Style',
@@ -80,6 +88,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'bottom-sheet-wizard', label: 'Bottom Sheet Wizard' },
       { value: 'accordion', label: 'Accordion' },
     ],
+    stub: true,
   },
   locationSelectionLayout: {
     label: 'Location Selection Layout',
@@ -88,6 +97,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'map-and-list', label: 'Map + List' },
       { value: 'list-only', label: 'List Only' },
     ],
+    stub: true,
   },
   splashAnimation: {
     label: 'Splash Animation',
@@ -96,6 +106,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'current', label: 'Current' },
       { value: 'variant-b', label: 'Variant B' },
     ],
+    stub: true,
   },
   menuCategoryLayout: {
     label: 'Menu Category Layout',
@@ -104,6 +115,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'current', label: 'Current' },
       { value: 'variant-b', label: 'Variant B' },
     ],
+    stub: true,
   },
   menuPLPLayout: {
     label: 'Menu PLP Layout',
@@ -112,6 +124,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'current', label: 'Current' },
       { value: 'variant-b', label: 'Variant B' },
     ],
+    stub: true,
   },
   sppLayout: {
     label: 'SPP Layout',
@@ -120,6 +133,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'current', label: 'Current' },
       { value: 'variant-b', label: 'Variant B' },
     ],
+    stub: true,
   },
   bottomNavStyle: {
     label: 'Bottom Nav Style',
@@ -138,6 +152,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'card', label: 'Card' },
       { value: 'sticky-nav', label: 'Sticky Nav (Starbucks)' },
     ],
+    stub: true,
   },
   buttonColorScheme: {
     label: 'Button Color Scheme',
@@ -146,6 +161,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'secondary', label: 'Teal (Secondary)' },
       { value: 'primary', label: 'Red (Primary)' },
     ],
+    stub: true,
   },
   fallbackImage: {
     label: 'Fallback Image',
@@ -154,6 +170,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'wave', label: 'Wendy\'s Wave' },
       { value: 'variant-b', label: 'Variant B' },
     ],
+    stub: true,
   },
   postOrderSurprise: {
     label: 'Post-Order Surprise & Delight',
@@ -163,6 +180,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'confetti', label: 'Confetti' },
       { value: 'animation', label: 'Lottie Animation' },
     ],
+    stub: true,
   },
   darkMode: {
     label: 'Dark Mode',
@@ -171,6 +189,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'off', label: 'Off' },
       { value: 'on', label: 'On' },
     ],
+    stub: true,
   },
   loadingScenario: {
     label: 'Loading Scenario',
@@ -180,6 +199,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'slow-network', label: 'Slow Network' },
       { value: 'error-state', label: 'Error State' },
     ],
+    stub: true,
   },
   voiceOrdering: {
     label: 'Voice Ordering (POC)',

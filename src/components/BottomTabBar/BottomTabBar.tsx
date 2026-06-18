@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-export type BottomTabBarVariant = 'current' | 'simple';
+export type BottomTabBarVariant = 'current' | 'simple' | 'floating-pill';
 
 interface TabDef {
   to: string;
@@ -315,6 +315,119 @@ function SimpleNavBar() {
   );
 }
 
+/* ══════════════════════════════════════
+   Floating Pill nav bar (experiment)
+   ══════════════════════════════════════
+
+   Five equal tabs inside a single rounded pill that floats ~16px above
+   the bottom edge with the page background bleeding through to the
+   sides. Active tab gets a soft "pebble" (secondary-bg, 100px radius)
+   behind the icon + label, both flipped to brand teal. No center notch
+   and no oversized Order action — Order is just another tab.
+
+   Spec: Figma 4757:5298 (Fresh Sandbox / 5up-specs).
+   - Outer: 358×64, white bg, 1px tertiary border, fully rounded,
+     drop shadow (0 4 8 rgba(0,0,0,0.2)).
+   - Outer padding: 4px on all sides; inner gap: tabs are flex-1.
+   - Tab pebble: rounded-[100px] secondary-bg, fills the tab slot.
+   - Icon: 24px filled-when-active, outline-when-inactive (same
+     resolveIconSrc helper). Icon color flips brand-secondary / icon-
+     secondary. Label: 10px / 600, brand-secondary / text-secondary. */
+
+/* Local icon renderer — same masked-svg pattern as the shared helper but
+   inactive color is icon/secondary (gray-800) per Figma spec instead of
+   the disabled gray-600 the other variants use. */
+function renderPillTabIcon(tab: TabDef, active: boolean, size = 24) {
+  const src = resolveIconSrc(tab.icon, active);
+  const iconColor = active
+    ? 'var(--color-icon-brand-secondary-default)'
+    : 'var(--color-icon-secondary-default)';
+
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-block"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: iconColor,
+        maskImage: `url(${src})`,
+        maskSize: 'contain',
+        maskRepeat: 'no-repeat',
+        maskPosition: 'center',
+        WebkitMaskImage: `url(${src})`,
+        WebkitMaskSize: 'contain',
+        WebkitMaskRepeat: 'no-repeat',
+        WebkitMaskPosition: 'center',
+      }}
+    />
+  );
+}
+
+function FloatingPillNavBar() {
+  const { state: authState } = useAuth();
+  const location = useLocation();
+  const tabs = authState.isAuthenticated ? authTabs : unauthTabs;
+
+  const isActive = (to: string) => {
+    if (to === '/') return location.pathname === '/';
+    return location.pathname.startsWith(to);
+  };
+
+  return (
+    <nav
+      className="flex items-center justify-center px-wds-16"
+      style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 16px)', paddingTop: 8 }}
+      role="tablist"
+      aria-label="Main navigation"
+    >
+      <div
+        className="flex items-center bg-wds-bg-primary border border-solid border-[var(--color-border-tertiary-default)] rounded-wds-full"
+        style={{
+          width: '100%',
+          maxWidth: 358,
+          height: 64,
+          padding: 4,
+          boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+        }}
+      >
+        {tabs.map((tab) => {
+          const active = isActive(tab.to);
+          return (
+            <NavLink
+              key={tab.to}
+              to={tab.to}
+              role="tab"
+              end={tab.to === '/'}
+              className="flex flex-col items-center justify-center flex-1 h-full no-underline"
+              style={{
+                gap: 2,
+                borderRadius: 100,
+                backgroundColor: active ? 'var(--color-bg-secondary-default)' : 'transparent',
+                color: active
+                  ? 'var(--color-text-brand-secondary-default)'
+                  : 'var(--color-text-secondary-default)',
+              }}
+              aria-selected={active}
+            >
+              {renderPillTabIcon(tab, active)}
+              <span
+                className="text-[10px] leading-[12px] font-semibold text-center"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  letterSpacing: active ? '-0.1px' : '0',
+                }}
+              >
+                {tab.label}
+              </span>
+            </NavLink>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
 /* ── Exported component ── */
 
 interface BottomTabBarProps {
@@ -322,5 +435,7 @@ interface BottomTabBarProps {
 }
 
 export function BottomTabBar({ variant = 'current' }: BottomTabBarProps) {
-  return variant === 'current' ? <CurrentNavBar /> : <SimpleNavBar />;
+  if (variant === 'floating-pill') return <FloatingPillNavBar />;
+  if (variant === 'simple') return <SimpleNavBar />;
+  return <CurrentNavBar />;
 }

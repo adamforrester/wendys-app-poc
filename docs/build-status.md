@@ -89,6 +89,7 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 
 ## Recently shipped
 
+- ✅ **Floating Pill bottom nav variant** — new `bottomNavStyle: 'floating-pill'` value behind dev tools (label "Floating Pill"). 5 equal tabs inside a 358×64 white pill, fully rounded, 1px tertiary border + drop shadow, 4px inner padding. Active tab gets a 100px-radius secondary-bg pebble + filled icon + brand-teal label. No center notch / no oversized Order action. `AppShell` now reads `flags.bottomNavStyle` and forwards it to `BottomTabBar`; main content paddingBottom switches to 96 in pill mode (vs 130 for the notch'd default). Designs at Figma 4757:5336 (Fresh Sandbox / 5up-specs).
 - ✅ **Voice Ordering Home banner replaces the FAB** — new `VoiceOrderingBanner` (red brand-bg, speaker icon, title + subtitle, white "Try Now" pill in teal) rendered between the hero `ContentCard` and the Your Offers section on Home. Whole tile is the click target → `/voice`. Hidden when `voiceOrdering` flag is `off`. Global FAB (`VoiceOrderingLauncher`) removed; Home snackbar offset returned to a standard 100px-above-tab-bar. Menu screen mount queued next.
 - ✅ **`voiceInputMode` flag — push-to-talk vs hands-free** — new dev-tools flag toggles the mic UX on `/voice`. Push-to-talk (default, unchanged) keeps `useSpeechInput({ manualCommit: true })`. Hands-free flips to auto-VAD: an auto-resume effect reopens the mic whenever `!muted && !pending && !tts.isPlaying && !speech.listening`, so the conversation flows turn-to-turn without a press. Lottie button repurposes to a tap-to-mute toggle in hands-free; helper text and `aria-label` swap accordingly.
 - ✅ **Personalized greeting** — runtime context now carries the signed-in user's first name via a new `### USER` block; system prompt and mock both branch on it. Default greet for Olivia: "Hey Olivia! Pickup or delivery?". Guest path keeps the unnamed "Hi! Are you ordering for pickup or delivery?".
@@ -104,7 +105,6 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 Pick from these — none are blocked:
 
 - **Voice banner on the Menu screen** — same `VoiceOrderingBanner` component, second mount point.
-- **"Floating Pill" bottom nav variant** — new `bottomNavStyle` flag value behind dev tools, current bar stays default.
 - **Bag-items-from-prior-session labeling on `/voice`** — should we tell the user "you have items from before"? (UX question + implementation)
 - **iOS Safari STT fallback** — Whisper-via-proxy.
 - **Voice tile visual refinement** — Adam mentioned the drive-thru tile layout is "pretty good" but might want polish: spacing between the header pill and sub-rows, sub-row image sizes, combo-side label ("Medium Fries" vs just "Fries" when size matches default), price alignment.

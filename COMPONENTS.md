@@ -35,7 +35,7 @@ This is the canonical reference for all built components. Use this when building
 
 | Prop | Type | When to use |
 |---|---|---|
-| `variant` | `'current' \| 'simple'` | `current` = Wendy's custom nav with floating Order button; `simple` = flat tab bar for future experiments |
+| `variant` | `'current' \| 'simple' \| 'floating-pill'` | `current` = Wendy's custom nav with floating Order disc; `simple` = flat tab bar; `floating-pill` = rounded pill that floats above the bottom edge with a teal pebble around the active tab. Driven by `flags.bottomNavStyle` via `AppShell`. |
 
 **Center Order button behavior:**
 - Home tab active → Big teal circle

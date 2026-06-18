@@ -7,7 +7,7 @@ export type SplashAnimation = 'current' | 'variant-b';
 export type MenuCategoryLayout = 'current' | 'variant-b';
 export type MenuPLPLayout = 'current' | 'variant-b';
 export type SPPLayout = 'current' | 'variant-b';
-export type BottomNavStyle = 'current' | 'simple';
+export type BottomNavStyle = 'current' | 'simple' | 'floating-pill';
 export type HomeLocationComponent = 'none' | 'card' | 'sticky-nav';
 export type ButtonColorScheme = 'secondary' | 'primary';
 export type FallbackImage = 'wave' | 'variant-b';
@@ -127,6 +127,7 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
     options: [
       { value: 'current', label: 'Current (Notch)' },
       { value: 'simple', label: 'Simple (Flat)' },
+      { value: 'floating-pill', label: 'Floating Pill' },
     ],
   },
   homeLocationComponent: {

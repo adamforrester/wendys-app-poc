@@ -27,7 +27,7 @@ export function VoiceOrderingBanner() {
       type="button"
       onClick={handlePress}
       aria-label="Voice Ordering Now Available — try our new AI voice assistant"
-      className="w-full flex items-center justify-between bg-[var(--color-bg-brand-primary-default)] rounded-wds-s pl-wds-12 pr-wds-12 py-wds-8 border-0 cursor-pointer text-left"
+      className="w-full flex items-center justify-between bg-[var(--color-bg-brand-primary-default)] rounded-wds-m pl-wds-12 pr-wds-12 py-wds-8 border-0 cursor-pointer text-left"
     >
       {/* Speaker icon — same SVG used by the legacy FAB, mask-tinted to
           the inverse text token so it inherits dark-mode shifts cleanly. */}

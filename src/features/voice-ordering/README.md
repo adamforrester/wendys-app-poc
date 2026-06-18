@@ -13,8 +13,8 @@ Live end-to-end. Default flag is `live`. Mic mode is selectable via `voiceInputM
 | Surface | What it is |
 |---|---|
 | `/voice` route | Full-screen voice experience. Cream background, large agent text with active-word brand-red highlight, drive-thru-screen draft-tile stack that builds as the agent confirms items (singles render as one pill; combos as header + 3 itemized sub-rows), pickup-method tiles when the agent asks for one, central Lottie animation, push-to-talk on the lottie button, "Review in bag" CTA when the order completes. **Default entry point.** |
-| FAB (`VoiceOrderingLauncher`) | Floating action button on the rest of the app's screens. Tapping navigates to `/voice`. Auto-hides while on `/voice` or when the flag is `off`. Placement temporary. |
-| Legacy chat panel (`VoiceOrderingPanel`) | Slide-up bottom-sheet chat UI from the previous iteration. **Not wired to the FAB.** Kept in the codebase + Storybook for A/B comparison. Uses auto-VAD STT, mic-replaces-Send-when-empty, mute toggle. |
+| Home banner (`VoiceOrderingBanner`) | Red brand-bg tile on the Home screen, between the hero ContentCard and the Your Offers section. Tapping navigates to `/voice`. Hidden when the flag is `off`. **Replaces the FAB.** Will also land on Menu next. |
+| Legacy chat panel (`VoiceOrderingPanel`) | Slide-up bottom-sheet chat UI from the previous iteration. Kept in the codebase + Storybook for A/B comparison. Uses auto-VAD STT, mic-replaces-Send-when-empty, mute toggle. |
 
 ## Directory layout
 
@@ -46,7 +46,7 @@ src/features/voice-ordering/
 │                                  in-place layout morph across mutations)
 ├── VoiceBagItemTile.tsx         ← drive-thru-style item pill (no longer used in
 │                                  /voice; kept for the legacy chat panel)
-├── VoiceOrderingLauncher.tsx    ← FAB → /voice
+├── VoiceOrderingBanner.tsx      ← Home banner → /voice (replaces the old FAB)
 ├── VoiceOrderingPanel.tsx       ← legacy chat panel (kept for A/B)
 └── VoiceOrderingPanel.stories.tsx
 ```
@@ -84,7 +84,7 @@ This shells into `../Menu Images/voice-ordering/`, runs `npm run sync && npm run
 
 `voiceOrdering` in `src/config/featureFlags.ts`:
 
-- `off` — no FAB, no voice screen, no calls.
+- `off` — no banner, no voice screen, no calls.
 - `mock` — `useMockConversation` runs canned replies. Useful when API creds aren't available.
 - `live` — **default.** Calls `/api/claude` and `/api/tts`. Requires `ANTHROPIC_API_KEY` and `ELEVENLABS_API_KEY` set in the environment (`.env.local` for dev, Vercel project env vars for production).
 
@@ -129,7 +129,7 @@ Bigger pieces, sequenced. Decisions in **bold** are already locked in with Adam.
 - ~~**Voice location confirmation flow.**~~ ✅ **Shipped end-to-end.** Conversation logic asks pickup method after location is confirmed (granted) or after the ZIP resolves (denied). Visual tiles render on `/voice` between the agent text and the lottie button when `permission === 'granted'` and no method is confirmed. Tap or voice are equivalent — both go through `SET_FULFILLMENT` + a `[system: pickup_method_selected: <id>]` nudge. Voice→tile sync rides on a `set_fulfillment` action on the existing `location` fence (so the agent emits one fence with `{ "action": "set_fulfillment", "method": "drive-thru" }` when it hears a method). Matching tile pulses + checkmarks for 600ms on null→set transition, then the row fades out.
 - ~~**Build-as-you-go visual draft order.**~~ ✅ **Shipped.** New `\`\`\`draft` fence emitted on every order-mutating turn carries the FULL current state of the order (not a delta), with a stable `draft_id` per item that survives mutations. `useClaudeConversation` parses + resolves it into a `lastDraft: ParsedDraft | null`; `VoiceOrderingScreen` renders one `VoiceDraftItemTile` per item, keyed on `draftId` so Framer Motion's `layout` animation morphs the tile in place when the same item changes shape (single → combo → drink picked → size upgraded). The tile has two layouts: a **single pill row** (image + name + price) for non-combos, and a **drive-thru-screen-style** layout for combos — header pill with "[entrée] Combo" + combo total, over three indented sub-rows (entrée / sized side / sized drink), each with its own image and price. The optional `combo_id` field on the draft lets the agent name the combo product so the header shows the combo's `base_price`. Drink/side strings resolve via `resolveByName` against the semantic menu; fries are the default side and render as a confirmed row immediately, while the drink stays as a faded "Medium Drink" placeholder until the user picks. Atomic transfer to `BagContext` happens on the Review tap (`handleReviewBag` walks the draft and dispatches `ADD_ITEM` for each resolved item, then `clearDraft()`); navigating away discards the draft entirely. The `\`\`\`order` fence remains the close signal — surfaces the Review CTA — and the agent stops emitting drafts once it emits an order. System prompt has two worked examples (single-item-with-mutations, second-item-after-combo) and a per-turn self-check; the prompt is the load-bearing piece for the experience because the visual only updates when a draft fires.
 - ~~**Read-back of location + pickup method at close.**~~ ✅ **Shipped.** System prompt's Closing section now templates "[N] items for [method] at [store name] — you'll see it in your bag." with explicit mapping for the hyphenated method ids and a graceful fallback when method/store aren't in context.
-- **Final FAB icon + placement.** Adam to provide.
+- **Menu screen banner.** Reuse `VoiceOrderingBanner` on the menu landing/category screen. Same component, just a second mount point.
 - **iOS Safari STT.** Web Speech API is unreliable; Whisper-via-proxy is the planned fallback.
 
 ## What does NOT belong here

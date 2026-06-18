@@ -644,15 +644,15 @@ Inline pixel layout (does not use shared `BottomSheet`).
 <VoiceOrderingPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
 ```
 
-### VoiceOrderingLauncher
+### VoiceOrderingBanner
 
-Mounts the floating action button. Tapping navigates to `/voice`. Returns `null` while on the voice screen or when `voiceOrdering` flag is `off`. **Single-line integration** in `App.tsx`.
+Red brand-bg tile at 358×64 — speaker icon, "Voice Ordering Now Available" + subtitle, white "Try Now" pill in teal text. Whole tile is the click target; navigates to `/voice`. Renders `null` when `voiceOrdering` flag is `off`. Mounted on Home today (between hero ContentCard and Your Offers); will land on Menu next.
 
 ```tsx
-<VoiceOrderingLauncher />
+<VoiceOrderingBanner />
 ```
 
-FAB placement is **temporary** — bottom-right, 16px from edge, 110px from bottom (above the tab bar). Final UX TBD.
+Replaces the previous floating action button (`VoiceOrderingLauncher`, removed) as the global voice entry point.
 
 ### useSemanticMenu()
 

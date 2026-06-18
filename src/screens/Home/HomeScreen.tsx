@@ -12,6 +12,7 @@ import { useLocation as useLocationCtx } from '../../context/LocationContext';
 import { useOfferData } from '../../hooks/useOfferData';
 import { useMenuData } from '../../hooks/useMenuData';
 import { useNearestLocation } from '../../hooks/useNearestLocation';
+import { VoiceOrderingBanner } from '../../features/voice-ordering/VoiceOrderingBanner';
 
 function formatExpiry(isoDate: string): string {
   const d = new Date(isoDate);
@@ -108,6 +109,12 @@ export function HomeScreen() {
         <ContentCard size="large" onPress={() => navigate('/order')} />
       </div>
 
+      {/* Voice ordering entry — replaces the FAB. Sits between the hero
+          ContentCard and the Your Offers section. */}
+      <div className="px-wds-16 pt-wds-8">
+        <VoiceOrderingBanner />
+      </div>
+
       {/* Your Offers section */}
       <SectionHeader
         title="Your Offers"
@@ -159,10 +166,11 @@ export function HomeScreen() {
           the device. AnimatePresence drives the snackbar's spring entry. */}
       <AnimatePresence>
         {showNearestSnackbar && (
-          // bottom: 174 clears the voice FAB (sits at bottom:110, h:56)
-          // with an 8px gap above its top edge. If/when the FAB moves or
-          // is removed, drop this back to ~100.
-          <div style={{ position: 'absolute', bottom: 174, left: 0, right: 0, zIndex: 30 }}>
+          // Sits just above the 90px tab bar with breathing room. The
+          // voice FAB used to push this up to 174 — with the FAB gone in
+          // favor of the home banner, the snackbar can return to a
+          // standard tab-clearing offset.
+          <div style={{ position: 'absolute', bottom: 100, left: 0, right: 0, zIndex: 30 }}>
             <Snackbar
               message="We've selected your nearest Wendy's location."
               showClose

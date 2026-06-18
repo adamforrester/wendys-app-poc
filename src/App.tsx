@@ -22,7 +22,6 @@ import { SingleProductScreen } from './screens/Order/SingleProductScreen';
 import { LocationConfirmationScreen } from './screens/Order/LocationConfirmationScreen';
 import { BagScreen } from './screens/Order/BagScreen';
 import splashAnimation from './animations/lottie/splash.json';
-import { VoiceOrderingLauncher } from './features/voice-ordering/VoiceOrderingLauncher';
 import { VoiceOrderingScreen } from './features/voice-ordering/VoiceOrderingScreen';
 
 export default function App() {
@@ -64,7 +63,6 @@ export default function App() {
                     {/* Voice ordering — full screen, no tab bar */}
                     <Route path="/voice" element={<VoiceOrderingScreen />} />
                   </Routes>
-                  <VoiceOrderingLauncher />
                 </DeviceFrame>
                 </StatusBarModeProvider>
               </BrowserRouter>

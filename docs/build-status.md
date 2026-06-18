@@ -89,6 +89,7 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 
 ## Recently shipped
 
+- ✅ **Voice Ordering Home banner replaces the FAB** — new `VoiceOrderingBanner` (red brand-bg, speaker icon, title + subtitle, white "Try Now" pill in teal) rendered between the hero `ContentCard` and the Your Offers section on Home. Whole tile is the click target → `/voice`. Hidden when `voiceOrdering` flag is `off`. Global FAB (`VoiceOrderingLauncher`) removed; Home snackbar offset returned to a standard 100px-above-tab-bar. Menu screen mount queued next.
 - ✅ **`voiceInputMode` flag — push-to-talk vs hands-free** — new dev-tools flag toggles the mic UX on `/voice`. Push-to-talk (default, unchanged) keeps `useSpeechInput({ manualCommit: true })`. Hands-free flips to auto-VAD: an auto-resume effect reopens the mic whenever `!muted && !pending && !tts.isPlaying && !speech.listening`, so the conversation flows turn-to-turn without a press. Lottie button repurposes to a tap-to-mute toggle in hands-free; helper text and `aria-label` swap accordingly.
 - ✅ **Personalized greeting** — runtime context now carries the signed-in user's first name via a new `### USER` block; system prompt and mock both branch on it. Default greet for Olivia: "Hey Olivia! Pickup or delivery?". Guest path keeps the unnamed "Hi! Are you ordering for pickup or delivery?".
 - ✅ **DeviceFrame drops chrome on viewports ≤430px** — new `useCompactViewport()` hook (max-width: 430px) drives both the frame and the in-frame fake StatusBar. PWA installs and mobile Safari now show one (real OS) status bar instead of two stacked. TopAppBar + voice screen safe-area spacers switch from a hardcoded 54px to `env(safe-area-inset-top)` at compact widths.
@@ -100,9 +101,10 @@ See `assets/wendys-prototype-prd.md` § 8 for the full list. Key unresolved item
 
 ## Next Session
 
-Pick from these — none are blocked except the FAB icon (waiting on you):
+Pick from these — none are blocked:
 
-- **FAB icon + final placement** — Adam to provide the icon.
+- **Voice banner on the Menu screen** — same `VoiceOrderingBanner` component, second mount point.
+- **"Floating Pill" bottom nav variant** — new `bottomNavStyle` flag value behind dev tools, current bar stays default.
 - **Bag-items-from-prior-session labeling on `/voice`** — should we tell the user "you have items from before"? (UX question + implementation)
 - **iOS Safari STT fallback** — Whisper-via-proxy.
 - **Voice tile visual refinement** — Adam mentioned the drive-thru tile layout is "pretty good" but might want polish: spacing between the header pill and sub-rows, sub-row image sizes, combo-side label ("Medium Fries" vs just "Fries" when size matches default), price alignment.

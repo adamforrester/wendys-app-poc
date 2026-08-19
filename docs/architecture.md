@@ -12,6 +12,30 @@ App-level architecture: contexts, routing, layout. Component-level conventions l
 | `DaypartContext` | Breakfast/Lunch/Dinner/Late Night |
 | `FeatureFlagsContext` | Runtime A/B flag toggles from `src/config/featureFlags.ts` |
 
+## Feature Flags
+
+Flags live in `src/config/featureFlags.ts` — a `FeatureFlags` interface, a
+`defaultFeatureFlags` object, and a `flagMeta` record that `DevToolsScreen`
+iterates to auto-generate its toggle rows in declaration order. All three must
+stay in sync; `flagMeta` is typed `Record<keyof FeatureFlags, FlagMeta>`, so
+`tsc` catches a missing entry. `stub: true` renders a flag dimmed and disabled
+with a "NOT WIRED" badge — drop the marker when a consumer ships.
+
+**Read retro flags through the resolver.** The three per-surface retro flags
+(`topAppBarStyle`, `accentColor`, `splashAnimation`) default to `auto`, which
+only means something relative to the `retroBranding` master. Call
+`resolveRetro(flags)` and read its concrete values rather than branching on the
+raw flags. `src/config/featureFlags.test.ts` covers it; run `npm run test:unit`.
+
+That script targets a Node-environment Vitest project named `unit`. It is
+separate from the `storybook` project, which runs stories in real Chromium via
+Playwright — a plain `.test.ts` would not be picked up by that one.
+
+Flags are in-memory React state with no persistence, so a page reload resets
+them to defaults. This matters for anything that only renders on mount (the
+splash screen): set the flag, then trigger a client-side remount rather than a
+reload.
+
 ## Routing
 
 - **Root tabs:** Home (`/`), Offers (`/offers`), Order (`/order`), Earn (`/earn`), Account (`/account`)
@@ -65,14 +89,18 @@ State contexts (mutable runtime state) are listed above. Keep them separate.
 | Design tokens (React/TS) | `assets/tokens/react/` | Reference only — incomplete |
 | Wendys Fresh font | `assets/fonts/wendys-fresh/WOFF2/` → `public/fonts/wendys-fresh/` | Display (6 weights) |
 | Roboto font | `assets/fonts/roboto/woff/` → `public/fonts/roboto/` | Body/UI (3 weights) |
-| SVG icons (mono) | `assets/icons/` → `public/icons/` | 134+ icons, kebab-case naming |
+| SVG icons (mono) | `assets/icons/` → `public/icons/` | 134+ icons, kebab-case naming. Note: `bag-light.svg` lives in `public/icons/`, not `public/images/` — retro `BagButton` references it. |
 | SVG icons (multi-color) | Same folder | `rewards-simple.svg`, `bag-red.svg`, `*-multi-color.svg` |
 | Images (logos) | `assets/images/` → `public/images/` | Wendy's wave, Rewards logo, bag icon |
+| Retro app bar logo | `public/images/wendys-retro-logo.svg` | `TopAppBar` default when `colorScheme` is `retro`, native 90×40, single `#c8102e` fill |
+| Retro Account hero cameo | `public/images/retro-cameo.svg` | Native 137×154 |
 | Product images | `assets/product-images/` → `public/images/product-images/` | 181 food photos, named `food_{category}_{slug}_{id}.{png\|webp}` |
 | Jalapeño LTO source images | `assets/jalapeno-ltos/` (numeric Wendy's IDs) | Already copied + renamed for `lto_9001`–`lto_9006` |
 | Category images | `assets/category-images/` → `public/images/category-images/` | 14 thumbnails, `category_{name}_{id}.png` |
 | Content card images | `assets/images/content-cards/` → `public/images/content-cards/` | Large + small placeholder banners |
 | Splash animation | `assets/splash-screen-animation/splash.json` → `src/animations/lottie/` | Lottie JSON |
+| Retro splash (GIF) | `public/animations/retro-yellow.gif` | Authored at 390×844 |
+| Retro splash (video) | `public/animations/retro-newsprint.mp4` | H.264 |
 | Voice ordering animation | `assets/voice-animation.json` → `src/animations/lottie/voice-animation.json` | Lottie JSON for `/voice` |
 | Voice-ordering data (vendored) | `src/features/voice-ordering/data/` | `system_prompt.md`, `semantic_menu_v3.json`, `wendys-locations.json` (5,629 stores) |
 | Voice-ordering data pipeline | `../Menu Images/voice-ordering/` (sibling repo) | NOT in this repo. Run via `npm run refresh-voice-data`. |

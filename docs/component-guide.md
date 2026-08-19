@@ -127,6 +127,26 @@ className="text-[var(--color-text-primary-default)]"
 
 Reserve Tailwind classes for colors that need hover/active states or are pre-registered in `@theme`.
 
+### Theme variants: scoped token remaps, not props
+
+When a variant recolors many components at once, redefine the semantic
+tokens on an ancestor instead of threading a prop. `.theme-retro-red` in
+`tokens.css` re-points the `brand-secondary` family at the red ramp, and
+`DeviceFrame` applies it when the resolved `accentColor` flag is `red` —
+recoloring 28 files with no component edits. This works because CSS custom
+properties are re-substituted per element, so the `@theme` aliases in
+`app.css` resolve against each element's own inherited value.
+
+Two rules:
+
+- Only remap **brand** tokens. `--color-bg-secondary-default` is a neutral
+  gray; remapping it would repaint half the app. The floating-pill nav's
+  active pebble depends on it staying neutral.
+- Don't remap the `onBrand` family to achieve dark-on-light. `onBrand` white
+  is still correct for labels on red filled buttons. Switch the component's
+  variant instead — that's why retro's `TopAppBar` moves Points and Find
+  from `text-reversed` to `text` rather than recoloring a token.
+
 ---
 
 ## Wendy's Design Language

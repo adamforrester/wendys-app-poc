@@ -23,11 +23,22 @@ This is the canonical reference for all built components. Use this when building
 | `showBag` | `boolean` | Home + Order screens (hides when bag empty) |
 | `showLoadingBar` | `boolean` | During API fetches / screen transitions |
 | `pointsLoading` | `boolean` | While rewards points are loading |
+| `colorScheme` | `'classic' \| 'retro'` | Omit on screens — defaults to the resolved `topAppBarStyle` flag. Pass explicitly to force a variant (Storybook, or a screen that must stay classic). `retro` = yellow bar, black title/back arrow, retro logo, `text` instead of `text-reversed` trailing buttons, dark status bar. |
 
 **Root screen configs:**
 - Home: `logo`, showPoints + showFind + showBag
 - Offers: `logo` (rewards-logo-white.svg), showPoints
 - Order/Earn/Account: `title`, left-aligned, black weight
+
+### BagButton
+**Location:** `src/components/TopAppBar/BagButton.tsx`
+**Use when:** Never directly — `TopAppBar` renders it via `showBag` and forwards its own `colorScheme`.
+
+| Prop | Type | When to use |
+|---|---|---|
+| `count` | `number` | Total bag quantity. Returns `null` at `0`, so the caller doesn't need to guard. |
+| `onClick` | `() => void` | Defaults to `/order/bag` navigation in `TopAppBar` |
+| `colorScheme` | `'classic' \| 'retro'` | `classic` (default) = white pill, `bag-red.svg`, red count. `retro` = red pill, `/icons/bag-light.svg`, white count — Figma's `Type=onBrand-primary` variant, which is what reads on the yellow bar. |
 
 ### BottomTabBar
 **Location:** `src/components/BottomTabBar/BottomTabBar.tsx`

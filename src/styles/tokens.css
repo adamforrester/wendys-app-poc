@@ -131,6 +131,12 @@
   --color-bg-brand-secondary-default: var(--color-blue-600);
   --color-bg-brand-secondary-hover: var(--color-blue-700);
   --color-bg-brand-secondary-active: var(--color-blue-800);
+
+  /* Retro branding. Figma: color/text/brand/retro/default (Fresh Theme
+     collection, Fresh DS Foundations library). Named bg here because every
+     observed use is a background. Stored as a raw value in Figma — not
+     aliased to a primitive — so it has no primitive here either. */
+  --color-bg-brand-retro-default: rgb(254, 242, 0);
   --color-bg-brand-tertiary-default: var(--color-crimson-500);
   --color-bg-disabled-default: var(--color-gray-300);
   --color-bg-disabled-ondisabled: var(--color-gray-700);
@@ -264,4 +270,53 @@
   --borderradius-2xl: var(--radius-20);
   --borderradius-3xl: var(--radius-24);
   --borderradius-rounded: var(--radius-9999);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Retro red accents
+
+   Re-points the brand-secondary family (teal) at the red ramp for an
+   entire subtree. DeviceFrame applies this when the resolved accentColor
+   flag is 'red', which recolors every consumer of these tokens — buttons,
+   links, checkbox/radio/toggle, chips, segmented control, counters, text
+   field focus, and all three bottom-nav variants — with no component edits.
+
+   The main tokens resolve to the same primitives their brand-primary
+   counterparts already use, so retro secondary is visually identical to
+   today's primary and no new color is invented.
+
+   Do NOT add --color-bg-secondary-default here: it is a neutral gray, not
+   a brand token, and the floating-pill nav's active pebble depends on it
+   staying neutral.
+   ══════════════════════════════════════════════════════════════════ */
+
+.theme-retro-red {
+  --color-text-brand-secondary-default: var(--color-red-500);
+  --color-text-brand-secondary-hover: var(--color-red-600);
+  --color-text-brand-secondary-active: var(--color-red-700);
+
+  --color-bg-brand-secondary-default: var(--color-red-500);
+  --color-bg-brand-secondary-hover: var(--color-red-600);
+  --color-bg-brand-secondary-active: var(--color-red-700);
+
+  --color-border-brand-secondary-default: var(--color-red-600);
+  --color-border-brand-secondary-hover: var(--color-red-700);
+  --color-border-brand-secondary-active: var(--color-red-800);
+
+  --color-icon-brand-secondary-default: var(--color-red-600);
+  --color-icon-brand-secondary-hover: var(--color-red-700);
+  --color-icon-brand-secondary-active: var(--color-red-800);
+
+  /* Inverse = lighter, for use on dark surfaces. Mapped positionally
+     against the blue ramp indices (400/500/600) rather than following the
+     brand-primary mapping above, so these stay lighter than the base. */
+  --color-text-brand-secondary-inverse-default: var(--color-red-400);
+  --color-text-brand-secondary-inverse-hover: var(--color-red-500);
+  --color-text-brand-secondary-inverse-active: var(--color-red-600);
+  --color-icon-brand-secondary-inverse-default: var(--color-red-400);
+  --color-icon-brand-secondary-inverse-hover: var(--color-red-500);
+  --color-icon-brand-secondary-inverse-active: var(--color-red-600);
+
+  --color-text-link-default: var(--color-red-500);
+  --color-icon-link-default: var(--color-red-500);
 }

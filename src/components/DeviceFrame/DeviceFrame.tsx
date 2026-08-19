@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { StatusBar } from './StatusBar';
 import { useStatusBarModeValue } from '../../context/StatusBarModeContext';
 import { useCompactViewport } from '../../hooks/useCompactViewport';
+import { useFeatureFlags } from '../../context/FeatureFlagsContext';
+import { resolveRetro } from '../../config/featureFlags';
 
 export interface DeviceFrameProps {
   children: ReactNode;
@@ -19,13 +21,20 @@ export function DeviceFrame({ children, statusBarMode }: DeviceFrameProps) {
   const mode = statusBarMode ?? contextMode;
   const compact = useCompactViewport();
 
+  // Retro red accents are a scoped token remap rather than a prop, so one
+  // class on the frame recolors every brand-secondary consumer in the app.
+  // DeviceFrame is the right owner: every route renders inside it, including
+  // the ones outside AppShell (/voice, SPP, bag, confirm-location).
+  const { flags } = useFeatureFlags();
+  const accentClass = resolveRetro(flags).accent === 'red' ? ' theme-retro-red' : '';
+
   if (compact) {
     // Real device / PWA: fill the viewport, let the OS draw the only status
     // bar. TopAppBar's spacer switches to env(safe-area-inset-top) at this
     // width so content clears the notch in standalone mode and sits flush in
     // mobile Safari.
     return (
-      <div className="h-[100dvh] flex flex-col bg-wds-bg-primary overflow-hidden">
+      <div className={`h-[100dvh] flex flex-col bg-wds-bg-primary overflow-hidden${accentClass}`}>
         {children}
       </div>
     );
@@ -34,7 +43,7 @@ export function DeviceFrame({ children, statusBarMode }: DeviceFrameProps) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#e5e5e5]">
       <div
-        className="relative bg-wds-bg-primary overflow-hidden"
+        className={`relative bg-wds-bg-primary overflow-hidden${accentClass}`}
         style={{
           width: 390,
           height: 844,

@@ -83,7 +83,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'off', label: 'Off' },
       { value: 'on', label: 'On' },
     ],
-    stub: true,
   },
   topAppBarStyle: {
     label: 'Top App Bar',
@@ -103,7 +102,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'teal', label: 'Teal' },
       { value: 'red', label: 'Red' },
     ],
-    stub: true,
   },
   splashAnimation: {
     label: 'Splash Animation',

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "refresh-voice-data": "node scripts/refresh-voice-data.js"
+    "refresh-voice-data": "node scripts/refresh-voice-data.js",
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.29.2",

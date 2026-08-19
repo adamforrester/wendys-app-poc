@@ -1,15 +1,18 @@
 /* ── Feature Flag Types ── */
 
+/** Retro branding master switch. Surface flags set to 'auto' follow it. */
+export type RetroBranding = 'off' | 'on';
+export type TopAppBarStyle = 'auto' | 'classic' | 'retro';
+export type AccentColor = 'auto' | 'teal' | 'red';
+export type SplashAnimation = 'auto' | 'current' | 'retro-yellow' | 'retro-newsprint';
+
 export type AddToBagTransition = 'snackbar' | 'slide-to-bag' | 'full-screen-confirmation';
 export type ComboBuilderStyle = 'bottom-sheet-wizard' | 'accordion';
-export type LocationSelectionLayout = 'map-and-list' | 'list-only';
-export type SplashAnimation = 'current' | 'variant-b';
 export type MenuCategoryLayout = 'current' | 'variant-b';
 export type MenuPLPLayout = 'current' | 'variant-b';
 export type SPPLayout = 'current' | 'variant-b';
 export type BottomNavStyle = 'current' | 'simple' | 'floating-pill';
 export type HomeLocationComponent = 'none' | 'card' | 'sticky-nav';
-export type ButtonColorScheme = 'secondary' | 'primary';
 export type FallbackImage = 'wave' | 'variant-b';
 export type PostOrderSurprise = 'none' | 'confetti' | 'animation';
 export type DarkMode = 'off' | 'on';
@@ -18,16 +21,17 @@ export type VoiceOrdering = 'off' | 'mock' | 'live';
 export type VoiceInputMode = 'push-to-talk' | 'hands-free';
 
 export interface FeatureFlags {
+  retroBranding: RetroBranding;
+  topAppBarStyle: TopAppBarStyle;
+  accentColor: AccentColor;
+  splashAnimation: SplashAnimation;
   addToBagTransition: AddToBagTransition;
   comboBuilderStyle: ComboBuilderStyle;
-  locationSelectionLayout: LocationSelectionLayout;
-  splashAnimation: SplashAnimation;
   menuCategoryLayout: MenuCategoryLayout;
   menuPLPLayout: MenuPLPLayout;
   sppLayout: SPPLayout;
   bottomNavStyle: BottomNavStyle;
   homeLocationComponent: HomeLocationComponent;
-  buttonColorScheme: ButtonColorScheme;
   fallbackImage: FallbackImage;
   postOrderSurprise: PostOrderSurprise;
   darkMode: DarkMode;
@@ -37,16 +41,17 @@ export interface FeatureFlags {
 }
 
 export const defaultFeatureFlags: FeatureFlags = {
+  retroBranding: 'off',
+  topAppBarStyle: 'auto',
+  accentColor: 'auto',
+  splashAnimation: 'auto',
   addToBagTransition: 'snackbar',
   comboBuilderStyle: 'bottom-sheet-wizard',
-  locationSelectionLayout: 'map-and-list',
-  splashAnimation: 'current',
   menuCategoryLayout: 'current',
   menuPLPLayout: 'current',
   sppLayout: 'current',
   bottomNavStyle: 'current',
   homeLocationComponent: 'none',
-  buttonColorScheme: 'secondary',
   fallbackImage: 'wave',
   postOrderSurprise: 'none',
   darkMode: 'off',
@@ -71,6 +76,46 @@ export interface FlagMeta {
 }
 
 export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
+  retroBranding: {
+    label: 'Retro Branding',
+    description: 'Master switch for the yellow-and-red retro theme. Turns on the yellow top app bar, red accents, the retro splash animation, and the retro Account hero all at once. The three flags below override it individually.',
+    options: [
+      { value: 'off', label: 'Off' },
+      { value: 'on', label: 'On' },
+    ],
+    stub: true,
+  },
+  topAppBarStyle: {
+    label: 'Top App Bar',
+    description: 'Classic red bar with the white wave, or the retro yellow bar with black content and the retro logo. Auto follows Retro Branding.',
+    options: [
+      { value: 'auto', label: 'Auto (follow master)' },
+      { value: 'classic', label: 'Classic (Red)' },
+      { value: 'retro', label: 'Retro (Yellow)' },
+    ],
+    stub: true,
+  },
+  accentColor: {
+    label: 'Red Accents',
+    description: 'Turns every teal accent red — buttons, links, checkboxes, radios, toggles, chips, segmented controls, counters, text field focus, and the bottom nav in all three variants. Auto follows Retro Branding.',
+    options: [
+      { value: 'auto', label: 'Auto (follow master)' },
+      { value: 'teal', label: 'Teal' },
+      { value: 'red', label: 'Red' },
+    ],
+    stub: true,
+  },
+  splashAnimation: {
+    label: 'Splash Animation',
+    description: 'Splash screen animation. Auto follows Retro Branding and picks Retro Yellow.',
+    options: [
+      { value: 'auto', label: 'Auto (follow master)' },
+      { value: 'current', label: 'Current (Lottie)' },
+      { value: 'retro-yellow', label: 'Retro Yellow (GIF)' },
+      { value: 'retro-newsprint', label: 'Retro Newsprint (MP4)' },
+    ],
+    stub: true,
+  },
   addToBagTransition: {
     label: 'Add to Bag Transition',
     description: 'Animation style when adding items to the bag',
@@ -87,24 +132,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
     options: [
       { value: 'bottom-sheet-wizard', label: 'Bottom Sheet Wizard' },
       { value: 'accordion', label: 'Accordion' },
-    ],
-    stub: true,
-  },
-  locationSelectionLayout: {
-    label: 'Location Selection Layout',
-    description: 'Layout for the order location screen',
-    options: [
-      { value: 'map-and-list', label: 'Map + List' },
-      { value: 'list-only', label: 'List Only' },
-    ],
-    stub: true,
-  },
-  splashAnimation: {
-    label: 'Splash Animation',
-    description: 'Splash screen animation variant',
-    options: [
-      { value: 'current', label: 'Current' },
-      { value: 'variant-b', label: 'Variant B' },
     ],
     stub: true,
   },
@@ -151,15 +178,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'none', label: 'None' },
       { value: 'card', label: 'Card' },
       { value: 'sticky-nav', label: 'Sticky Nav (Starbucks)' },
-    ],
-    stub: true,
-  },
-  buttonColorScheme: {
-    label: 'Button Color Scheme',
-    description: 'Default button color — teal (secondary) or red (primary)',
-    options: [
-      { value: 'secondary', label: 'Teal (Secondary)' },
-      { value: 'primary', label: 'Red (Primary)' },
     ],
     stub: true,
   },
@@ -219,3 +237,41 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
     ],
   },
 };
+
+/* ── Retro Branding Resolution ── */
+
+/**
+ * Concrete retro state after collapsing the master flag and the three
+ * per-surface overrides. Consumers read this and never see 'auto'.
+ */
+export interface ResolvedRetro {
+  topAppBar: 'classic' | 'retro';
+  accent: 'teal' | 'red';
+  splash: 'current' | 'retro-yellow' | 'retro-newsprint';
+  accountHero: 'classic' | 'retro';
+}
+
+/**
+ * Collapse the retro flags into concrete values. A surface flag set to
+ * 'auto' follows `retroBranding`; any other value wins outright.
+ *
+ * The Account hero has no flag of its own — it follows the master only.
+ * The top app bar was the only new per-surface toggle the team wanted, and
+ * the hero is small enough that the master is sufficient.
+ */
+export function resolveRetro(flags: FeatureFlags): ResolvedRetro {
+  const master = flags.retroBranding === 'on';
+
+  return {
+    topAppBar:
+      flags.topAppBarStyle === 'auto' ? (master ? 'retro' : 'classic') : flags.topAppBarStyle,
+    accent: flags.accentColor === 'auto' ? (master ? 'red' : 'teal') : flags.accentColor,
+    splash:
+      flags.splashAnimation === 'auto'
+        ? master
+          ? 'retro-yellow'
+          : 'current'
+        : flags.splashAnimation,
+    accountHero: master ? 'retro' : 'classic',
+  };
+}

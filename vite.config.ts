@@ -21,7 +21,16 @@ export default defineConfig({
     // The manifest + meta tags are sufficient for Add to Home Screen functionality
   ],
   test: {
-    projects: [{
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+        },
+      },
+      {
       extends: true,
       plugins: [
       // The plugin will run tests for the stories defined in your Storybook config

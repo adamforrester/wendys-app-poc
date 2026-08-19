@@ -92,7 +92,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'classic', label: 'Classic (Red)' },
       { value: 'retro', label: 'Retro (Yellow)' },
     ],
-    stub: true,
   },
   accentColor: {
     label: 'Red Accents',

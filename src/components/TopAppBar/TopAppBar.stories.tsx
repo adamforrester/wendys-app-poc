@@ -43,6 +43,7 @@ const meta: Meta<typeof TopAppBar> = {
   argTypes: {
     titleMode: { control: 'radio', options: ['logo', 'title'] },
     titlePlacement: { control: 'radio', options: ['center', 'left'] },
+    colorScheme: { control: 'radio', options: ['classic', 'retro'] },
     showBackButton: { control: 'boolean' },
     showLoadingBar: { control: 'boolean' },
     showPoints: { control: 'boolean' },
@@ -92,6 +93,19 @@ export const CampaignLogo: Story = {
       points={1250}
       showBag
     />
+  ),
+};
+
+/* ── Retro — yellow bar, black content, retro logo ── */
+export const Retro: Story = {
+  render: () => (
+    <div className="flex flex-col gap-wds-4">
+      <TopAppBar colorScheme="retro" titleMode="logo" showPoints points={490} showFind showBag />
+      <TopAppBar colorScheme="retro" titleMode="title" title="Account" titlePlacement="left" showPoints points={490} />
+      <TopAppBar colorScheme="retro" titleMode="title" title="Menu" titlePlacement="center" showBackButton showBag />
+      <TopAppBar colorScheme="retro" titleMode="logo" showPoints points={490} showFind showBag showLoadingBar />
+      <TopAppBar colorScheme="retro" titleMode="logo" showPoints pointsLoading showBag />
+    </div>
   ),
 };
 

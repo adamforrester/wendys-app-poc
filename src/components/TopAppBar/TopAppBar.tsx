@@ -4,10 +4,14 @@ import { Button } from '../Button/Button';
 import { BagButton } from './BagButton';
 import { useBag } from '../../context/BagContext';
 import { useCompactViewport } from '../../hooks/useCompactViewport';
+import { useFeatureFlags } from '../../context/FeatureFlagsContext';
+import { resolveRetro } from '../../config/featureFlags';
+import { useStatusBarMode } from '../../context/StatusBarModeContext';
 
 export type TitleMode = 'logo' | 'title';
 export type TitlePlacement = 'center' | 'left';
 export type TitleWeight = 'black' | 'semibold';
+export type TopAppBarColorScheme = 'classic' | 'retro';
 
 export interface TopAppBarProps {
   /** Show the Wendy's wave logo or a text title */
@@ -20,6 +24,12 @@ export interface TopAppBarProps {
   titlePlacement?: TitlePlacement;
   /** Title font weight — 'black' (800, TitleL/Black) or 'semibold' (600, TitleL/SemiBold) */
   titleWeight?: TitleWeight;
+  /**
+   * Color scheme — defaults to the resolved `topAppBarStyle` flag, so no
+   * screen needs to pass it. An explicit value wins, which is what makes
+   * the variant selectable in Storybook.
+   */
+  colorScheme?: TopAppBarColorScheme;
   /** Show back arrow as leading icon */
   showBackButton?: boolean;
   /** Custom back handler — defaults to router navigate(-1) */
@@ -46,10 +56,11 @@ export interface TopAppBarProps {
 
 export function TopAppBar({
   titleMode = 'logo',
-  logoSrc = '/images/wendys-wave-white.svg',
+  logoSrc,
   title = '',
   titlePlacement = 'center',
   titleWeight = 'black',
+  colorScheme,
   showBackButton = false,
   onBack,
   showPoints = false,
@@ -66,6 +77,38 @@ export function TopAppBar({
   const { state: bagState } = useBag();
   const bagCount = bagState.items.reduce((sum, item) => sum + item.quantity, 0);
   const compact = useCompactViewport();
+
+  const { flags } = useFeatureFlags();
+  const scheme = colorScheme ?? resolveRetro(flags).topAppBar;
+  const retro = scheme === 'retro';
+
+  // Figma's retro bar draws the clock, wifi and battery in black. Owned here
+  // rather than by the 11 consuming screens so the tint can't drift out of
+  // sync with the bar color. The hook restores the previous mode on unmount.
+  useStatusBarMode(retro ? 'dark' : 'light');
+
+  // Retro's dark content comes from switching to the non-reversed tokens and
+  // button variant — NOT from remapping the onBrand tokens, which are still
+  // correct for white labels on red filled buttons elsewhere in the app.
+  // Full static class strings: Tailwind v4 can't resolve interpolation.
+  const headerBgClass = retro
+    ? 'bg-[var(--color-bg-brand-retro-default)]'
+    : 'bg-[var(--color-bg-brand-primary-default)]';
+  const titleColorClass = retro
+    ? 'text-[var(--color-text-primary-default)]'
+    : 'text-[var(--color-text-onbrand-default)]';
+  const backIconClass = retro
+    ? 'inline-block w-[24px] h-[24px] bg-[var(--color-icon-primary-default)]'
+    : 'inline-block w-[24px] h-[24px] bg-[var(--color-icon-onbrand-default)]';
+  const trailingVariant = retro ? 'text' : 'text-reversed';
+  const loadingTrackClass = retro
+    ? 'relative w-full h-[3px] overflow-hidden bg-[var(--color-red-200)]'
+    : 'relative w-full h-[3px] overflow-hidden bg-white/20';
+  const loadingBarClass = retro
+    ? 'absolute top-0 left-0 h-full w-[40%] bg-[var(--color-bg-brand-primary-default)] rounded-wds-full'
+    : 'absolute top-0 left-0 h-full w-[40%] bg-white rounded-wds-full';
+  const resolvedLogoSrc =
+    logoSrc ?? (retro ? '/images/wendys-retro-logo.svg' : '/images/wendys-wave-white.svg');
 
   const handleBack = () => {
     if (onBack) {
@@ -88,7 +131,7 @@ export function TopAppBar({
   const titleWeightClass = titleWeight === 'black' ? 'font-[800]' : 'font-semibold';
 
   return (
-    <header className="w-full bg-[var(--color-bg-brand-primary-default)] flex-shrink-0 sticky top-0 z-10">
+    <header className={`w-full ${headerBgClass} flex-shrink-0 sticky top-0 z-10`}>
       {/* Safe area padding — pushes content below the status bar/notch.
           Compact viewport: real OS draws the status bar, so honor the device's
           safe-area inset (notch in standalone PWA, 0 in mobile Safari). Framed
@@ -103,7 +146,7 @@ export function TopAppBar({
         {/* Center title — absolutely positioned for true center alignment */}
         {titleMode === 'title' && titlePlacement === 'center' && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <h1 className={`font-display text-[23px] leading-[32px] ${titleWeightClass} text-[var(--color-text-onbrand-default)] m-0 truncate`}>
+            <h1 className={`font-display text-[23px] leading-[32px] ${titleWeightClass} ${titleColorClass} m-0 truncate`}>
               {title}
             </h1>
           </div>
@@ -113,7 +156,7 @@ export function TopAppBar({
         {titleMode === 'logo' ? (
           <div className="flex items-center h-[40px]">
             <img
-              src={logoSrc}
+              src={resolvedLogoSrc}
               alt="Wendy's"
               className="h-[40px] w-auto"
             />
@@ -127,7 +170,7 @@ export function TopAppBar({
             >
               <span
                 aria-hidden="true"
-                className="inline-block w-[24px] h-[24px] bg-[var(--color-icon-onbrand-default)]"
+                className={backIconClass}
                 style={{
                   maskImage: 'url(/icons/arrow-left.svg)',
                   maskSize: 'contain',
@@ -146,7 +189,7 @@ export function TopAppBar({
         {/* Left-aligned title — flows inline after back button */}
         {titleMode === 'title' && titlePlacement === 'left' && (
           <div className="flex items-center min-w-0 h-[32px] ml-wds-8">
-            <h1 className={`font-display text-[23px] leading-[32px] ${titleWeightClass} text-[var(--color-text-onbrand-default)] m-0 truncate`}>
+            <h1 className={`font-display text-[23px] leading-[32px] ${titleWeightClass} ${titleColorClass} m-0 truncate`}>
               {title}
             </h1>
           </div>
@@ -164,12 +207,14 @@ export function TopAppBar({
                   <img src="/icons/rewards-simple.svg" alt="" aria-hidden="true" width={16} height={16} />
                   <div
                     className="h-[14px] w-[72px] rounded-wds-s overflow-hidden"
-                    style={{ background: 'rgba(255,255,255,0.2)' }}
+                    style={{ background: retro ? 'var(--color-red-200)' : 'rgba(255,255,255,0.2)' }}
                   >
                     <div
                       className="h-full w-full"
                       style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                        background: retro
+                          ? 'linear-gradient(90deg, transparent 0%, var(--color-red-100) 50%, transparent 100%)'
+                          : 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
                         backgroundSize: '200% 100%',
                         animation: 'shimmer 1.5s ease-in-out infinite',
                       }}
@@ -184,7 +229,7 @@ export function TopAppBar({
                 </div>
               ) : (
                 <Button
-                  variant="text-reversed"
+                  variant={trailingVariant}
                   size="small"
                   noPadding
                   leftIcon="rewards-simple"
@@ -197,7 +242,7 @@ export function TopAppBar({
             )}
             {showFind && (
               <Button
-                variant="text-reversed"
+                variant={trailingVariant}
                 size="small"
                 noPadding
                 leftIcon="location-filled"
@@ -207,7 +252,7 @@ export function TopAppBar({
               </Button>
             )}
             {showBag && (
-              <BagButton count={bagCount} onClick={handleBag} />
+              <BagButton count={bagCount} onClick={handleBag} colorScheme={scheme} />
             )}
             {trailingContent}
           </div>
@@ -216,9 +261,9 @@ export function TopAppBar({
 
       {/* Indeterminate linear loading bar */}
       {showLoadingBar && (
-        <div className="relative w-full h-[3px] overflow-hidden bg-white/20">
+        <div className={loadingTrackClass}>
           <div
-            className="absolute top-0 left-0 h-full w-[40%] bg-white rounded-wds-full"
+            className={loadingBarClass}
             style={{
               animation: 'topbar-loading 1.4s ease-in-out infinite',
             }}

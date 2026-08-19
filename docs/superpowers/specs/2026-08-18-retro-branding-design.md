@@ -194,13 +194,22 @@ Retro swaps four things:
 | `<header>` background | `--color-bg-brand-primary-default` | `--color-bg-brand-retro-default` |
 | Title (both placements) | `text-onbrand-default` | `text-primary-default` |
 | Back-arrow mask | `icon-onbrand-default` | `icon-primary-default` |
-| Points / Find `Button variant` | `text-reversed` | `text` |
+| Points / Find `Button variant` | `text-reversed` | `text` + explicit black `style` override |
 | Default `logoSrc` | `/images/wendys-wave-white.svg` | `/images/wendys-retro-logo.svg` |
 
-Switching the trailing buttons from `text-reversed` to `text` is what turns their labels and
-the masked `location-filled` icon black. This is why retro must **not** be implemented by
-remapping the `onBrand` tokens: `onBrand` white is still correct for labels on red filled
-buttons everywhere else in the app.
+Switching the trailing buttons from `text-reversed` to `text` only drops the reversed-white
+treatment — `text` resolves to `--color-text-brand-secondary-default`, so on its own it renders
+the labels teal (or red under `.theme-retro-red`), never black. No `Button` variant maps to
+`--color-text-primary-default`. What makes the labels and the masked `location-filled` icon
+black is an explicit color override that `TopAppBar` applies to the trailing buttons in retro
+only: an inline `style={{ color: 'var(--color-text-primary-default)' }}`, which reaches the
+`<button>` through `Button`'s `...rest` and carries to the icon via its `bg-current` mask span.
+Inline beats the variant's stylesheet rule deterministically, where an equal-specificity
+arbitrary utility passed through `className` would be decided by generated-sheet order. The
+override is unconditional in retro — the bar's content is black regardless of `accentColor`,
+matching Figma and keeping the `topAppBarStyle: 'retro'` + `accentColor: 'teal'` combination
+above AA. This is also why retro must **not** be implemented by remapping the `onBrand` tokens:
+`onBrand` white is still correct for labels on red filled buttons everywhere else in the app.
 
 The retro logo is red (`#c8102e`, bound to `bg/brand/primary/default` in Figma) and Figma
 renders it at 40px tall, which matches the existing `h-[40px] w-auto`. Home picks it up with
@@ -292,12 +301,27 @@ version number: v1 is "retro yellow", v2 is "retro newsprint".
 
 ## Accepted consequences
 
-Two known costs of the full teal → red remap, both accepted rather than solved:
+Three known costs of the full teal → red remap, all accepted rather than solved:
 
 **Red and teal currently encode opposite meanings in two places.** The SPP "Your Changes"
 summary (M9) uses red pills for removals and teal pills for additions; the bag and offers
 screens follow similar conventions. In retro both collapse to red and the distinction is lost.
 Revisit if it reads badly in a demo.
+
+**The voice-ordering mic button loses its idle/listening color cue.** `MicButton` in
+`src/features/voice-ordering/VoiceOrderingPanel.tsx` sets its `backgroundColor` inline to
+`--color-bg-brand-secondary-default` when idle and `--color-bg-brand-primary-default` when
+listening. `bg-brand-primary-default` is already `--color-red-500`, and `.theme-retro-red`
+re-points `bg-brand-secondary-default` at `--color-red-500` too, so under retro both states
+paint the same red. What survives is the Framer Motion pulse ring rendered only while
+listening — an absolutely positioned span animating `scale` 1 → 1.6 and `opacity` 0.6 → 0 on a
+1.1s infinite loop. That ring is itself filled with `--color-bg-brand-primary-default`, so in
+retro it is a same-red halo expanding out of a same-red button rather than a color contrast;
+it still reads as motion, just with less state legibility than the teal → red flip gives today.
+The `aria-pressed` / `aria-label` state cues are unaffected, and the disabled state stays
+distinct on `--color-bg-disabled-default`. Left as-is: the component is not in the five
+in-scope surfaces, and changing it would mean introducing a retro-specific color decision the
+Figma file does not cover.
 
 **The Points icon does not recolor.** `rewards-simple.svg` is a multi-color `<img>`
 (`#AE1B22` + `#FFE097`), not a masked mono icon, so it keeps its dark-red and cream on the

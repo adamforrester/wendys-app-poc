@@ -101,7 +101,8 @@ Multi-color icons: `rewards-simple.svg`, `bag-red.svg`, `letter-mark-coin-filled
 - Registry in `src/config/featureFlags.ts` — 14+ flags with typed options + `flagMeta` for labels/descriptions
 - Admin UI auto-generates toggles from the `flagMeta` registry — adding a new flag automatically creates its toggle in Developer Tools
 - Always add a feature flag check from the start when building new features
-- Current flags: addToBagTransition, comboBuilderStyle, locationSelectionLayout, splashAnimation, menuCategoryLayout, menuPLPLayout, sppLayout, bottomNavStyle, homeLocationComponent, buttonColorScheme, fallbackImage, postOrderSurprise, darkMode, loadingScenario, voiceOrdering
+- Current flags: retroBranding, topAppBarStyle, accentColor, splashAnimation, addToBagTransition, comboBuilderStyle, menuCategoryLayout, menuPLPLayout, sppLayout, bottomNavStyle, homeLocationComponent, fallbackImage, postOrderSurprise, darkMode, loadingScenario, voiceOrdering, voiceInputMode
+- The four retro flags lead the list: `retroBranding` is the master switch and `topAppBarStyle` / `accentColor` / `splashAnimation` each take `auto` to follow it. `resolveRetro(flags)` in `featureFlags.ts` collapses `auto` — consumers read resolved values only, never `auto`
 
 ## SPP Architecture
 
@@ -143,9 +144,20 @@ Two rules:
   gray; remapping it would repaint half the app. The floating-pill nav's
   active pebble depends on it staying neutral.
 - Don't remap the `onBrand` family to achieve dark-on-light. `onBrand` white
-  is still correct for labels on red filled buttons. Switch the component's
-  variant instead — that's why retro's `TopAppBar` moves Points and Find
-  from `text-reversed` to `text` rather than recoloring a token.
+  is still correct for labels on red filled buttons. Change what the component
+  reads instead — that's why retro's `TopAppBar` moves Points and Find off
+  `text-reversed` rather than recoloring a token.
+
+**Know the boundary.** A scoped remap changes what a token *means*, never
+*which* token an element reads. So it can turn every `brand-secondary` surface
+red, but it cannot make one surface read a *different* token. Anything in that
+second category still needs a component-level conditional. Retro's `TopAppBar`
+trailing buttons are the example: they must be black, and `Button` has no
+variant that resolves to `--color-text-primary-default` (`text` gives
+`text-brand-secondary-default`, which the remap only turns from teal to red),
+so `TopAppBar` passes an explicit inline `style={{ color:
+'var(--color-text-primary-default)' }}` in retro. If you catch yourself trying
+to solve a token-*choice* problem with a remap, it's the wrong tool.
 
 ---
 

@@ -3,11 +3,16 @@ import { TopAppBar } from '../../components/TopAppBar/TopAppBar';
 import { ListRow } from '../../components/ListRow/ListRow';
 import { useAuth } from '../../context/AuthContext';
 import { useUserData } from '../../hooks/useUserData';
+import { useFeatureFlags } from '../../context/FeatureFlagsContext';
+import { resolveRetro } from '../../config/featureFlags';
 
 export function AccountScreen() {
   const navigate = useNavigate();
   const { state: authState } = useAuth();
   const { getUser, getRewardsPoints } = useUserData();
+  const { flags } = useFeatureFlags();
+  // The hero has no flag of its own — it follows the retroBranding master.
+  const retroHero = resolveRetro(flags).accountHero === 'retro';
 
   const user = getUser();
   const points = getRewardsPoints();
@@ -34,24 +39,38 @@ export function AccountScreen() {
         points={points}
       />
 
-      {/* Hero section with red background and cameo logo */}
+      {/* Hero section — red with the current cameo, or retro yellow with the
+          retro cameo. Retro geometry is Figma 27:29849 exactly: 390x218,
+          padding 0/16/16/16, gap 16, cameo at its native 137x154 flush to
+          the app bar. 154 + 16 + 32 + 16 = 218. */}
       <div
         style={{
-          backgroundColor: 'var(--color-bg-brand-primary-default)',
+          backgroundColor: retroHero
+            ? 'var(--color-bg-brand-retro-default)'
+            : 'var(--color-bg-brand-primary-default)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '24px 16px 32px',
+          padding: retroHero ? '0 16px 16px' : '24px 16px 32px',
+          gap: retroHero ? 16 : 0,
         }}
       >
         <img
-          src="/images/cameo-fullColor-withTrademark.svg"
+          src={retroHero ? '/images/retro-cameo.svg' : '/images/cameo-fullColor-withTrademark.svg'}
           alt="Wendy's"
-          style={{ width: 131, height: 131 }}
+          style={retroHero ? { width: 137, height: 154 } : { width: 131, height: 131 }}
         />
         <h2
           className="font-display text-[23px] leading-[32px] font-black"
-          style={{ color: 'var(--color-text-onbrand-default)', marginTop: 12, margin: 0, marginBlockStart: 12 }}
+          style={{
+            color: retroHero
+              ? 'var(--color-text-primary-default)'
+              : 'var(--color-text-onbrand-default)',
+            margin: 0,
+            // Classic spaces the greeting with a margin; retro uses the flex
+            // gap above, so the margin must be zero to avoid stacking both.
+            marginBlockStart: retroHero ? 0 : 12,
+          }}
         >
           Hey, {firstName}!
         </h2>

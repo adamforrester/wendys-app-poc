@@ -21,8 +21,45 @@ import { MenuProductListScreen } from './screens/Order/MenuProductListScreen';
 import { SingleProductScreen } from './screens/Order/SingleProductScreen';
 import { LocationConfirmationScreen } from './screens/Order/LocationConfirmationScreen';
 import { BagScreen } from './screens/Order/BagScreen';
-import splashAnimation from './animations/lottie/splash.json';
+import splashLottie from './animations/lottie/splash.json';
+import { useFeatureFlags } from './context/FeatureFlagsContext';
+import { resolveRetro } from './config/featureFlags';
 import { VoiceOrderingScreen } from './features/voice-ordering/VoiceOrderingScreen';
+
+/**
+ * Picks the splash variant from the resolved flag. Split out of `App`
+ * because `App` renders the FeatureFlagsProvider itself and so can't call
+ * useFeatureFlags in its own body.
+ *
+ * SplashScreen already handles all three formats, so the retro GIF and MP4
+ * need no conversion — just the right animationType and src.
+ */
+function AppSplash({ onComplete }: { onComplete: () => void }) {
+  const { flags } = useFeatureFlags();
+  const { splash } = resolveRetro(flags);
+
+  if (splash === 'retro-yellow') {
+    return (
+      <SplashScreen
+        animationType="image"
+        animationSrc="/animations/retro-yellow.gif"
+        onComplete={onComplete}
+      />
+    );
+  }
+
+  if (splash === 'retro-newsprint') {
+    return (
+      <SplashScreen
+        animationType="video"
+        animationSrc="/animations/retro-newsprint.mp4"
+        onComplete={onComplete}
+      />
+    );
+  }
+
+  return <SplashScreen lottieData={splashLottie} onComplete={onComplete} />;
+}
 
 export default function App() {
   const [splashComplete, setSplashComplete] = useState(false);
@@ -37,10 +74,7 @@ export default function App() {
                 <StatusBarModeProvider>
                 <DeviceFrame>
                   {!splashComplete && (
-                    <SplashScreen
-                      lottieData={splashAnimation}
-                      onComplete={() => setSplashComplete(true)}
-                    />
+                    <AppSplash onComplete={() => setSplashComplete(true)} />
                   )}
                   <Routes>
                     <Route element={<AppShell />}>

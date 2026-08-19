@@ -111,7 +111,6 @@ export const flagMeta: Record<keyof FeatureFlags, FlagMeta> = {
       { value: 'retro-yellow', label: 'Retro Yellow (GIF)' },
       { value: 'retro-newsprint', label: 'Retro Newsprint (MP4)' },
     ],
-    stub: true,
   },
   addToBagTransition: {
     label: 'Add to Bag Transition',

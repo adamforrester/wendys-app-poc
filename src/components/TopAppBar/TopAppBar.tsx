@@ -87,9 +87,9 @@ export function TopAppBar({
   // sync with the bar color. The hook restores the previous mode on unmount.
   useStatusBarMode(retro ? 'dark' : 'light');
 
-  // Retro's dark content comes from switching to the non-reversed tokens and
-  // button variant — NOT from remapping the onBrand tokens, which are still
-  // correct for white labels on red filled buttons elsewhere in the app.
+  // Retro's dark content comes from reading the non-reversed tokens here — NOT
+  // from remapping the onBrand tokens, which are still correct for white labels
+  // on red filled buttons elsewhere in the app.
   // Full static class strings: Tailwind v4 can't resolve interpolation.
   const headerBgClass = retro
     ? 'bg-[var(--color-bg-brand-retro-default)]'
@@ -101,6 +101,17 @@ export function TopAppBar({
     ? 'inline-block w-[24px] h-[24px] bg-[var(--color-icon-primary-default)]'
     : 'inline-block w-[24px] h-[24px] bg-[var(--color-icon-onbrand-default)]';
   const trailingVariant = retro ? 'text' : 'text-reversed';
+  // `text` only drops the reversed-white treatment — it resolves to
+  // `text-brand-secondary-default`, so the labels would read teal (or red under
+  // `.theme-retro-red`), not the black Figma draws. No `Button` variant maps to
+  // `text-primary-default`, and a `className` arbitrary utility would tie on
+  // specificity with the variant's own text color (sheet order picks the winner).
+  // An inline style is deterministic, still token-only, and reaches the <button>
+  // through Button's `...rest`. `bg-current` carries it to the masked icon.
+  // Undefined in classic, so React emits no style attribute there.
+  const trailingStyle = retro
+    ? { color: 'var(--color-text-primary-default)' }
+    : undefined;
   const loadingTrackClass = retro
     ? 'relative w-full h-[3px] overflow-hidden bg-[var(--color-red-200)]'
     : 'relative w-full h-[3px] overflow-hidden bg-white/20';
@@ -234,6 +245,7 @@ export function TopAppBar({
                   noPadding
                   leftIcon="rewards-simple"
                   leftIconMultiColor
+                  style={trailingStyle}
                   onClick={() => navigate('/earn')}
                 >
                   {points.toLocaleString()} Points
@@ -246,6 +258,7 @@ export function TopAppBar({
                 size="small"
                 noPadding
                 leftIcon="location-filled"
+                style={trailingStyle}
                 onClick={onFind}
               >
                 Find

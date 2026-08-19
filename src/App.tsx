@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LocationProvider } from './context/LocationContext';
@@ -6,6 +5,7 @@ import { BagProvider } from './context/BagContext';
 import { DaypartProvider } from './context/DaypartContext';
 import { FeatureFlagsProvider } from './context/FeatureFlagsContext';
 import { StatusBarModeProvider } from './context/StatusBarModeContext';
+import { SplashReplayProvider, useSplashReplay } from './context/SplashReplayContext';
 import { DeviceFrame } from './components/DeviceFrame/DeviceFrame';
 import { AppShell } from './components/AppShell/AppShell';
 import { SplashScreen } from './components/SplashScreen/SplashScreen';
@@ -33,17 +33,24 @@ import { VoiceOrderingScreen } from './features/voice-ordering/VoiceOrderingScre
  *
  * SplashScreen already handles all three formats, so the retro GIF and MP4
  * need no conversion — just the right animationType and src.
+ *
+ * Visibility and the remount key come from SplashReplayContext so DevTools can
+ * re-run the sequence in place; `runId` restarts the GIF/MP4 from frame one.
  */
-function AppSplash({ onComplete }: { onComplete: () => void }) {
+function AppSplash() {
   const { flags } = useFeatureFlags();
   const { splash } = resolveRetro(flags);
+  const { runId, visible, complete } = useSplashReplay();
+
+  if (!visible) return null;
 
   if (splash === 'retro-yellow') {
     return (
       <SplashScreen
+        key={runId}
         animationType="image"
         animationSrc="/animations/retro-yellow.gif"
-        onComplete={onComplete}
+        onComplete={complete}
       />
     );
   }
@@ -51,19 +58,18 @@ function AppSplash({ onComplete }: { onComplete: () => void }) {
   if (splash === 'retro-newsprint') {
     return (
       <SplashScreen
+        key={runId}
         animationType="video"
         animationSrc="/animations/retro-newsprint.mp4"
-        onComplete={onComplete}
+        onComplete={complete}
       />
     );
   }
 
-  return <SplashScreen lottieData={splashLottie} onComplete={onComplete} />;
+  return <SplashScreen key={runId} lottieData={splashLottie} onComplete={complete} />;
 }
 
 export default function App() {
-  const [splashComplete, setSplashComplete] = useState(false);
-
   return (
     <FeatureFlagsProvider>
       <AuthProvider>
@@ -72,10 +78,9 @@ export default function App() {
             <DaypartProvider>
               <BrowserRouter>
                 <StatusBarModeProvider>
+                <SplashReplayProvider>
                 <DeviceFrame>
-                  {!splashComplete && (
-                    <AppSplash onComplete={() => setSplashComplete(true)} />
-                  )}
+                  <AppSplash />
                   <Routes>
                     <Route element={<AppShell />}>
                       <Route path="/" element={<HomeScreen />} />
@@ -98,6 +103,7 @@ export default function App() {
                     <Route path="/voice" element={<VoiceOrderingScreen />} />
                   </Routes>
                 </DeviceFrame>
+                </SplashReplayProvider>
                 </StatusBarModeProvider>
               </BrowserRouter>
             </DaypartProvider>

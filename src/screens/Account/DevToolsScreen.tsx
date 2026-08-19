@@ -7,7 +7,8 @@ import { useDaypart, type Daypart } from '../../context/DaypartContext';
 import { useLocation as useLocationCtx, type FulfillmentMethod, type LocationPermission } from '../../context/LocationContext';
 import { useBag } from '../../context/BagContext';
 import { useLocationData } from '../../hooks/useLocationData';
-import { flagMeta, defaultFeatureFlags, type FeatureFlags } from '../../config/featureFlags';
+import { useSplashReplay } from '../../context/SplashReplayContext';
+import { flagMeta, defaultFeatureFlags, resolveRetro, type FeatureFlags } from '../../config/featureFlags';
 import userData from '../../data/user.json';
 
 const defaultUser = userData.authenticatedUser;
@@ -137,6 +138,7 @@ export function DevToolsScreen() {
   const { state: bagState, dispatch: bagDispatch } = useBag();
   const { getAllLocations } = useLocationData();
   const locations = getAllLocations();
+  const { replay: replaySplash } = useSplashReplay();
 
   const [resetConfirm, setResetConfirm] = useState(false);
 
@@ -179,6 +181,14 @@ export function DevToolsScreen() {
   };
 
   const flagKeys = Object.keys(flagMeta) as (keyof FeatureFlags)[];
+
+  // The splash only renders at mount, and flags reset on reload — so replaying
+  // in place is the only way to see a non-default splash variant.
+  const splashVariantLabel = {
+    'current': 'current (Lottie)',
+    'retro-yellow': 'retro yellow (GIF)',
+    'retro-newsprint': 'retro newsprint (MP4)',
+  }[resolveRetro(flags).splash];
 
   return (
     <>
@@ -247,6 +257,13 @@ export function DevToolsScreen() {
               </div>
             );
           })}
+          <ControlRow
+            label="Replay Splash"
+            description={`Plays the ${splashVariantLabel} splash — no reload, flags kept`}
+          >
+            <ActionButton label="Play" onClick={replaySplash} />
+          </ControlRow>
+
           <div style={{ paddingTop: 12 }}>
             <ActionButton label="Reset All Flags to Defaults" onClick={handleResetFlags} />
           </div>

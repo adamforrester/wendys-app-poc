@@ -2,7 +2,9 @@
 
 App-level architecture: contexts, routing, layout. Component-level conventions live in [`component-guide.md`](./component-guide.md).
 
-## Five Global Contexts
+## Global Contexts
+
+Five carry app state; two are presentation-only (`StatusBarModeContext`, `SplashReplayContext`).
 
 | Context | Purpose |
 |---|---|
@@ -11,6 +13,8 @@ App-level architecture: contexts, routing, layout. Component-level conventions l
 | `BagContext` | Cart items, promo code, location confirmation gate |
 | `DaypartContext` | Breakfast/Lunch/Dinner/Late Night |
 | `FeatureFlagsContext` | Runtime A/B flag toggles from `src/config/featureFlags.ts` |
+| `StatusBarModeContext` | `light` / `dark` status bar tint, flipped per-screen (see [Device Frame & Status Bar](#device-frame--status-bar)) |
+| `SplashReplayContext` | Splash visibility plus a `runId` remount key, so DevTools can replay the splash without a reload |
 
 ## Feature Flags
 
@@ -35,6 +39,13 @@ Flags are in-memory React state with no persistence, so a page reload resets
 them to defaults. This matters for anything that only renders on mount (the
 splash screen): set the flag, then trigger a client-side remount rather than a
 reload.
+
+That is what DevTools' **Replay Splash** row does. `SplashReplayContext` owns
+the splash's visibility and a `runId` counter; `AppSplash` in `App.tsx` passes
+`runId` as the splash's React `key`, so a replay remounts the component and its
+`<img>`/`<video>` restart from frame one instead of resuming a finished
+animation. The row's description names the variant the current
+`splashAnimation` flag resolves to, so it is clear which asset will play.
 
 ## Routing
 

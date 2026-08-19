@@ -254,15 +254,19 @@ export function DevToolsScreen() {
                     )}
                   </div>
                 </ControlRow>
+                {/* Sits directly under the splash select so the flag and the
+                    only way to see its effect read as one control. */}
+                {key === 'splashAnimation' && (
+                  <ControlRow
+                    label="Replay Splash"
+                    description={`Plays the ${splashVariantLabel} splash — no reload, flags kept`}
+                  >
+                    <ActionButton label="Play" onClick={replaySplash} />
+                  </ControlRow>
+                )}
               </div>
             );
           })}
-          <ControlRow
-            label="Replay Splash"
-            description={`Plays the ${splashVariantLabel} splash — no reload, flags kept`}
-          >
-            <ActionButton label="Play" onClick={replaySplash} />
-          </ControlRow>
 
           <div style={{ paddingTop: 12 }}>
             <ActionButton label="Reset All Flags to Defaults" onClick={handleResetFlags} />
